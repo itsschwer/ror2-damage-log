@@ -19,7 +19,7 @@ namespace DamageLog
 
         private readonly Dictionary<string, DamageSource> entries = [];
 
-        private readonly NetworkUser user;
+        public readonly NetworkUser user;
 
         private CharacterBody _body;
         private CharacterBody body {
@@ -30,7 +30,8 @@ namespace DamageLog
             set { _body = value; }
         }
 
-        private float timeOfDeath = -1;
+        private float _timeOfDeath = -1;
+        public float timeOfDeath => _timeOfDeath;
 
         public DamageLog(NetworkUser user)
         {
@@ -53,7 +54,7 @@ namespace DamageLog
 
         public void Unhook(CharacterBody body = null)
         {
-            timeOfDeath = UnityEngine.Time.time;
+            _timeOfDeath = UnityEngine.Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (body?.master != null) body.master.onBodyDestroyed -= Unhook;
 #if DEBUG
@@ -90,9 +91,10 @@ namespace DamageLog
             public readonly bool isVoidFogDamage;
 
             public readonly UnityEngine.GameObject attacker;
-            public int hits {  get; private set; }
-            public float damage {  get; private set; }
-            public float time {  get; private set; }
+            public int hits { get; private set; }
+            public float damage { get; private set; }
+            public float damagePercent { get; private set; }
+            public float time { get; private set; }
 
             public float hpPercentNow { get; private set; }
             /// <summary>
@@ -130,7 +132,7 @@ namespace DamageLog
                     if (portrait != null) attackerPortrait = portrait;
                 }
                 else if (isFallDamage) {
-                    attackerName = "Landing";
+                    attackerName = "The Ground";
                     attackerPortrait = RoR2Content.Artifacts.weakAssKneesArtifactDef.smallIconSelectedSprite.texture;
                 }
                 else if (isVoidFogDamage) {
@@ -146,6 +148,7 @@ namespace DamageLog
                 if (health != null) {
                     hpPercentNow = health.combinedHealthFraction;
                     hpPercentOld = (health.combinedHealth + damage) / health.fullCombinedHealth;
+                    damagePercent = damage / health.fullCombinedHealth;
                 }
             }
 
@@ -155,7 +158,10 @@ namespace DamageLog
                 damage += e.damage;
 
                 HealthComponent health = e.victim?.GetComponent<HealthComponent>();
-                if (health != null) hpPercentNow = health.combinedHealthFraction;
+                if (health != null) {
+                    hpPercentNow = health.combinedHealthFraction;
+                    damagePercent = damage / health.fullCombinedHealth;
+                }
 
                 return this;
             }

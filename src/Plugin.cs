@@ -1,5 +1,6 @@
 using BepInEx;
 using RoR2;
+using RoR2.UI;
 
 namespace DamageLog
 {
@@ -20,6 +21,7 @@ namespace DamageLog
         private void OnEnable()
         {
             CharacterBody.onBodyStartGlobal += TrackBody;
+            HUD.shouldHudDisplay += DamageLogUI.Init;
             Log.Message($"{Plugin.GUID}> enabled.");
         }
 
@@ -27,6 +29,7 @@ namespace DamageLog
         {
             DamageLog.ClearAll();
             CharacterBody.onBodyStartGlobal -= TrackBody;
+            HUD.shouldHudDisplay -= DamageLogUI.Init;
             Log.Message($"{Plugin.GUID}> disabled.");
         }
 
