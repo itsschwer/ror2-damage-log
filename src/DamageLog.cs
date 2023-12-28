@@ -4,8 +4,6 @@ using System.Linq;
 
 namespace DamageLog
 {
-    // todo: limit entries
-    // todo: decay entries
     public class DamageLog
     {
         public static readonly Dictionary<NetworkUser, DamageLog> Logs = [];
@@ -85,7 +83,6 @@ namespace DamageLog
 
             public readonly UnityEngine.Texture attackerPortrait;
             public readonly string attackerName;
-            // todo: elite icon
 
             public readonly bool isFallDamage;
             public readonly bool isVoidFogDamage;
