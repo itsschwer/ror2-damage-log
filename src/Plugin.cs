@@ -1,7 +1,7 @@
 using BepInEx;
 using RoR2;
 
-namespace DamageIndicator
+namespace DamageLog
 {
     [BepInPlugin(GUID, Name, Version)]
     public class Plugin : BaseUnityPlugin

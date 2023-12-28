@@ -1,6 +1,6 @@
 ﻿using BepInEx.Logging;
 
-namespace DamageIndicator
+namespace DamageLog
 {
     internal static class Log
     {

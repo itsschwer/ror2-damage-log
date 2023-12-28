@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DamageIndicator
+namespace DamageLog
 {
     // todo: limit entries
     // todo: decay entries
