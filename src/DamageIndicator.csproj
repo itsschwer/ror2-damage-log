@@ -19,16 +19,17 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <ProductDir>$(SolutionDir)Thunderstore/</ProductDir>
+        <RootDir>../</RootDir>
+        <ProductDir>$(RootDir)Thunderstore/</ProductDir>
         <PluginDir>$(ProductDir)plugins/$(SolutionName)/</PluginDir>
     </PropertyGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginDir)" />
-        <Copy SourceFiles="$(SolutionDir)README.md;$(SolutionDir)CHANGELOG.md;" DestinationFolder="$(ProductDir)" ContinueOnError="true" />
+        <Copy SourceFiles="$(RootDir)README.md;$(RootDir)CHANGELOG.md;" DestinationFolder="$(ProductDir)" ContinueOnError="true" />
 
         <!-- Is there a way to automate updating manifest name and version number based on plugin consts? -->
 
-        <ZipDirectory SourceDirectory="$(ProductDir)" DestinationFile="$(SolutionDir)$(SolutionName)--$(Configuration).zip" Overwrite="true" />
+        <ZipDirectory SourceDirectory="$(ProductDir)" DestinationFile="$(RootDir)$(MSBuildProjectName)--$(Configuration).zip" Overwrite="true" />
     </Target>
 </Project>
