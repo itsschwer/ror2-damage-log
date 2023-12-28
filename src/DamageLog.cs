@@ -68,6 +68,12 @@ namespace DamageLog
             return list;
         }
 
+        public void Expire(DamageSource src)
+        {
+            if (src == null) return;
+            entries.Remove(src.identifier);
+        }
+
         private void Record(DamageDealtMessage e)
         {
             if (e.victim != body.gameObject) return;
