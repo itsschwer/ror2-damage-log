@@ -66,7 +66,7 @@ namespace DamageLog
         {
             List<DamageSource> list = entries.Values.ToList();
             if (list.Count > 1)
-                list.Sort((a, b) => System.Math.Sign(a.time - b.time));
+                list.Sort((a, b) => System.Math.Sign(b.time - a.time)); // Newest first
             return list;
         }
 
@@ -156,6 +156,7 @@ namespace DamageLog
             {
                 hits++;
                 damage += e.damage;
+                time = UnityEngine.Time.time;
 
                 HealthComponent health = e.victim?.GetComponent<HealthComponent>();
                 if (health != null) {
