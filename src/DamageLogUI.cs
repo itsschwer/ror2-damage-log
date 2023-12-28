@@ -19,30 +19,41 @@ namespace DamageLog
         private new GameObject gameObject;
         private HGTextMeshProUGUI text;
 
-        private void Awake() => CreateUI();
-        // Based on Bubbet's implementation, for debugging, to be replaced
-        // https://github.com/Bubbet/Risk-Of-Rain-Mods/blob/8ae184f/DamageHistory/DamageHistoryHUD.cs
+        /// <summary>
+        /// Awake() is too early for accessing hud members.
+        /// </summary>
+        private void Start() => CreateUI();
         private void CreateUI()
         {
             CreateCanvas();
             CreateText();
+
+            Log.Debug($"{Plugin.GUID}> Canvas created.");
         }
 
         private void CreateCanvas()
         {
             gameObject = new GameObject("DamageLogUI", typeof(Canvas));
             gameObject.transform.SetParent(hud.mainContainer.transform);
-            AnchorTopRightCorner(gameObject.GetComponent<RectTransform>());
+            RectTransform rect = gameObject.GetComponent<RectTransform>();
+            FixRectTransform(rect);
+            AnchorStretchRight(rect, 110);
+
+            const float offsetTop = 12;
+            rect.localPosition = new Vector3(rect.localPosition.x, rect.localPosition.y - offsetTop, rect.localPosition.z);
+            rect.sizeDelta = new Vector2(rect.sizeDelta.x, rect.sizeDelta.y - offsetTop);
         }
 
         private void CreateText()
         {
             GameObject obj = new GameObject("Text", typeof(RectTransform));
             obj.transform.SetParent(gameObject.transform);
-            AnchorTopRightCorner(obj.GetComponent<RectTransform>());
+            RectTransform rect = obj.GetComponent<RectTransform>();
+            FixRectTransform(rect);
+            AnchorStretchStretch(rect);
 
             text = obj.AddComponent<HGTextMeshProUGUI>();
-            text.fontSize = 14;
+            text.fontSize = 12;
             text.SetText("Damage Log");
         }
 
@@ -58,7 +69,7 @@ namespace DamageLog
         private string GenerateTextLog(DamageLog log)
         {
             System.Text.StringBuilder sb = new();
-            sb.AppendLine($"Damage Log <{log.user.masterController.GetDisplayName()}>");
+            sb.AppendLine($"<style=cWorldEvent>Damage Log <{log.user.masterController.GetDisplayName()}></style>");
 
             float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
             foreach (DamageLog.DamageSource s in log.GetEntries()) {
@@ -72,24 +83,51 @@ namespace DamageLog
 
                 if (s.hits != 1) {
                     sb.Append($"<style=cStack>×{s.hits}</style>");
-                    sb.Append($" · <style=cIsHealth>-{s.damagePercent : 0.0%}</style>");
+                    sb.Append($" · <style=cIsHealth>-{s.damagePercent :0.0%}</style>");
                 }
                 else {
-                    sb.Append($" · <style=cIsHealth>{s.hpPercentOld : 0.0%} <style=cSub>></style> {s.hpPercentNow : 0.0%}</style>");
+                    sb.Append($" · <style=cIsHealth>{s.hpPercentOld :0.0%} <style=cSub>></style> {s.hpPercentNow :0.0%}</style>");
                 }
 
-                sb.AppendLine($" · <style=cSub>{endTime - s.time : 0.00s}</style>");
+                sb.AppendLine($" · <style=cSub>{endTime - s.time :0.00s}</style>");
             }
 
             return sb.ToString();
         }
 
-        private static void AnchorTopRightCorner(RectTransform rect)
+        /// <summary>
+        /// Fixes the local position, local scale, local rotation, and layer of a RectTransform to 'normal' values after parenting to a Canvas (previously existed as a Transform game object).
+        /// <br/>Alternatively, pass worldPositionStays: false to Transform.SetParent() and manually update gameObject.layer.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        private static RectTransform FixRectTransform(RectTransform rect)
+        {
+            rect.localPosition = new Vector3(rect.localPosition.x, rect.localPosition.y, 0);
+            rect.localScale = Vector3.one;
+            rect.localRotation = Quaternion.identity;
+            rect.gameObject.layer = LayerMask.NameToLayer("UI");
+            return rect;
+        }
+
+        private static RectTransform AnchorStretchRight(RectTransform rect, float width = 100)
         {
             rect.pivot = Vector2.one;
             rect.anchoredPosition = Vector2.zero;
-            rect.anchorMin = Vector2.one;
+            rect.anchorMin = new Vector2(1, 0);
             rect.anchorMax = Vector2.one;
+            rect.sizeDelta =  new Vector2(width, 0);
+            return rect;
+        }
+
+        private static RectTransform AnchorStretchStretch(RectTransform rect)
+        {
+            rect.pivot = Vector2.one;
+            rect.anchoredPosition = Vector2.zero;
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.sizeDelta = Vector2.zero;
+            return rect;
         }
     }
 }
