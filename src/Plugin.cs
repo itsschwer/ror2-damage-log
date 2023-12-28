@@ -19,12 +19,33 @@ namespace DamageIndicator
 
         private void OnEnable()
         {
+            CharacterBody.onBodyStartGlobal += TrackBody;
             Log.Message($"{Plugin.GUID}> enabled.");
         }
 
         private void OnDisable()
         {
+            DamageLog.ClearAll();
+            CharacterBody.onBodyStartGlobal -= TrackBody;
             Log.Message($"{Plugin.GUID}> disabled.");
+        }
+
+        private static void TrackBody(CharacterBody body)
+        {
+            if (!body.isPlayerControlled) return;
+
+            new DamageLog(FindBodyUser(body));
+        }
+
+        public static NetworkUser FindBodyUser(CharacterBody body)
+        {
+            if (body == null) return null;
+
+            foreach (NetworkUser user in NetworkUser.readOnlyInstancesList) {
+                if (user.GetCurrentBody() == body) return user;
+            }
+
+            return null;
         }
     }
 }
