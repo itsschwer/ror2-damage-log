@@ -69,25 +69,30 @@ namespace DamageLog
             return list;
         }
 
+        public void Expire(DamageSource src)
+        {
+            entries.Remove(src.identifier);
+        }
+
         private void Record(DamageDealtMessage e)
         {
             if (e.victim != body.gameObject) return;
 
             string key = DamageSource.GenerateIdentifier(e);
-            if (entries.TryGetValue(key, out DamageSource src)) {
-                if (!Decay(src)) src.Add(e);
-            }
+            if (entries.TryGetValue(key, out DamageSource src)) src.Add(e);
             else entries.Add(key, new DamageSource(e));
+
+            if (entries.Count > 20) Prune();
         }
 
-        private bool Decay(DamageSource src)
+        private void Prune()
         {
+            int i = 0;
             float endTime = (timeOfDeath > 0) ? timeOfDeath : Time.time;
-            if (endTime - src.time >= 10) {
-                entries.Remove(src.identifier);
-                return true;
+            foreach (DamageSource src in GetEntries()) {
+                if (i > 20 || (endTime - src.time >= 10)) Expire(src);
+                i++;
             }
-            return false;
         }
 
         public class DamageSource
