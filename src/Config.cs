@@ -13,7 +13,7 @@ namespace DamageLog
         private readonly ConfigEntry<bool> _onlyShowWithScoreboard;
         public bool OnlyShowWithScoreboard => _onlyShowWithScoreboard.Value;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("", "IDE0290")] // Use primary constructor
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0290:Use primary constructor", Justification = "Preference")]
         public Config(ConfigFile config)
         {
             _entryMaxRetainTime = config.Bind<float>("Constraints", "entryMaxRetainTime", 10f,

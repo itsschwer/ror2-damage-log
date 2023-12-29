@@ -19,6 +19,7 @@ namespace DamageLog
 
         public readonly NetworkUser user;
 
+#pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
         private CharacterBody _body;
         private CharacterBody body {
             get {
@@ -28,8 +29,8 @@ namespace DamageLog
             set { _body = value; }
         }
 
-        private float _timeOfDeath = -1;
-        public float timeOfDeath => _timeOfDeath;
+        public float timeOfDeath { get; private set; }  = -1;
+#pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
         public DamageLog(NetworkUser user)
         {
@@ -51,13 +52,13 @@ namespace DamageLog
         {
             if (report != null && report.victimBody != body) return;
 
-            _timeOfDeath = Time.time;
+            timeOfDeath = Time.time;
             GlobalEventManager.onCharacterDeathGlobal -= OnDeath;
         }
 
         private void Cease(CharacterBody body = null)
         {
-            if (_timeOfDeath <= 0) _timeOfDeath = Time.time;
+            if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (body?.master != null) body.master.onBodyDestroyed -= Cease;
             Log.Debug($"{Plugin.GUID}> untracking {user.masterController.GetDisplayName()}.");
@@ -111,11 +112,13 @@ namespace DamageLog
             public readonly bool isFallDamage;
             public readonly bool isVoidFogDamage;
 
+#pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
             public float time { get; private set; }
             public int hits { get; private set; }
             public float damage { get; private set; }
             public float damagePercent { get; private set; }
             public float hpPercent { get; private set; }
+#pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
             private static Texture _PlanetPortrait;
             public static Texture PlanetPortrait {

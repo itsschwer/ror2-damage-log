@@ -134,7 +134,8 @@ namespace DamageLog
         }
 
         /// <summary>
-        /// Fixes the local position, local scale, local rotation, and layer of a RectTransform to 'normal' values after parenting to a Canvas (previously existed as a Transform game object).
+        /// Fixes the local position, local scale, local rotation, and layer of a RectTransform to 'normal' values
+        /// after parenting to a Canvas (previously existed as a Transform game object).
         /// <br/>Alternatively, pass worldPositionStays: false to Transform.SetParent() and manually update gameObject.layer.
         /// </summary>
         /// <param name="rect"></param>

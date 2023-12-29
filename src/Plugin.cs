@@ -17,6 +17,7 @@ namespace DamageLog
         internal static void ReloadConfig() => RequestConfigReload?.Invoke();
         private static System.Action RequestConfigReload;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void Awake()
         {
             Log.Init(Logger);
@@ -26,6 +27,7 @@ namespace DamageLog
             Log.Message($"{Plugin.GUID}> awake.");
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void OnEnable()
         {
             CharacterBody.onBodyStartGlobal += TrackBody;
@@ -33,6 +35,7 @@ namespace DamageLog
             Log.Message($"{Plugin.GUID}> enabled.");
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void OnDisable()
         {
             DamageLog.ClearAll();
