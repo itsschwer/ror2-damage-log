@@ -12,9 +12,12 @@ namespace DamageLog
         public const string Name = "DamageLog";
         public const string Version = "0.0.0";
 
+        internal static new Config Config { get; private set; }
+
         private void Awake()
         {
             Log.Init(Logger);
+            Config = new Config(base.Config);
             Log.Message($"{Plugin.GUID}> awake.");
         }
 

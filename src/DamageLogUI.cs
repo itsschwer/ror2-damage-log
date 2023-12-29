@@ -71,9 +71,11 @@ namespace DamageLog
             System.Text.StringBuilder sb = new();
             sb.AppendLine($"<style=cWorldEvent>Damage Log <{log.user.masterController.GetDisplayName()}></style>");
 
+            int i = -1; // incremented before check
             float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
             foreach (DamageLog.DamageSource s in log.GetEntries()) {
-                if (endTime - s.time >= 10) { log.Expire(s); continue; }
+                i++;
+                if (log.TryPrune(s, endTime, i)) continue;
 
                 string style = s.isFallDamage ? "cSub" : s.isVoidFogDamage ? "cIsVoid" : "";
                 if (string.IsNullOrEmpty(style)) {

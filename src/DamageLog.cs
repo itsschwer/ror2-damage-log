@@ -44,11 +44,8 @@ namespace DamageLog
             Logs[user] = this;
 
             GlobalEventManager.onClientDamageNotified += Record;
-            // Is there a more accurate event for this?
             body.master.onBodyDestroyed += Unhook;
-#if DEBUG
             Log.Debug($"{Plugin.GUID}> tracking {user.masterController.GetDisplayName()}.");
-#endif
         }
 
         public void Unhook(CharacterBody body = null)
@@ -56,9 +53,7 @@ namespace DamageLog
             _timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (body?.master != null) body.master.onBodyDestroyed -= Unhook;
-#if DEBUG
             Log.Debug($"{Plugin.GUID}> untracking {user.masterController.GetDisplayName()}.");
-#endif
         }
 
         public List<DamageSource> GetEntries()
@@ -69,11 +64,6 @@ namespace DamageLog
             return list;
         }
 
-        public void Expire(DamageSource src)
-        {
-            entries.Remove(src.identifier);
-        }
-
         private void Record(DamageDealtMessage e)
         {
             if (e.victim != body.gameObject) return;
@@ -82,7 +72,7 @@ namespace DamageLog
             if (entries.TryGetValue(key, out DamageSource src)) src.Add(e);
             else entries.Add(key, new DamageSource(e));
 
-            if (entries.Count > 20) Prune();
+            if (entries.Count > Plugin.Config.EntryMaxCount) Prune();
         }
 
         private void Prune()
@@ -90,9 +80,18 @@ namespace DamageLog
             int i = 0;
             float endTime = (timeOfDeath > 0) ? timeOfDeath : Time.time;
             foreach (DamageSource src in GetEntries()) {
-                if (i > 20 || (endTime - src.time >= 10)) Expire(src);
+                TryPrune(src, endTime, i);
                 i++;
             }
+        }
+
+        public bool TryPrune(DamageSource src, float endTime, int i)
+        {
+            if (i > Plugin.Config.EntryMaxCount || (endTime - src.time >= Plugin.Config.EntryMaxRetainTime)) {
+                entries.Remove(src.identifier);
+                return true;
+            }
+            return false;
         }
 
         public class DamageSource
