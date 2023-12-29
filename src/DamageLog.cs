@@ -11,8 +11,7 @@ namespace DamageLog
 
         public static void ClearAll()
         {
-            foreach (DamageLog log in Logs.Values)
-                log.Unhook();
+            foreach (DamageLog log in Logs.Values) log.Cease();
             Logs.Clear();
         }
 
@@ -23,7 +22,7 @@ namespace DamageLog
         private CharacterBody _body;
         private CharacterBody body {
             get {
-                if (_body == null) Unhook();
+                if (_body == null) Cease();
                 return _body;
             }
             set { _body = value; }
@@ -39,20 +38,19 @@ namespace DamageLog
             this.user = user;
             this.body = user.GetCurrentBody();
 
-            if (Logs.TryGetValue(user, out DamageLog log))
-                log.Unhook();
+            if (Logs.TryGetValue(user, out DamageLog log)) log.Cease();
             Logs[user] = this;
 
             GlobalEventManager.onClientDamageNotified += Record;
-            body.master.onBodyDestroyed += Unhook;
+            body.master.onBodyDestroyed += Cease;
             Log.Debug($"{Plugin.GUID}> tracking {user.masterController.GetDisplayName()}.");
         }
 
-        public void Unhook(CharacterBody body = null)
+        private void Cease(CharacterBody body = null)
         {
             _timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
-            if (body?.master != null) body.master.onBodyDestroyed -= Unhook;
+            if (body?.master != null) body.master.onBodyDestroyed -= Cease;
             Log.Debug($"{Plugin.GUID}> untracking {user.masterController.GetDisplayName()}.");
         }
 
