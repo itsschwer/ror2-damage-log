@@ -102,7 +102,7 @@ namespace DamageLog
 
         private static bool TryGetDamageLog(out DamageLog value)
         {
-            NetworkUser user = hud.localUserViewer?.currentNetworkUser;
+            NetworkUser user = hud?.localUserViewer?.currentNetworkUser;
             if (user == null) { value = null; return false; }
             return DamageLog.Logs.TryGetValue(user, out value);
         }
@@ -119,12 +119,8 @@ namespace DamageLog
                 if (log.TryPrune(s, endTime, i)) continue;
 
                 string style = s.isFallDamage ? "cHumanObjective" : s.isVoidFogDamage ? "cIsVoid" : "";
-                if (string.IsNullOrEmpty(style)) {
-                    sb.Append(s.attackerName);
-                }
-                else {
-                    sb.Append($"<style={style}>{s.attackerName}</style>");
-                }
+                if (string.IsNullOrEmpty(style)) sb.Append(s.attackerName);
+                else sb.Append($"<style={style}>{s.attackerName}</style>");
 
                 bool singleHit = (s.hits == 1);
                 if (!singleHit) sb.Append($"<style=cStack>×{s.hits}</style>");

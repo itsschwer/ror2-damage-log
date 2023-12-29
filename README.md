@@ -1,6 +1,8 @@
 # damage indicator
 
 ## todo
+- test
+    - dio respawn
 - ui — display icons instead of text
     - store elite icon in `DamageSource`
     - figure out structure and layout

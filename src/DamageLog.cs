@@ -107,7 +107,6 @@ namespace DamageLog
 
             public readonly Texture attackerPortrait;
             public readonly string attackerName;
-            public readonly GameObject attacker;
 
             public readonly bool isFallDamage;
             public readonly bool isVoidFogDamage;
@@ -139,10 +138,9 @@ namespace DamageLog
                 attackerName = Language.GetString("UNIDENTIFIED_KILLER_NAME");
                 attackerPortrait = PlanetPortrait;
 
-                attacker = e.attacker;
-                if (attacker) {
-                    string name = Util.GetBestBodyName(attacker);
-                    Texture portrait = attacker?.GetComponent<CharacterBody>()?.portraitIcon;
+                if (e.attacker) {
+                    string name = Util.GetBestBodyName(e.attacker);
+                    Texture portrait = e.attacker?.GetComponent<CharacterBody>()?.portraitIcon;
 
                     if (!string.IsNullOrEmpty(name)) attackerName = name;
                     if (portrait != null) attackerPortrait = portrait;
