@@ -41,14 +41,23 @@ namespace DamageLog
             if (Logs.TryGetValue(user, out DamageLog log)) log.Cease();
             Logs[user] = this;
 
+            GlobalEventManager.onCharacterDeathGlobal += OnDeath;
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
             Log.Debug($"{Plugin.GUID}> tracking {user.masterController.GetDisplayName()}.");
         }
 
+        private void OnDeath(DamageReport report)
+        {
+            if (report != null && report.victimBody != body) return;
+
+            _timeOfDeath = Time.time;
+            GlobalEventManager.onCharacterDeathGlobal -= OnDeath;
+        }
+
         private void Cease(CharacterBody body = null)
         {
-            _timeOfDeath = Time.time;
+            if (_timeOfDeath <= 0) _timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (body?.master != null) body.master.onBodyDestroyed -= Cease;
             Log.Debug($"{Plugin.GUID}> untracking {user.masterController.GetDisplayName()}.");
