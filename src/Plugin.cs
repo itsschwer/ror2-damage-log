@@ -14,12 +14,15 @@ namespace DamageLog
         public const string Version = "0.0.0";
 
         internal static new Config Config { get; private set; }
+        internal static void ReloadConfig() => RequestConfigReload?.Invoke();
+        private static System.Action RequestConfigReload;
 
         private void Awake()
         {
             Log.Init(Logger);
             Config = new Config(base.Config);
             new Harmony(Info.Metadata.GUID).PatchAll();
+            RequestConfigReload = base.Config.Reload;
             Log.Message($"{Plugin.GUID}> awake.");
         }
 

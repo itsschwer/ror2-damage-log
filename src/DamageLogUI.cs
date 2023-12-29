@@ -54,6 +54,7 @@ namespace DamageLog
 
         private void CreateUI(GameObject parent)
         {
+            Plugin.ReloadConfig();
             CreateCanvas(parent);
             CreateText();
             Log.Debug($"{Plugin.GUID}> created canvas.");
