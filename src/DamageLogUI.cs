@@ -77,7 +77,7 @@ namespace DamageLog
                 i++;
                 if (log.TryPrune(s, endTime, i)) continue;
 
-                string style = s.isFallDamage ? "cSub" : s.isVoidFogDamage ? "cIsVoid" : "";
+                string style = s.isFallDamage ? "cHumanObjective" : s.isVoidFogDamage ? "cIsVoid" : "";
                 if (string.IsNullOrEmpty(style)) {
                     sb.Append(s.attackerName);
                 }
@@ -85,15 +85,12 @@ namespace DamageLog
                     sb.Append($"<style={style}>{s.attackerName}</style>");
                 }
 
-                if (s.hits != 1) {
-                    sb.Append($"<style=cStack>×{s.hits}</style>");
-                    sb.Append($" · <style=cIsHealth>-{s.damagePercent :0.0%}</style>");
-                }
-                else {
-                    sb.Append($" · <style=cIsHealth>{s.hpPercentOld :0.0%} <style=cSub>></style> {s.hpPercentNow :0.0%}</style>");
-                }
+                bool singleHit = (s.hits != 1);
+                if (!singleHit) sb.Append($"<style=cStack>×{s.hits}</style>");
+                sb.Append($" · <style=cIsHealth>-{s.damagePercent:0.0%}</style>");
+                if (singleHit) sb.Append($" <style=cEvent>({s.hpPercent:0.0%})</style>");
 
-                sb.AppendLine($" · <style=cSub>{endTime - s.time :0.00s}</style>");
+                sb.AppendLine($" · <style=cSub>{(endTime - s.time):0.00s}</style>");
             }
 
             return sb.ToString();

@@ -100,21 +100,16 @@ namespace DamageLog
 
             public readonly Texture attackerPortrait;
             public readonly string attackerName;
+            public readonly GameObject attacker;
 
             public readonly bool isFallDamage;
             public readonly bool isVoidFogDamage;
 
-            public readonly GameObject attacker;
+            public float time { get; private set; }
             public int hits { get; private set; }
             public float damage { get; private set; }
             public float damagePercent { get; private set; }
-            public float time { get; private set; }
-
-            public float hpPercentNow { get; private set; }
-            /// <summary>
-            /// Only valid where hits == 1.
-            /// </summary>
-            public readonly float hpPercentOld;
+            public float hpPercent { get; private set; }
 
             private static Texture _PlanetPortrait;
             public static Texture PlanetPortrait {
@@ -154,31 +149,28 @@ namespace DamageLog
                     attackerPortrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
                 }
 
+                time = Time.time;
                 hits = 1;
                 damage = e.damage;
-                time = Time.time;
-
-                HealthComponent health = e.victim?.GetComponent<HealthComponent>();
-                if (health != null) {
-                    hpPercentNow = health.combinedHealthFraction;
-                    hpPercentOld = (health.combinedHealth + damage) / health.fullCombinedHealth;
-                    damagePercent = damage / health.fullCombinedHealth;
-                }
+                UpdateHpDamagePercent(e.victim);
             }
 
             public DamageSource Add(DamageDealtMessage e)
             {
+                time = Time.time;
                 hits++;
                 damage += e.damage;
-                time = Time.time;
+                UpdateHpDamagePercent(e.victim);
+                return this;
+            }
 
-                HealthComponent health = e.victim?.GetComponent<HealthComponent>();
+            private void UpdateHpDamagePercent(GameObject victim)
+            {
+                HealthComponent health = victim?.GetComponent<HealthComponent>();
                 if (health != null) {
-                    hpPercentNow = health.combinedHealthFraction;
+                    hpPercent = health.combinedHealthFraction;
                     damagePercent = damage / health.fullCombinedHealth;
                 }
-
-                return this;
             }
 
             public static bool IsVoidFogDamage(DamageDealtMessage e)
