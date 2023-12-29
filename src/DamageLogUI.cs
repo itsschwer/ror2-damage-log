@@ -100,7 +100,7 @@ namespace DamageLog
                     sb.Append($"<style={style}>{s.attackerName}</style>");
                 }
 
-                bool singleHit = (s.hits != 1);
+                bool singleHit = (s.hits == 1);
                 if (!singleHit) sb.Append($"<style=cStack>×{s.hits}</style>");
                 sb.Append($" · <style=cIsHealth>-{s.damagePercent:0.0%}</style>");
                 if (singleHit) sb.Append($" <style=cEvent>({s.hpPercent:0.0%})</style>");
