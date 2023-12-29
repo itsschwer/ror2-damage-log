@@ -26,14 +26,21 @@ namespace DamageLog
                 ui.gameObject.transform.SetParent(__instance.transform);
                 ui.enabled = false;
                 ui.canvas.enabled = true;
-
-                if (TryGetDamageLog(out DamageLog log)) ui.text.SetText(GenerateTextLog(log));
-
                 Log.Debug($"{Plugin.GUID}> moved canvas.");
             }
             else {
                 Log.Warning($"{Plugin.GUID}> failed to move canvas (missing).");
             }
+        }
+
+        [HarmonyPostfix, HarmonyPatch(typeof(GameEndReportPanelController), nameof(GameEndReportPanelController.SetPlayerInfo))]
+        private static void OnGameEndSetPlayerInfo(RunReport.PlayerInfo playerInfo)
+        {
+            if (playerInfo?.networkUser == null) return;
+            DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
+            if (ui == null) return;
+
+            if (DamageLog.Logs.TryGetValue(playerInfo.networkUser, out DamageLog log)) ui.text.SetText(GenerateTextLog(log));
         }
 
         private new GameObject gameObject;
