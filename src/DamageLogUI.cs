@@ -24,6 +24,11 @@ namespace DamageLog
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
             if (ui?.gameObject != null) {
                 ui.gameObject.transform.SetParent(__instance.transform);
+                ui.enabled = false;
+                ui.canvas.enabled = true;
+
+                if (TryGetDamageLog(out DamageLog log)) ui.text.SetText(GenerateTextLog(log));
+
                 Log.Debug($"{Plugin.GUID}> moved canvas.");
             }
             else {
@@ -32,6 +37,7 @@ namespace DamageLog
         }
 
         private new GameObject gameObject;
+        private Canvas canvas;
         private HGTextMeshProUGUI text;
 
         /// <summary>
@@ -57,6 +63,8 @@ namespace DamageLog
             const float offsetTop = 12;
             rect.localPosition = new Vector3(rect.localPosition.x, rect.localPosition.y - offsetTop, rect.localPosition.z);
             rect.sizeDelta = new Vector2(rect.sizeDelta.x, rect.sizeDelta.y - offsetTop);
+
+            canvas = gameObject.GetComponent<Canvas>();
         }
 
         private void CreateText()
@@ -74,11 +82,21 @@ namespace DamageLog
 
         private void Update()
         {
-            NetworkUser user = hud.localUserViewer?.currentNetworkUser;
-            if (user == null) return;
-            if (!DamageLog.Logs.TryGetValue(user, out DamageLog log)) return;
+            if (!TryGetDamageLog(out DamageLog log)) return;
+
+            // RoR2UI.HUD.Update()
+            bool visible = !Plugin.Config.OnlyShowWithScoreboard || (hud.localUserViewer?.inputPlayer != null && hud.localUserViewer.inputPlayer.GetButton("info"));
+            canvas.enabled = visible;
+            if (!visible) return;
 
             text.SetText(GenerateTextLog(log));
+        }
+
+        private static bool TryGetDamageLog(out DamageLog value)
+        {
+            NetworkUser user = hud.localUserViewer?.currentNetworkUser;
+            if (user == null) { value = null; return false; }
+            return DamageLog.Logs.TryGetValue(user, out value);
         }
 
         private static string GenerateTextLog(DamageLog log)
