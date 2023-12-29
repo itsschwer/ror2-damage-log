@@ -73,8 +73,6 @@ namespace DamageLog
 
             float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
             foreach (DamageLog.DamageSource s in log.GetEntries()) {
-                if (endTime - s.time >= 10) { log.Expire(s); continue; }
-
                 string style = s.isFallDamage ? "cSub" : s.isVoidFogDamage ? "cIsVoid" : "";
                 if (string.IsNullOrEmpty(style)) {
                     sb.Append(s.attackerName);

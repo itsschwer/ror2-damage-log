@@ -1,4 +1,5 @@
 ﻿using RoR2;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -52,7 +53,7 @@ namespace DamageLog
 
         public void Unhook(CharacterBody body = null)
         {
-            _timeOfDeath = UnityEngine.Time.time;
+            _timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (body?.master != null) body.master.onBodyDestroyed -= Unhook;
 #if DEBUG
@@ -68,32 +69,38 @@ namespace DamageLog
             return list;
         }
 
-        public void Expire(DamageSource src)
-        {
-            if (src == null) return;
-            entries.Remove(src.identifier);
-        }
-
         private void Record(DamageDealtMessage e)
         {
             if (e.victim != body.gameObject) return;
 
             string key = DamageSource.GenerateIdentifier(e);
-            if (entries.TryGetValue(key, out DamageSource src)) src.Add(e);
+            if (entries.TryGetValue(key, out DamageSource src)) {
+                if (!Decay(src)) src.Add(e);
+            }
             else entries.Add(key, new DamageSource(e));
+        }
+
+        private bool Decay(DamageSource src)
+        {
+            float endTime = (timeOfDeath > 0) ? timeOfDeath : Time.time;
+            if (endTime - src.time >= 10) {
+                entries.Remove(src.identifier);
+                return true;
+            }
+            return false;
         }
 
         public class DamageSource
         {
             public readonly string identifier;
 
-            public readonly UnityEngine.Texture attackerPortrait;
+            public readonly Texture attackerPortrait;
             public readonly string attackerName;
 
             public readonly bool isFallDamage;
             public readonly bool isVoidFogDamage;
 
-            public readonly UnityEngine.GameObject attacker;
+            public readonly GameObject attacker;
             public int hits { get; private set; }
             public float damage { get; private set; }
             public float damagePercent { get; private set; }
@@ -105,11 +112,11 @@ namespace DamageLog
             /// </summary>
             public readonly float hpPercentOld;
 
-            private static UnityEngine.Texture _PlanetPortrait;
-            public static UnityEngine.Texture PlanetPortrait {
+            private static Texture _PlanetPortrait;
+            public static Texture PlanetPortrait {
                 get {
                     if (_PlanetPortrait == null) {
-                        _PlanetPortrait = LegacyResourcesAPI.Load<UnityEngine.Texture>("Textures/BodyIcons/texUnidentifiedKillerIcon");
+                        _PlanetPortrait = LegacyResourcesAPI.Load<Texture>("Textures/BodyIcons/texUnidentifiedKillerIcon");
                     }
                     return _PlanetPortrait;
                 }
@@ -129,7 +136,7 @@ namespace DamageLog
                 attacker = e.attacker;
                 if (attacker) {
                     string name = Util.GetBestBodyName(attacker);
-                    UnityEngine.Texture portrait = attacker?.GetComponent<CharacterBody>()?.portraitIcon;
+                    Texture portrait = attacker?.GetComponent<CharacterBody>()?.portraitIcon;
 
                     if (!string.IsNullOrEmpty(name)) attackerName = name;
                     if (portrait != null) attackerPortrait = portrait;
@@ -145,7 +152,7 @@ namespace DamageLog
 
                 hits = 1;
                 damage = e.damage;
-                time = UnityEngine.Time.time;
+                time = Time.time;
 
                 HealthComponent health = e.victim?.GetComponent<HealthComponent>();
                 if (health != null) {
@@ -159,7 +166,7 @@ namespace DamageLog
             {
                 hits++;
                 damage += e.damage;
-                time = UnityEngine.Time.time;
+                time = Time.time;
 
                 HealthComponent health = e.victim?.GetComponent<HealthComponent>();
                 if (health != null) {
