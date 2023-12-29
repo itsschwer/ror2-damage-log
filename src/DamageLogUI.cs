@@ -67,9 +67,9 @@ namespace DamageLog
             FixRectTransform(rect);
             AnchorStretchRight(rect, 110);
 
-            const float offsetTop = 12;
-            rect.localPosition = new Vector3(rect.localPosition.x, rect.localPosition.y - offsetTop, rect.localPosition.z);
-            rect.sizeDelta = new Vector2(rect.sizeDelta.x, rect.sizeDelta.y - offsetTop);
+            Vector2 offsetTopRight = new Vector2(4, 12);
+            rect.localPosition -= (Vector3)offsetTopRight;
+            rect.sizeDelta -= offsetTopRight;
 
             canvas = gameObject.GetComponent<Canvas>();
         }
