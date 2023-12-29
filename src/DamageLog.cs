@@ -112,6 +112,7 @@ namespace DamageLog
             public readonly bool isFallDamage;
             public readonly bool isVoidFogDamage;
 
+            public readonly float timeStart;
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
             public float time { get; private set; }
             public int hits { get; private set; }
@@ -157,7 +158,8 @@ namespace DamageLog
                     attackerPortrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
                 }
 
-                time = Time.time;
+                timeStart = Time.time;
+                time = timeStart;
                 hits = 1;
                 damage = e.damage;
                 UpdateHpDamagePercent(e.victim);

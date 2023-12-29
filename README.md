@@ -2,6 +2,7 @@
 
 ## todo
 - test
+    - as non-host
     - dio respawn
 - ui — display icons instead of text
     - store elite icon in `DamageSource`
@@ -14,6 +15,5 @@
 ## reference
 
 - [Bubbet · DamageHistory](https://github.com/Bubbet/Risk-Of-Rain-Mods/tree/master/DamageHistory) *(inspiration, design, Harmony patches)*
-- [NotTsunami · ShowDeathCause](https://github.com/NotTsunami/ShowDeathCause) *(finding `RoR2.UI.GameEndReportPanelController`, `RoR2.Util.GetBestBodyName()`, and fall/void damage icons)*
-<!--  -->
-- ? [xoxfaby · BetterUI](https://github.com/xoxfaby/BetterUI)
+- [NotTsunami · ShowDeathCause](https://github.com/NotTsunami/ShowDeathCause) *(finding `RoR2.Util.GetBestBodyName()`, fall/void damage icons)*
+- [xoxfaby · BetterUI](https://github.com/xoxfaby/BetterUI) *(tooltips)*

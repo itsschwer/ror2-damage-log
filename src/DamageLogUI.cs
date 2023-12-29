@@ -2,6 +2,7 @@
 using RoR2;
 using RoR2.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DamageLog
 {
@@ -47,6 +48,8 @@ namespace DamageLog
         private Canvas canvas;
         private HGTextMeshProUGUI text;
 
+        private TooltipProvider tooltip;
+
         /// <summary>
         /// Awake() is too early for accessing hud members.
         /// </summary>
@@ -62,7 +65,7 @@ namespace DamageLog
 
         private void CreateCanvas(GameObject parent)
         {
-            gameObject = new GameObject("DamageLogUI", typeof(Canvas));
+            gameObject = new GameObject("DamageLogUI", typeof(Canvas), typeof(GraphicRaycaster));
             gameObject.transform.SetParent(parent.transform);
             RectTransform rect = gameObject.GetComponent<RectTransform>();
             FixRectTransform(rect);
@@ -86,6 +89,8 @@ namespace DamageLog
             text = obj.AddComponent<HGTextMeshProUGUI>();
             text.fontSize = 12;
             text.SetText("Damage Log");
+
+            tooltip = obj.AddComponent<TooltipProvider>();
         }
 
         private void Update()
@@ -98,6 +103,16 @@ namespace DamageLog
             if (!visible) return;
 
             text.SetText(GenerateTextLog(log));
+
+            var entries = log.GetEntries();
+            if (entries.Count > 0) {
+                var src = entries[0];
+                tooltip.titleColor = src.isFallDamage ? DamageColor.FindColor(DamageColorIndex.Heal)
+                                   : src.isVoidFogDamage ? DamageColor.FindColor(DamageColorIndex.Void)
+                                   : DamageColor.FindColor(DamageColorIndex.Default);
+                tooltip.titleToken = src.attackerName;
+                tooltip.bodyToken = GenerateTooltipString(src);
+            }
         }
 
         private static bool TryGetDamageLog(out DamageLog value)
@@ -129,6 +144,22 @@ namespace DamageLog
 
                 sb.AppendLine($" · <style=cSub>{(endTime - s.time):0.00s}</style>");
             }
+
+            return sb.ToString();
+        }
+
+        private static string GenerateTooltipString(DamageLog.DamageSource src)
+        {
+            System.Text.StringBuilder sb = new();
+
+            sb.Append($"Dealt <style=cIsHealth>{src.damage:0.0}</style> damage");
+            if (src.hits == 1) sb.Append($" <style=cEvent>({src.hpPercent:0.0%} health remaining)</style>");
+            else sb.Append($" in <style=cStack>{src.hits} hits</style> over <style=cSub>{(src.time - src.timeStart):0.00s}</style>");
+            sb.AppendLine(".");
+#if DEBUG
+            sb.AppendLine();
+            sb.AppendLine($"<style=cIsDamage>{src.identifier}</style>");
+#endif
 
             return sb.ToString();
         }
