@@ -1,9 +1,11 @@
-﻿using RoR2;
+﻿using HarmonyLib;
+using RoR2;
 using RoR2.UI;
 using UnityEngine;
 
 namespace DamageLog
 {
+    [HarmonyPatch]
     public class DamageLogUI : MonoBehaviour
     {
         private static HUD hud;
@@ -16,25 +18,38 @@ namespace DamageLog
             DamageLogUI.hud = hud;
         }
 
+        [HarmonyPostfix, HarmonyPatch(typeof(GameEndReportPanelController), nameof(GameEndReportPanelController.Awake))]
+        private static void OnGameEndPanel(GameEndReportPanelController __instance)
+        {
+            DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
+            if (ui?.gameObject != null) {
+                ui.gameObject.transform.SetParent(__instance.transform);
+                Log.Debug($"{Plugin.GUID}> moved canvas.");
+            }
+            else {
+                Log.Warning($"{Plugin.GUID}> failed to move canvas (missing).");
+            }
+        }
+
         private new GameObject gameObject;
         private HGTextMeshProUGUI text;
 
         /// <summary>
         /// Awake() is too early for accessing hud members.
         /// </summary>
-        private void Start() => CreateUI();
-        private void CreateUI()
-        {
-            CreateCanvas();
-            CreateText();
+        private void Start() => CreateUI(hud.mainContainer);
 
-            Log.Debug($"{Plugin.GUID}> Canvas created.");
+        private void CreateUI(GameObject parent)
+        {
+            CreateCanvas(parent);
+            CreateText();
+            Log.Debug($"{Plugin.GUID}> created canvas.");
         }
 
-        private void CreateCanvas()
+        private void CreateCanvas(GameObject parent)
         {
             gameObject = new GameObject("DamageLogUI", typeof(Canvas));
-            gameObject.transform.SetParent(hud.mainContainer.transform);
+            gameObject.transform.SetParent(parent.transform);
             RectTransform rect = gameObject.GetComponent<RectTransform>();
             FixRectTransform(rect);
             AnchorStretchRight(rect, 110);
@@ -46,7 +61,7 @@ namespace DamageLog
 
         private void CreateText()
         {
-            GameObject obj = new GameObject("Text", typeof(RectTransform));
+            GameObject obj = new GameObject("DamageLogText", typeof(RectTransform));
             obj.transform.SetParent(gameObject.transform);
             RectTransform rect = obj.GetComponent<RectTransform>();
             FixRectTransform(rect);
@@ -66,7 +81,7 @@ namespace DamageLog
             text.SetText(GenerateTextLog(log));
         }
 
-        private string GenerateTextLog(DamageLog log)
+        private static string GenerateTextLog(DamageLog log)
         {
             System.Text.StringBuilder sb = new();
             sb.AppendLine($"<style=cWorldEvent>Damage Log <{log.user.masterController.GetDisplayName()}></style>");

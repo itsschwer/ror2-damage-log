@@ -1,4 +1,5 @@
 using BepInEx;
+using HarmonyLib;
 using RoR2;
 using RoR2.UI;
 
@@ -18,6 +19,7 @@ namespace DamageLog
         {
             Log.Init(Logger);
             Config = new Config(base.Config);
+            new Harmony(Info.Metadata.GUID).PatchAll();
             Log.Message($"{Plugin.GUID}> awake.");
         }
 
