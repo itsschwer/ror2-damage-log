@@ -2,7 +2,7 @@ using BepInEx.Configuration;
 
 namespace DamageLog
 {
-    internal class Config
+    internal sealed class Config
     {
         private readonly ConfigEntry<float> _entryMaxRetainTime;
         public float EntryMaxRetainTime => _entryMaxRetainTime.Value < 1 ? 1 : _entryMaxRetainTime.Value;

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace DamageLog
 {
     [HarmonyPatch]
-    public class DamageLogUI : MonoBehaviour
+    internal sealed class DamageLogUI : MonoBehaviour
     {
         private static HUD hud;
 
@@ -43,6 +43,9 @@ namespace DamageLog
 
             if (DamageLog.Logs.TryGetValue(playerInfo.networkUser, out DamageLog log)) ui.text.SetText(GenerateTextLog(log));
         }
+
+
+
 
         private NetworkUser user;
         private new GameObject gameObject;
@@ -190,6 +193,9 @@ namespace DamageLog
             return sb.ToString();
         }
 
+
+
+
         /// <summary>
         /// Resets the RectTransform's local transform and sets its layer to "UI".
         /// </summary>
@@ -204,7 +210,7 @@ namespace DamageLog
             return rect;
         }
 
-        public static RectTransform AnchorStretchRight(RectTransform rect)
+        private static RectTransform AnchorStretchRight(RectTransform rect)
         {
             rect.anchoredPosition = Vector2.zero;
             rect.anchorMin = new Vector2(1, 0);
@@ -212,20 +218,11 @@ namespace DamageLog
             return rect;
         }
 
-        public static RectTransform AnchorTopStretch(RectTransform rect)
+        private static RectTransform AnchorTopStretch(RectTransform rect)
         {
             rect.anchoredPosition = Vector2.zero;
             rect.anchorMin = new Vector2(0, 1);
             rect.anchorMax = Vector2.one;
-            return rect;
-        }
-
-        public static RectTransform AnchorStretchStretch(RectTransform rect)
-        {
-            rect.anchoredPosition = Vector2.zero;
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.sizeDelta = Vector2.zero;
             return rect;
         }
     }

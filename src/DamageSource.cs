@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DamageLog
 {
-    public class DamageSource
+    public sealed class DamageSource
     {
         private static Texture _PlanetPortrait;
         public static Texture PlanetPortrait {

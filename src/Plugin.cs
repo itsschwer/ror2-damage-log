@@ -6,7 +6,7 @@ using RoR2.UI;
 namespace DamageLog
 {
     [BepInPlugin(GUID, Name, Version)]
-    public class Plugin : BaseUnityPlugin
+    public sealed class Plugin : BaseUnityPlugin
     {
         public const string GUID = Author + "." + Name;
         public const string Author = "itsschwer";

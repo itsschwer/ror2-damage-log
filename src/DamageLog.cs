@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace DamageLog
 {
-    public class DamageLog
+    public sealed class DamageLog
     {
         public static readonly Dictionary<NetworkUser, DamageLog> Logs = [];
 
-        public static void ClearAll()
+        internal static void ClearAll()
         {
             foreach (DamageLog log in Logs.Values) log.Cease();
             Logs.Clear();
@@ -65,14 +65,6 @@ namespace DamageLog
             Log.Debug($"{Plugin.GUID}> untracking {user.masterController.GetDisplayName()}.");
         }
 
-        public List<DamageSource> GetEntries()
-        {
-            List<DamageSource> list = entries.Values.ToList();
-            if (list.Count > 1)
-                list.Sort((a, b) => System.Math.Sign(b.time - a.time)); // Newest first
-            return list;
-        }
-
         private void Record(DamageDealtMessage e)
         {
             if (e.victim != body.gameObject) return;
@@ -101,6 +93,14 @@ namespace DamageLog
                 return true;
             }
             return false;
+        }
+
+        public List<DamageSource> GetEntries()
+        {
+            List<DamageSource> list = entries.Values.ToList();
+            if (list.Count > 1)
+                list.Sort((a, b) => System.Math.Sign(b.time - a.time)); // Newest first
+            return list;
         }
     }
 }
