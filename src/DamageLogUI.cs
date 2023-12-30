@@ -156,7 +156,7 @@ namespace DamageLog
 
             int i = -1; // incremented before check
             float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
-            foreach (DamageLog.DamageSource src in log.GetEntries()) {
+            foreach (DamageSource src in log.GetEntries()) {
                 i++;
                 if (log.TryPrune(src, endTime, i)) continue;
 
@@ -175,7 +175,7 @@ namespace DamageLog
             return sb.ToString();
         }
 
-        private static string GenerateTooltipString(DamageLog.DamageSource src)
+        private static string GenerateTooltipString(DamageSource src)
         {
             System.Text.StringBuilder sb = new();
 
