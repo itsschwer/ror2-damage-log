@@ -59,6 +59,7 @@ namespace DamageLog
         private void Cease(CharacterBody body = null)
         {
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
+            GlobalEventManager.onCharacterDeathGlobal -= OnDeath;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (body?.master != null) body.master.onBodyDestroyed -= Cease;
             Log.Debug($"{Plugin.GUID}> untracking {user.masterController.GetDisplayName()}.");
