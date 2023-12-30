@@ -201,10 +201,14 @@ namespace DamageLog
 
             public static string GenerateIdentifier(GameObject attacker, bool isFallDamage, bool isVoidFogDamage)
             {
-                if (attacker != null) return attacker.GetInstanceID().ToString();
-                if (isFallDamage) return "fall_damage";
-                if (isVoidFogDamage) return "void_fog_damage";
-                return "??";
+                string identifier = "??";
+                if (attacker != null) identifier = attacker.GetInstanceID().ToString();
+                if (isFallDamage) identifier = "fall_damage";
+                if (isVoidFogDamage) identifier = "void_fog_damage";
+
+                // Include name to differentiate when an attacker becomes elite (e.g. Voidtouched)
+                GetAttackerNameAndPortrait(attacker, isFallDamage, isVoidFogDamage, out string name, out _);
+                return identifier + '.' + name;
             }
         }
     }
