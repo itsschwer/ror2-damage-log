@@ -44,6 +44,7 @@ namespace DamageLog
             if (DamageLog.Logs.TryGetValue(playerInfo.networkUser, out DamageLog log)) ui.text.SetText(GenerateTextLog(log));
         }
 
+        private NetworkUser user;
         private new GameObject gameObject;
         private Canvas canvas;
         private HGTextMeshProUGUI text;
@@ -59,6 +60,7 @@ namespace DamageLog
         private void CreateUI(GameObject parent)
         {
             Plugin.ReloadConfig();
+            user = hud?.localUserViewer?.currentNetworkUser;
             CreateCanvas(parent);
             CreateText();
             Log.Debug($"{Plugin.GUID}> created canvas.");
@@ -102,12 +104,16 @@ namespace DamageLog
 
         private void Update()
         {
-            if (!TryGetDamageLog(out DamageLog log)) return;
-
-            // RoR2UI.HUD.Update()
+            // Scoreboard visibility logic from RoR2UI.HUD.Update()
             bool visible = !Plugin.Config.OnlyShowWithScoreboard || (hud.localUserViewer?.inputPlayer != null && hud.localUserViewer.inputPlayer.GetButton("info"));
             canvas.enabled = visible;
             if (!visible) return;
+
+            bool shiftKey = Input.GetKey("left shift") || Input.GetKey("right shift");
+            bool cycleUser = Input.GetKeyDown(Plugin.Config.CycleUserKey);
+            if (cycleUser) user = CycleUser(shiftKey, user);
+
+            if (user == null || !DamageLog.Logs.TryGetValue(user, out DamageLog log)) return;
 
             text.SetText(GenerateTextLog(log));
             Vector2 size = text.rectTransform.sizeDelta;
@@ -126,11 +132,21 @@ namespace DamageLog
 #endif
         }
 
-        private static bool TryGetDamageLog(out DamageLog value)
+        private static NetworkUser CycleUser(bool reverse, NetworkUser current)
         {
-            NetworkUser user = hud?.localUserViewer?.currentNetworkUser;
-            if (user == null) { value = null; return false; }
-            return DamageLog.Logs.TryGetValue(user, out value);
+            if (DamageLog.Logs.Count <= 0) return null;
+
+            int i = (current == null) ? 0 : NetworkUser.readOnlyInstancesList.IndexOf(current);
+            if (reverse) i--;
+            else i++;
+
+            if (i < 0) i = NetworkUser.readOnlyInstancesList.Count - 1;
+            else if (i >= NetworkUser.readOnlyInstancesList.Count) i = 0;
+            NetworkUser user = NetworkUser.readOnlyInstancesList[i];
+
+            if (DamageLog.Logs.ContainsKey(user)) return user;
+            // Probably fine
+            return CycleUser(reverse, user);
         }
 
         private static string GenerateTextLog(DamageLog log)

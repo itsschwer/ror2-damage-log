@@ -8,9 +8,6 @@
     - store elite icon in `DamageSource`
     - figure out structure and layout
     - show name and raw damage on hover (tooltip)
-- multiplayer?
-    - show log for spectated
-    - show log for hovered player in 'scoreboard'
 
 ## reference
 
