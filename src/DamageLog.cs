@@ -209,7 +209,7 @@ namespace DamageLog
                 // Include name to differentiate when an attacker becomes elite (e.g. Voidtouched)
                 if (attacker != null) {
                     GetAttackerNameAndPortrait(attacker, isFallDamage, isVoidFogDamage, out string name, out _);
-                    identifier += '.' + name;
+                    identifier += '·' + name;
                 }
 
                 return identifier;
