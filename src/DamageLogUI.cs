@@ -47,8 +47,9 @@ namespace DamageLog
         private new GameObject gameObject;
         private Canvas canvas;
         private HGTextMeshProUGUI text;
-
+#if DEBUG
         private TooltipProvider tooltip;
+#endif
 
         /// <summary>
         /// Awake() is too early for accessing hud members.
@@ -89,8 +90,9 @@ namespace DamageLog
             text = obj.AddComponent<HGTextMeshProUGUI>();
             text.fontSize = 12;
             text.SetText("Damage Log");
-
+#if DEBUG
             tooltip = obj.AddComponent<TooltipProvider>();
+#endif
         }
 
         private void Update()
@@ -103,7 +105,7 @@ namespace DamageLog
             if (!visible) return;
 
             text.SetText(GenerateTextLog(log));
-
+#if DEBUG
             var entries = log.GetEntries();
             if (entries.Count > 0) {
                 var src = entries[0];
@@ -114,6 +116,7 @@ namespace DamageLog
                 tooltip.titleToken = src.attackerName;
                 tooltip.bodyToken = GenerateTooltipString(src);
             }
+#endif
         }
 
         private static bool TryGetDamageLog(out DamageLog value)
