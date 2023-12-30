@@ -12,8 +12,9 @@ namespace DamageLog.Unity {
 
         private void Awake(){
             CreateCanvas();
-            CreateDebug();
+            // CreateDebug();
             CreateText();
+            CreateLayout();
         }
 
         private void CreateCanvas()
@@ -28,7 +29,7 @@ namespace DamageLog.Unity {
 
             Vector2 offsetTopRight = new Vector2(4, 12);
             rect.localPosition -= (Vector3)offsetTopRight;
-            rect.sizeDelta = new Vector2(110, 0) - offsetTopRight;
+            rect.sizeDelta = new Vector2(92, 0) - offsetTopRight;
         }
 
         private void CreateText()
@@ -76,6 +77,25 @@ namespace DamageLog.Unity {
 
 
 
+        [SerializeField] private Sprite portrait;
+        [SerializeField] private int count = 5;
+
+        private void CreateLayout() {
+            VerticalLayoutGroup layout = gameObject.AddComponent<VerticalLayoutGroup>();
+            layout.childForceExpandHeight = false;
+            layout.childControlHeight = false;
+            layout.childForceExpandWidth = false;
+            layout.childControlWidth = false;
+            layout.spacing = 12;
+
+            for (int i = 0; i < count; i++) {
+                TestElementUI.Create((RectTransform)gameObject.transform, portrait);
+            }
+        }
+
+
+
+
         /// <summary>
         /// Resets the RectTransform's local transform and sets its layer to "UI".
         /// </summary>
@@ -93,7 +113,7 @@ namespace DamageLog.Unity {
         public static RectTransform AnchorStretchRight(RectTransform rect)
         {
             rect.anchoredPosition = Vector2.zero;
-            rect.anchorMin = new Vector2(1, 0);
+            rect.anchorMin = Vector2.right;
             rect.anchorMax = Vector2.one;
             return rect;
         }
@@ -101,7 +121,7 @@ namespace DamageLog.Unity {
         public static RectTransform AnchorTopStretch(RectTransform rect)
         {
             rect.anchoredPosition = Vector2.zero;
-            rect.anchorMin = new Vector2(0, 1);
+            rect.anchorMin = Vector2.up;
             rect.anchorMax = Vector2.one;
             return rect;
         }
