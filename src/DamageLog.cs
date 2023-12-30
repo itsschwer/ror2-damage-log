@@ -182,9 +182,9 @@ namespace DamageLog
                 name = Language.GetString("UNIDENTIFIED_KILLER_NAME");
                 portrait = PlanetPortrait;
 
-                if (attacker) {
+                if (attacker != null) {
                     string attackerName = Util.GetBestBodyName(attacker);
-                    Texture attackerPortrait = attacker?.GetComponent<CharacterBody>()?.portraitIcon;
+                    Texture attackerPortrait = attacker.GetComponent<CharacterBody>()?.portraitIcon;
 
                     if (!string.IsNullOrEmpty(attackerName)) name = attackerName;
                     if (attackerPortrait != null) portrait = attackerPortrait;
@@ -207,8 +207,12 @@ namespace DamageLog
                 if (isVoidFogDamage) identifier = "void_fog_damage";
 
                 // Include name to differentiate when an attacker becomes elite (e.g. Voidtouched)
-                GetAttackerNameAndPortrait(attacker, isFallDamage, isVoidFogDamage, out string name, out _);
-                return identifier + '.' + name;
+                if (attacker != null) {
+                    GetAttackerNameAndPortrait(attacker, isFallDamage, isVoidFogDamage, out string name, out _);
+                    identifier += '.' + name;
+                }
+
+                return identifier;
             }
         }
     }
