@@ -109,6 +109,7 @@ namespace DamageLog
 
             public readonly Texture attackerPortrait;
             public readonly string attackerName;
+            public readonly Sprite eliteIcon;
 
             public readonly bool isPlayerDamage;
             public readonly bool isFallDamage;
@@ -141,6 +142,7 @@ namespace DamageLog
 
                 identifier = GenerateIdentifier(e.attacker, isFallDamage, isVoidFogDamage);
                 GetAttackerNameAndPortrait(e.attacker, isFallDamage, isVoidFogDamage, out attackerName, out attackerPortrait);
+                eliteIcon = GetEliteIcon(e.attacker.GetComponent<CharacterBody>());
 
                 timeStart = Time.time;
                 time = timeStart;
@@ -198,6 +200,23 @@ namespace DamageLog
                     name = "Void Fog";
                     portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
                 }
+            }
+
+            public static Sprite GetEliteIcon(CharacterBody body) => GetEliteBuffDef(body)?.iconSprite;
+            public static BuffDef GetEliteBuffDef(CharacterBody body)
+            {
+                BuffDef def = null;
+                if (body == null || !body.isElite) return def;
+
+                // Logic from RoR2.Util.GetBestBodyName()
+                BuffIndex[] eliteBuffIndices = BuffCatalog.eliteBuffIndices;
+                foreach (BuffIndex buffIndex in eliteBuffIndices) {
+                    if (body.HasBuff(buffIndex)) {
+                        def = BuffCatalog.GetBuffDef(buffIndex);
+                    }
+                }
+
+                return def;
             }
 
             public static string GenerateIdentifier(GameObject attacker, bool isFallDamage, bool isVoidFogDamage)
