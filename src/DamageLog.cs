@@ -76,7 +76,7 @@ namespace DamageLog
         {
             if (e.victim != body.gameObject) return;
 
-            string key = DamageSource.GenerateIdentifier(e);
+            string key = DamageSource.GenerateIdentifier(e.attacker, DamageSource.IsFallDamage(e), DamageSource.IsVoidFogDamage(e));
             if (entries.TryGetValue(key, out DamageSource src)) src.Add(e);
             else entries.Add(key, new DamageSource(e));
 
@@ -134,31 +134,12 @@ namespace DamageLog
 
             public DamageSource(DamageDealtMessage e)
             {
-                identifier = GenerateIdentifier(e);
-
                 isPlayerDamage = e.attacker?.GetComponent<CharacterBody>()?.isPlayerControlled ?? false;
-                isFallDamage = e.damageType.HasFlag(DamageType.FallDamage);
+                isFallDamage = IsFallDamage(e);
                 isVoidFogDamage = IsVoidFogDamage(e);
 
-                // RoR2.UI.GameEndReportPanelController.SetPlayerInfo()
-                attackerName = Language.GetString("UNIDENTIFIED_KILLER_NAME");
-                attackerPortrait = PlanetPortrait;
-
-                if (e.attacker) {
-                    string name = Util.GetBestBodyName(e.attacker);
-                    Texture portrait = e.attacker?.GetComponent<CharacterBody>()?.portraitIcon;
-
-                    if (!string.IsNullOrEmpty(name)) attackerName = name;
-                    if (portrait != null) attackerPortrait = portrait;
-                }
-                else if (isFallDamage) {
-                    attackerName = "The Ground";
-                    attackerPortrait = RoR2Content.Artifacts.weakAssKneesArtifactDef.smallIconSelectedSprite.texture;
-                }
-                else if (isVoidFogDamage) {
-                    attackerName = Language.GetString("VOIDCAMPCENTER_NAME");
-                    attackerPortrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
-                }
+                identifier = GenerateIdentifier(e.attacker, isFallDamage, isVoidFogDamage);
+                GetAttackerNameAndPortrait(e.attacker, isFallDamage, isVoidFogDamage, out attackerName, out attackerPortrait);
 
                 timeStart = Time.time;
                 time = timeStart;
@@ -185,20 +166,44 @@ namespace DamageLog
                 }
             }
 
+            public static bool IsFallDamage(DamageDealtMessage e) => e.damageType.HasFlag(DamageType.FallDamage);
+
             public static bool IsVoidFogDamage(DamageDealtMessage e)
             {
                 // RoR2.FogDamageController.FixedUpdate()
                 return (e.damageType == (DamageType.BypassArmor | DamageType.BypassBlock)
                     && e.damageColorIndex == DamageColorIndex.Void
                     && e.attacker == null);
-                // Could use position to differentiate void fog instances
+                // Could use position to differentiate void fog instances?
             }
 
-            public static string GenerateIdentifier(DamageDealtMessage e)
+            public static void GetAttackerNameAndPortrait(GameObject attacker, bool isFallDamage, bool isVoidFogDamage, out string name, out Texture portrait)
             {
-                if (e.attacker != null) return e.attacker.GetInstanceID().ToString();
-                if (e.damageType.HasFlag(DamageType.FallDamage)) return "fall_damage";
-                if (IsVoidFogDamage(e)) return "void_fog_damage";
+                name = Language.GetString("UNIDENTIFIED_KILLER_NAME");
+                portrait = PlanetPortrait;
+
+                if (attacker) {
+                    string attackerName = Util.GetBestBodyName(attacker);
+                    Texture attackerPortrait = attacker?.GetComponent<CharacterBody>()?.portraitIcon;
+
+                    if (!string.IsNullOrEmpty(attackerName)) name = attackerName;
+                    if (attackerPortrait != null) portrait = attackerPortrait;
+                }
+                else if (isFallDamage) {
+                    name = "The Ground";
+                    portrait = RoR2Content.Artifacts.weakAssKneesArtifactDef.smallIconSelectedSprite.texture;
+                }
+                else if (isVoidFogDamage) {
+                    name = "Void Fog";
+                    portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
+                }
+            }
+
+            public static string GenerateIdentifier(GameObject attacker, bool isFallDamage, bool isVoidFogDamage)
+            {
+                if (attacker != null) return attacker.GetInstanceID().ToString();
+                if (isFallDamage) return "fall_damage";
+                if (isVoidFogDamage) return "void_fog_damage";
                 return "??";
             }
         }

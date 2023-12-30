@@ -161,7 +161,6 @@ namespace DamageLog
             sb.AppendLine();
             sb.AppendLine($"<style=cIsDamage>{src.identifier}</style>");
 #endif
-
             return sb.ToString();
         }
 
