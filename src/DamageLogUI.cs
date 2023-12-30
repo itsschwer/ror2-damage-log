@@ -107,9 +107,10 @@ namespace DamageLog
             var entries = log.GetEntries();
             if (entries.Count > 0) {
                 var src = entries[0];
-                tooltip.titleColor = src.isFallDamage ? DamageColor.FindColor(DamageColorIndex.Heal)
-                                   : src.isVoidFogDamage ? DamageColor.FindColor(DamageColorIndex.Void)
-                                   : DamageColor.FindColor(DamageColorIndex.Default);
+                tooltip.titleColor = src.isPlayerDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.HardDifficulty)
+                                   : src.isFallDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.NormalDifficulty)
+                                   : src.isVoidFogDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.VoidItem)
+                                   : ColorCatalog.GetColor(ColorCatalog.ColorIndex.Tier3ItemDark);
                 tooltip.titleToken = src.attackerName;
                 tooltip.bodyToken = GenerateTooltipString(src);
             }
@@ -129,20 +130,20 @@ namespace DamageLog
 
             int i = -1; // incremented before check
             float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
-            foreach (DamageLog.DamageSource s in log.GetEntries()) {
+            foreach (DamageLog.DamageSource src in log.GetEntries()) {
                 i++;
-                if (log.TryPrune(s, endTime, i)) continue;
+                if (log.TryPrune(src, endTime, i)) continue;
 
-                string style = s.isFallDamage ? "cHumanObjective" : s.isVoidFogDamage ? "cIsVoid" : "";
-                if (string.IsNullOrEmpty(style)) sb.Append(s.attackerName);
-                else sb.Append($"<style={style}>{s.attackerName}</style>");
+                string style = src.isPlayerDamage ? "cDeath" : src.isFallDamage ? "cHumanObjective" : src.isVoidFogDamage ? "cIsVoid" : "";
+                if (string.IsNullOrEmpty(style)) sb.Append(src.attackerName);
+                else sb.Append($"<style={style}>{src.attackerName}</style>");
 
-                bool singleHit = (s.hits == 1);
-                if (!singleHit) sb.Append($"<style=cStack>×{s.hits}</style>");
-                sb.Append($" · <style=cIsHealth>-{s.damagePercent:0.0%}</style>");
-                if (singleHit) sb.Append($" <style=cEvent>({s.hpPercent:0.0%})</style>");
+                bool singleHit = (src.hits == 1);
+                if (!singleHit) sb.Append($"<style=cStack>×{src.hits}</style>");
+                sb.Append($" · <style=cIsHealth>-{src.damagePercent:0.0%}</style>");
+                if (singleHit) sb.Append($" <style=cEvent>({src.hpPercent:0.0%})</style>");
 
-                sb.AppendLine($" · <style=cSub>{(endTime - s.time):0.00s}</style>");
+                sb.AppendLine($" · <style=cSub>{(endTime - src.time):0.00s}</style>");
             }
 
             return sb.ToString();

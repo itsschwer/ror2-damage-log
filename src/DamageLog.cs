@@ -109,6 +109,7 @@ namespace DamageLog
             public readonly Texture attackerPortrait;
             public readonly string attackerName;
 
+            public readonly bool isPlayerDamage;
             public readonly bool isFallDamage;
             public readonly bool isVoidFogDamage;
 
@@ -135,6 +136,7 @@ namespace DamageLog
             {
                 identifier = GenerateIdentifier(e);
 
+                isPlayerDamage = e.attacker?.GetComponent<CharacterBody>()?.isPlayerControlled ?? false;
                 isFallDamage = e.damageType.HasFlag(DamageType.FallDamage);
                 isVoidFogDamage = IsVoidFogDamage(e);
 
