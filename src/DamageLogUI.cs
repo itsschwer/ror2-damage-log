@@ -67,14 +67,16 @@ namespace DamageLog
         private void CreateCanvas(GameObject parent)
         {
             gameObject = new GameObject("DamageLogUI", typeof(Canvas), typeof(GraphicRaycaster));
-            gameObject.transform.SetParent(parent.transform);
             RectTransform rect = gameObject.GetComponent<RectTransform>();
-            FixRectTransform(rect);
-            AnchorStretchRight(rect, 110);
+            rect.SetParent(parent.transform);
+            ResetRectTransform(rect);
+
+            AnchorStretchRight(rect);
+            rect.pivot = Vector2.one;
 
             Vector2 offsetTopRight = new Vector2(4, 12);
             rect.localPosition -= (Vector3)offsetTopRight;
-            rect.sizeDelta -= offsetTopRight;
+            rect.sizeDelta = new Vector2(110, 0) - offsetTopRight;
 
             canvas = gameObject.GetComponent<Canvas>();
         }
@@ -82,10 +84,13 @@ namespace DamageLog
         private void CreateText()
         {
             GameObject obj = new GameObject("DamageLogText", typeof(RectTransform));
-            obj.transform.SetParent(gameObject.transform);
             RectTransform rect = obj.GetComponent<RectTransform>();
-            FixRectTransform(rect);
-            AnchorStretchStretch(rect);
+            rect.SetParent(gameObject.transform);
+            ResetRectTransform(rect);
+
+            AnchorTopStretch(rect);
+            rect.pivot = Vector2.one;
+            rect.sizeDelta = Vector2.zero;
 
             text = obj.AddComponent<HGTextMeshProUGUI>();
             text.fontSize = 12;
@@ -105,6 +110,8 @@ namespace DamageLog
             if (!visible) return;
 
             text.SetText(GenerateTextLog(log));
+            Vector2 size = text.rectTransform.sizeDelta;
+            if (size.y != text.preferredHeight) text.rectTransform.sizeDelta = new Vector2(size.x, text.preferredHeight);
 #if DEBUG
             var entries = log.GetEntries();
             if (entries.Count > 0) {
@@ -168,34 +175,37 @@ namespace DamageLog
         }
 
         /// <summary>
-        /// Fixes the local position, local scale, local rotation, and layer of a RectTransform to 'normal' values
-        /// after parenting to a Canvas (previously existed as a Transform game object).
-        /// <br/>Alternatively, pass worldPositionStays: false to Transform.SetParent() and manually update gameObject.layer.
+        /// Resets the RectTransform's local transform and sets its layer to "UI".
         /// </summary>
         /// <param name="rect"></param>
         /// <returns></returns>
-        private static RectTransform FixRectTransform(RectTransform rect)
+        public static RectTransform ResetRectTransform(RectTransform rect)
         {
-            rect.localPosition = new Vector3(rect.localPosition.x, rect.localPosition.y, 0);
+            rect.localPosition = Vector3.zero;
             rect.localScale = Vector3.one;
             rect.localRotation = Quaternion.identity;
             rect.gameObject.layer = LayerMask.NameToLayer("UI");
             return rect;
         }
 
-        private static RectTransform AnchorStretchRight(RectTransform rect, float width = 100)
+        public static RectTransform AnchorStretchRight(RectTransform rect)
         {
-            rect.pivot = Vector2.one;
             rect.anchoredPosition = Vector2.zero;
             rect.anchorMin = new Vector2(1, 0);
             rect.anchorMax = Vector2.one;
-            rect.sizeDelta =  new Vector2(width, 0);
             return rect;
         }
 
-        private static RectTransform AnchorStretchStretch(RectTransform rect)
+        public static RectTransform AnchorTopStretch(RectTransform rect)
         {
-            rect.pivot = Vector2.one;
+            rect.anchoredPosition = Vector2.zero;
+            rect.anchorMin = new Vector2(0, 1);
+            rect.anchorMax = Vector2.one;
+            return rect;
+        }
+
+        public static RectTransform AnchorStretchStretch(RectTransform rect)
+        {
             rect.anchoredPosition = Vector2.zero;
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
