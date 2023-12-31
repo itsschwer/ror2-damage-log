@@ -65,7 +65,7 @@ namespace DamageLog
             user = hud?.localUserViewer?.currentNetworkUser;
             CreateCanvas(parent);
             CreateText();
-            CreateLayout();
+            if (!Plugin.Config.SimpleTextMode) CreateLayout();
             Log.Debug($"{Plugin.GUID}> created canvas.");
         }
 
@@ -136,12 +136,17 @@ namespace DamageLog
             Vector2 size = text.rectTransform.sizeDelta;
             if (size.y != text.preferredHeight) text.rectTransform.sizeDelta = new Vector2(size.x, text.preferredHeight);
 
+            if (!Plugin.Config.SimpleTextMode) PopulateUI(log);
+        }
+
+        private void PopulateUI(DamageLog log)
+        {
             List<DamageSource> entries = log.GetEntries();
             for (int i = 0; i < uiEntries.Count; i++) {
                 if (i >= entries.Count) { uiEntries[i].Clear(); continue; }
 
                 float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
-                if (log.TryPrune(entries[i], endTime, i)) { uiEntries[i].Clear() ; continue; }
+                if (log.TryPrune(entries[i], endTime, i)) { uiEntries[i].Clear(); continue; }
 
                 uiEntries[i].Display(entries[i], endTime - entries[i].time);
             }
@@ -168,7 +173,9 @@ namespace DamageLog
         {
             System.Text.StringBuilder sb = new();
             sb.AppendLine($"<style=cWorldEvent>Damage Log <{log.user.masterController.GetDisplayName()}></style>");
-#if LEGACY
+
+            if (!Plugin.Config.SimpleTextMode) return sb.ToString();
+
             int i = -1; // incremented before check
             float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
             foreach (DamageSource src in log.GetEntries()) {
@@ -186,7 +193,7 @@ namespace DamageLog
 
                 sb.AppendLine($" · <style=cSub>{(endTime - src.time):0.00s}</style>");
             }
-#endif
+
             return sb.ToString();
         }
 
