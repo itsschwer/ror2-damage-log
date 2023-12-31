@@ -42,7 +42,7 @@ namespace DamageLog
 
             identifier = GenerateIdentifier(e.attacker, isFallDamage, isVoidFogDamage);
             GetAttackerNameAndPortrait(e.attacker, isFallDamage, isVoidFogDamage, out attackerName, out attackerPortrait);
-            eliteIcon = GetEliteIcon(e.attacker.GetComponent<CharacterBody>());
+            eliteIcon = GetEliteIcon(e.attacker?.GetComponent<CharacterBody>());
 
             timeStart = Time.time;
             time = timeStart;
