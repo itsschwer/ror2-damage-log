@@ -28,9 +28,6 @@ namespace DamageLog
         {
             RectTransform obj = (RectTransform)root.transform;
             float width = ((RectTransform)obj.parent).sizeDelta.x;
-            const float eliteIconSize = 32f;
-            const float timeTextHeight = 16f;
-            const float timeFontSize = 13;
 
             tooltip = root.AddComponent<TooltipProvider>();
             portrait = root.GetComponent<RawImage>();
@@ -38,28 +35,28 @@ namespace DamageLog
             elite = AddChild<Image>(obj, "elite");
             AnchorTopLeft(elite.rectTransform);
             elite.raycastTarget = false;
-            elite.rectTransform.sizeDelta = Vector2.one * eliteIconSize;
+            elite.rectTransform.sizeDelta = Vector2.one * Plugin.Config.EliteIconSize;
 
             damage = AddChild<HGTextMeshProUGUI>(obj, "damage");
             AnchorTopRight(damage.rectTransform);
             damage.raycastTarget = false;
             damage.alignment = TextAlignmentOptions.TopRight;
-            damage.rectTransform.sizeDelta = new Vector2(width - eliteIconSize, timeTextHeight);
-            damage.fontSize = timeFontSize;
+            damage.rectTransform.sizeDelta = new Vector2(width - Plugin.Config.EliteIconSize, Plugin.Config.TextHeight);
+            damage.fontSize = Plugin.Config.TextSize;
 
             hits = AddChild<HGTextMeshProUGUI>(obj, "hits");
             AnchorBottomLeft(hits.rectTransform);
             hits.raycastTarget = false;
             hits.alignment = TextAlignmentOptions.BottomLeft;
-            hits.rectTransform.sizeDelta = new Vector2(width - eliteIconSize, timeTextHeight);
-            hits.fontSize = timeFontSize;
+            hits.rectTransform.sizeDelta = new Vector2(width - Plugin.Config.EliteIconSize, Plugin.Config.TextHeight);
+            hits.fontSize = Plugin.Config.TextSize;
 
             time = AddChild<HGTextMeshProUGUI>(obj, "time");
             AnchorBottomRight(time.rectTransform);
             time.raycastTarget = false;
             time.alignment = TextAlignmentOptions.BottomRight;
-            time.rectTransform.sizeDelta = new Vector2(width / 2, timeTextHeight);
-            time.fontSize = timeFontSize;
+            time.rectTransform.sizeDelta = new Vector2(width / 2, Plugin.Config.TextHeight);
+            time.fontSize = Plugin.Config.TextSize;
 
             return this;
         }
@@ -94,15 +91,7 @@ namespace DamageLog
             tooltip.bodyToken = GenerateTooltipString(src);
         }
 
-        public void Clear()
-        {
-            portrait.gameObject.SetActive(false);
-            portrait.texture = null;
-            elite.sprite = null;
-            damage.SetText("");
-            hits.SetText("");
-            time.SetText("");
-        }
+        public void Clear() => portrait.gameObject.SetActive(false);
 
         private static string GenerateTooltipString(DamageSource src)
         {

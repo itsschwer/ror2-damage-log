@@ -61,5 +61,29 @@ namespace DamageLog
 
             return null;
         }
+
+
+
+
+#if DEBUG
+        private float cd;
+        private void Update()
+        {
+            cd -= UnityEngine.Time.deltaTime;
+            if (cd < 0 && UnityEngine.Input.GetKeyDown(Plugin.Config.ChangeStageKey)) {
+                ChangeStage();
+                cd = 5;
+            }
+        }
+
+        private void ChangeStage()
+        {
+            if (!UnityEngine.Networking.NetworkServer.active || !Run.instance) return;
+            var stages = SceneCatalog.allStageSceneDefs;
+            var random = UnityEngine.Random.Range(0, stages.Length - 1);
+            Run.instance.GenerateStageRNG();
+            UnityEngine.Networking.NetworkManager.singleton.ServerChangeScene(stages[random].cachedName);
+        }
+#endif
     }
 }
