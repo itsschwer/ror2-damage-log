@@ -20,7 +20,7 @@ namespace DamageLog
         {
             GameObject obj = new GameObject("DamageEntry", typeof(DamageSourceUI), typeof(RawImage));
             obj.transform.SetParent(parent, false);
-            ((RectTransform)obj.transform).sizeDelta = Vector2.one * parent.sizeDelta.x;
+            ((RectTransform)obj.transform).sizeDelta = Vector2.one * ((Plugin.Config.PortraitSize > 0) ? Plugin.Config.PortraitSize : parent.sizeDelta.x);
             return obj.GetComponent<DamageSourceUI>().Create(obj);
         }
 
@@ -49,14 +49,14 @@ namespace DamageLog
             hits.raycastTarget = false;
             hits.alignment = TextAlignmentOptions.BottomLeft;
             hits.rectTransform.sizeDelta = Vector2.one * (width / 2);
-            hits.fontSize = Plugin.Config.TextSize;
+            hits.fontSize = Plugin.Config.PortraitTextSize;
 
             time = AddChild<HGTextMeshProUGUI>(obj, "time");
             AnchorBottomRight(time.rectTransform);
             time.raycastTarget = false;
             time.alignment = TextAlignmentOptions.BottomRight;
             time.rectTransform.sizeDelta = Vector2.one * (width / 2);
-            time.fontSize = Plugin.Config.TextSize;
+            time.fontSize = Plugin.Config.PortraitTextSize;
 
             return this;
         }
