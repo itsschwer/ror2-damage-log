@@ -4,10 +4,7 @@
 - test
     - as non-host
     - dio respawn
-- ui — display icons instead of text
-    - store elite icon in `DamageSource`
-    - figure out structure and layout
-    - show name and raw damage on hover (tooltip)
+- ui — tweak size?
 
 ## reference
 
