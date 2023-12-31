@@ -32,11 +32,13 @@ namespace DamageLog.Unity {
 
             var elite = AddChild<Image>(rectTransform, "elite");
             AnchorTopLeft(elite.rectTransform);
+            elite.raycastTarget = false;
             elite.rectTransform.sizeDelta = Vector2.one * eliteIconSize;
             elite.sprite = portrait;
 
             var time = AddChild<TextMeshProUGUI>(rectTransform, "time");
             AnchorBottomRight(time.rectTransform);
+            time.raycastTarget = false;
             time.alignment = TextAlignmentOptions.BottomRight;
             time.rectTransform.sizeDelta = new Vector2(width / 2, timeTextHeight);
             time.fontSize = timeFontSize;
@@ -44,6 +46,7 @@ namespace DamageLog.Unity {
 
             var damage = AddChild<TextMeshProUGUI>(rectTransform, "damage");
             AnchorTopRight(damage.rectTransform);
+            damage.raycastTarget = false;
             damage.alignment = TextAlignmentOptions.TopRight;
             damage.rectTransform.sizeDelta = new Vector2(width - eliteIconSize, timeTextHeight);
             damage.fontSize = timeFontSize;
@@ -51,6 +54,7 @@ namespace DamageLog.Unity {
 
             var hits = AddChild<TextMeshProUGUI>(rectTransform, "hits");
             AnchorBottomLeft(hits.rectTransform);
+            hits.raycastTarget = false;
             hits.alignment = TextAlignmentOptions.BottomLeft;
             hits.rectTransform.sizeDelta = new Vector2(width - eliteIconSize, timeTextHeight);
             hits.fontSize = timeFontSize;

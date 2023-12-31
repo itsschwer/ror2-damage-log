@@ -41,7 +41,7 @@ namespace DamageLog.Unity {
 
             AnchorTopStretch(rect);
             rect.pivot = Vector2.one;
-            rect.sizeDelta = Vector2.zero;
+            rect.sizeDelta = new Vector2(((RectTransform)gameObject.transform).sizeDelta.x, 0);
 
             tmp = obj.AddComponent<TextMeshProUGUI>();
             tmp.color = Color.black;

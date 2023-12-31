@@ -3,6 +3,7 @@ using RoR2;
 using RoR2.UI;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace DamageLog
 {
@@ -51,9 +52,7 @@ namespace DamageLog
         private new GameObject gameObject;
         private Canvas canvas;
         private HGTextMeshProUGUI text;
-#if DEBUG
-        private TooltipProvider tooltip;
-#endif
+        private readonly List<DamageSourceUI> uiEntries = [];
 
         /// <summary>
         /// Awake() is too early for accessing hud members.
@@ -66,6 +65,7 @@ namespace DamageLog
             user = hud?.localUserViewer?.currentNetworkUser;
             CreateCanvas(parent);
             CreateText();
+            CreateLayout();
             Log.Debug($"{Plugin.GUID}> created canvas.");
         }
 
@@ -81,9 +81,23 @@ namespace DamageLog
 
             Vector2 offsetTopRight = new Vector2(4, 12);
             rect.localPosition -= (Vector3)offsetTopRight;
-            rect.sizeDelta = new Vector2(110, 0) - offsetTopRight;
+            rect.sizeDelta = new Vector2(92, 0) - offsetTopRight;
 
             canvas = gameObject.GetComponent<Canvas>();
+        }
+
+        private void CreateLayout()
+        {
+            VerticalLayoutGroup layout = gameObject.AddComponent<VerticalLayoutGroup>();
+            layout.childForceExpandHeight = false;
+            layout.childControlHeight = false;
+            layout.childForceExpandWidth = false;
+            layout.childControlWidth = false;
+            layout.spacing = 12;
+
+            for (int i = 0; i < Plugin.Config.EntryMaxCount; i++) {
+                uiEntries.Add(DamageSourceUI.Create((RectTransform)gameObject.transform));
+            }
         }
 
         private void CreateText()
@@ -95,15 +109,15 @@ namespace DamageLog
 
             AnchorTopStretch(rect);
             rect.pivot = Vector2.one;
-            rect.sizeDelta = Vector2.zero;
+            rect.sizeDelta = new Vector2(((RectTransform)gameObject.transform).sizeDelta.x, 0);
 
             text = obj.AddComponent<HGTextMeshProUGUI>();
             text.fontSize = 12;
             text.SetText("Damage Log");
-#if DEBUG
-            tooltip = obj.AddComponent<TooltipProvider>();
-#endif
         }
+
+
+
 
         private void Update()
         {
@@ -121,18 +135,16 @@ namespace DamageLog
             text.SetText(GenerateTextLog(log));
             Vector2 size = text.rectTransform.sizeDelta;
             if (size.y != text.preferredHeight) text.rectTransform.sizeDelta = new Vector2(size.x, text.preferredHeight);
-#if DEBUG
-            var entries = log.GetEntries();
-            if (entries.Count > 0) {
-                var src = entries[0];
-                tooltip.titleColor = src.isPlayerDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.HardDifficulty)
-                                   : src.isFallDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.NormalDifficulty)
-                                   : src.isVoidFogDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.VoidItem)
-                                   : ColorCatalog.GetColor(ColorCatalog.ColorIndex.Tier3ItemDark);
-                tooltip.titleToken = src.attackerName;
-                tooltip.bodyToken = GenerateTooltipString(src);
+
+            List<DamageSource> entries = log.GetEntries();
+            for (int i = 0; i < uiEntries.Count; i++) {
+                if (i >= entries.Count) { uiEntries[i].Clear(); continue; }
+
+                float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
+                if (log.TryPrune(entries[i], endTime, i)) { uiEntries[i].Clear() ; continue; }
+
+                uiEntries[i].Display(entries[i], endTime - entries[i].time);
             }
-#endif
         }
 
         private static NetworkUser CycleUser(bool reverse, NetworkUser current)
@@ -156,7 +168,7 @@ namespace DamageLog
         {
             System.Text.StringBuilder sb = new();
             sb.AppendLine($"<style=cWorldEvent>Damage Log <{log.user.masterController.GetDisplayName()}></style>");
-
+#if LEGACY
             int i = -1; // incremented before check
             float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
             foreach (DamageSource src in log.GetEntries()) {
@@ -174,21 +186,6 @@ namespace DamageLog
 
                 sb.AppendLine($" · <style=cSub>{(endTime - src.time):0.00s}</style>");
             }
-
-            return sb.ToString();
-        }
-
-        private static string GenerateTooltipString(DamageSource src)
-        {
-            System.Text.StringBuilder sb = new();
-
-            sb.Append($"Dealt <style=cIsHealth>{src.damage:0.0}</style> damage");
-            if (src.hits == 1) sb.Append($" <style=cEvent>({src.hpPercent:0.0%} health remaining)</style>");
-            else sb.Append($" in <style=cStack>{src.hits} hits</style> over <style=cSub>{(src.time - src.timeStart):0.00s}</style>");
-            sb.AppendLine(".");
-#if DEBUG
-            sb.AppendLine();
-            sb.AppendLine($"<style=cIsDamage>{src.identifier}</style>");
 #endif
             return sb.ToString();
         }
@@ -213,7 +210,7 @@ namespace DamageLog
         private static RectTransform AnchorStretchRight(RectTransform rect)
         {
             rect.anchoredPosition = Vector2.zero;
-            rect.anchorMin = new Vector2(1, 0);
+            rect.anchorMin = Vector2.right;
             rect.anchorMax = Vector2.one;
             return rect;
         }
@@ -221,7 +218,7 @@ namespace DamageLog
         private static RectTransform AnchorTopStretch(RectTransform rect)
         {
             rect.anchoredPosition = Vector2.zero;
-            rect.anchorMin = new Vector2(0, 1);
+            rect.anchorMin = Vector2.up;
             rect.anchorMax = Vector2.one;
             return rect;
         }
