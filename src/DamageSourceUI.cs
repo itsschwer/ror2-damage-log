@@ -41,21 +41,21 @@ namespace DamageLog
             AnchorTopRight(damage.rectTransform);
             damage.raycastTarget = false;
             damage.alignment = TextAlignmentOptions.TopRight;
-            damage.rectTransform.sizeDelta = new Vector2(width - Plugin.Config.EliteIconSize, Plugin.Config.TextHeight);
-            damage.fontSize = Plugin.Config.TextSize;
+            damage.rectTransform.sizeDelta = Vector2.one * (width - Plugin.Config.EliteIconSize);
+            damage.fontSize = Plugin.Config.DamageTextSize;
 
             hits = AddChild<HGTextMeshProUGUI>(obj, "hits");
             AnchorBottomLeft(hits.rectTransform);
             hits.raycastTarget = false;
             hits.alignment = TextAlignmentOptions.BottomLeft;
-            hits.rectTransform.sizeDelta = new Vector2(width - Plugin.Config.EliteIconSize, Plugin.Config.TextHeight);
+            hits.rectTransform.sizeDelta = Vector2.one * (width / 2);
             hits.fontSize = Plugin.Config.TextSize;
 
             time = AddChild<HGTextMeshProUGUI>(obj, "time");
             AnchorBottomRight(time.rectTransform);
             time.raycastTarget = false;
             time.alignment = TextAlignmentOptions.BottomRight;
-            time.rectTransform.sizeDelta = new Vector2(width / 2, Plugin.Config.TextHeight);
+            time.rectTransform.sizeDelta = Vector2.one * (width / 2);
             time.fontSize = Plugin.Config.TextSize;
 
             return this;
@@ -87,9 +87,13 @@ namespace DamageLog
                 elite.enabled = false;
             }
 
-            damage.SetText($"-{src.damagePercent:0.0%}");
-            hits.SetText($"{src.hits}");
-            time.SetText($"{hitTime:0.00s}");
+            damage.SetText($"<style=cIsDamage>-{src.damagePercent:0.0%}</style>");
+
+            bool singleHit = (src.hits == 1);
+            if (singleHit) hits.SetText("");
+            else hits.SetText($"<style=cStack>×{src.hits}</style>");
+
+            time.SetText($"<style=cSub>{hitTime:0.00s}</style>");
 
             tooltip.titleColor = src.isPlayerDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.HardDifficulty)
                                   : src.isFallDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.NormalDifficulty)
