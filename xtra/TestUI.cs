@@ -44,7 +44,8 @@ namespace DamageLog.Unity {
             rect.sizeDelta = new Vector2(((RectTransform)gameObject.transform).sizeDelta.x, 0);
 
             tmp = obj.AddComponent<TextMeshProUGUI>();
-            tmp.color = Color.black;
+            tmp.fontSize = textSize;
+            tmp.color = Color.yellow;
             tmp.SetText("I can eat glass.");
         }
 
@@ -77,8 +78,13 @@ namespace DamageLog.Unity {
 
 
 
-        [SerializeField] private Sprite portrait;
-        [SerializeField] private int count = 5;
+        public float textSize = 12;
+        public float spacing = 12;
+        public float portraitSize = -1;
+        public float eliteIconSize = 32f;
+        public float portraitTextSize = 18;
+        public float damageTextSize = 20;
+        [SerializeField] int count = 5;
 
         private void CreateLayout() {
             VerticalLayoutGroup layout = gameObject.AddComponent<VerticalLayoutGroup>();
@@ -86,10 +92,10 @@ namespace DamageLog.Unity {
             layout.childControlHeight = false;
             layout.childForceExpandWidth = false;
             layout.childControlWidth = false;
-            layout.spacing = 12;
+            layout.spacing = spacing;
 
             for (int i = 0; i < count; i++) {
-                TestElementUI.Create((RectTransform)gameObject.transform, portrait);
+                TestElementUI.Create((RectTransform)gameObject.transform, this);
             }
         }
 

@@ -51,9 +51,9 @@ namespace DamageLog
             const string Debug = "m_Debug";
             _textSize = config.Bind<float>(Debug, "textModeFontSize", 12);
 
-            _spacing = config.Bind<float>(Debug, "portraitSpacing", 12);
-            _portraitSize = config.Bind<float>(Debug, "portraitSize", -1);
-            _eliteIconSize = config.Bind<float>(Debug, "eliteIconSize", 32f);
+            _spacing = config.Bind<float>(Debug, "portraitSpacing", 6);
+            _portraitSize = config.Bind<float>(Debug, "portraitSize", 78);
+            _eliteIconSize = config.Bind<float>(Debug, "eliteIconSize", 24);
             _portraitTextSize = config.Bind<float>(Debug, "portraitTextSize", 18);
             _damageTextSize = config.Bind<float>(Debug, "damageTextSize", 20);
 

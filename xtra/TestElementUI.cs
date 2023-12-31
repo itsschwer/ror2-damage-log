@@ -14,51 +14,51 @@ namespace DamageLog.Unity {
             }
         }
 
-        public static TestElementUI Create(RectTransform parent, Sprite portrait) {
+        public static TestElementUI Create(RectTransform parent, TestUI options) {
             GameObject obj = new GameObject("portrait", typeof(RawImage), typeof(TestElementUI));
             obj.transform.SetParent(parent, false);
-            ((RectTransform)obj.transform).sizeDelta = Vector2.one * parent.sizeDelta.x;
-            return obj.GetComponent<TestElementUI>().BuildUI(obj, portrait);
+            ((RectTransform)obj.transform).sizeDelta = Vector2.one * ((options.portraitSize > 0) ? options.portraitSize : parent.sizeDelta.x);
+            return obj.GetComponent<TestElementUI>().BuildUI(obj, options);
         }
 
-        private TestElementUI BuildUI(GameObject root, Sprite portrait) {
+        private TestElementUI BuildUI(GameObject root, TestUI options) {
             RawImage img = root.GetComponent<RawImage>();
-            img.texture = portrait.texture;
+            img.color = new Color(1, 1, 1, 0.7f);
             
             float width = ((RectTransform)rectTransform.parent).sizeDelta.x;
-            const float eliteIconSize = 32f;
-            const float timeTextHeight = 16f;
-            const float timeFontSize = 13;
 
             var elite = AddChild<Image>(rectTransform, "elite");
             AnchorTopLeft(elite.rectTransform);
             elite.raycastTarget = false;
-            elite.rectTransform.sizeDelta = Vector2.one * eliteIconSize;
-            elite.sprite = portrait;
-
-            var time = AddChild<TextMeshProUGUI>(rectTransform, "time");
-            AnchorBottomRight(time.rectTransform);
-            time.raycastTarget = false;
-            time.alignment = TextAlignmentOptions.BottomRight;
-            time.rectTransform.sizeDelta = new Vector2(width / 2, timeTextHeight);
-            time.fontSize = timeFontSize;
-            time.SetText("1.15s");
+            elite.rectTransform.sizeDelta = Vector2.one * options.eliteIconSize;
+            elite.color = new Color(0.2783f, 0.8353f, 1, 0.5f);
 
             var damage = AddChild<TextMeshProUGUI>(rectTransform, "damage");
             AnchorTopRight(damage.rectTransform);
             damage.raycastTarget = false;
             damage.alignment = TextAlignmentOptions.TopRight;
-            damage.rectTransform.sizeDelta = new Vector2(width - eliteIconSize, timeTextHeight);
-            damage.fontSize = timeFontSize;
-            damage.SetText("-34.3%");
+            damage.rectTransform.sizeDelta = Vector2.one * (width - options.eliteIconSize);
+            damage.color = Color.blue;
+            damage.fontSize = options.damageTextSize;
+            damage.SetText("-45.7%");
 
             var hits = AddChild<TextMeshProUGUI>(rectTransform, "hits");
             AnchorBottomLeft(hits.rectTransform);
             hits.raycastTarget = false;
             hits.alignment = TextAlignmentOptions.BottomLeft;
-            hits.rectTransform.sizeDelta = new Vector2(width - eliteIconSize, timeTextHeight);
-            hits.fontSize = timeFontSize;
+            hits.rectTransform.sizeDelta = Vector2.one * (width / 2);
+            hits.color = Color.blue;
+            hits.fontSize = options.portraitTextSize;
             hits.SetText("×2");
+
+            var time = AddChild<TextMeshProUGUI>(rectTransform, "time");
+            AnchorBottomRight(time.rectTransform);
+            time.raycastTarget = false;
+            time.alignment = TextAlignmentOptions.BottomRight;
+            time.rectTransform.sizeDelta = Vector2.one * (width / 2);
+            time.color = Color.blue;
+            time.fontSize = options.portraitTextSize;
+            time.SetText("1.36s");
 
             return this;
         }
