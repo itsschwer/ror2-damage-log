@@ -78,7 +78,15 @@ namespace DamageLog
 
             portrait.gameObject.SetActive(true);
             portrait.texture = src.attackerPortrait;
-            elite.sprite = src.eliteIcon;
+
+            if (src.eliteIcon != null) {
+                elite.sprite = src.eliteIcon;
+                elite.enabled = true;
+            }
+            else {
+                elite.enabled = false;
+            }
+
             damage.SetText($"-{src.damagePercent:0.0%}");
             hits.SetText($"{src.hits}");
             time.SetText($"{hitTime:0.00s}");
