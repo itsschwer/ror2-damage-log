@@ -103,7 +103,7 @@ namespace DamageLog
         {
             if (user?.GetCurrentBody() == null) return;
 
-            Director.Interactable interactable = (Director.Interactable)UnityEngine.Random.Range((int)Director.Interactable.ShrineBlood, (int)Director.Interactable.VoidChest);
+            Director.Interactable interactable = (Director.Interactable)UnityEngine.Random.Range((int)Director.Interactable.ShrineBlood, (int)Director.Interactable.VoidTriple + 1);
             if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.B)) interactable = Director.Interactable.ShrineBlood;
             else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.V)) interactable = Director.Interactable.VoidChest;
             else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.P)) interactable = Director.Interactable.VoidTriple;
