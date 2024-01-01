@@ -4,7 +4,11 @@
 - test
     - as non-host
     - dio respawn
-- ui — tweak size?
+- blood shrine
+- void cradle / potential *(voidtouched buff icon? `AffixVoid`)*
+- abandoned aqueduct tar pots *(tar buff icon? `ClayGoo`)*
+- rallypoint delta fusion cells *(question mark icon from death screen?)*
+- sulfur pools bubbles/pods *(poison buff icon? `Poisoned`)*
 
 ## reference
 
