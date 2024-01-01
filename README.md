@@ -6,9 +6,10 @@
     - dio respawn
 - blood shrine
 - void cradle / potential *(voidtouched buff icon? `AffixVoid`)*
-- abandoned aqueduct tar pots *&* rallypoint delta fusion cells
-    - texMysteryIcon
-    - how does the death screen know this attacker *(null attacker in DamageDealtMessage)*?
+- abandoned aqueduct tar pots *&* rallypoint delta fusion cells *(`texMysteryIcon`)*
+    - null attacker in `DamageDealtMessage` *— how does `GameEndReportPanelController` know this attacker?*
+        - *might not be possible with current implementation / without hooks / as client?*
+- void fog icon color?
 
 ## reference
 
