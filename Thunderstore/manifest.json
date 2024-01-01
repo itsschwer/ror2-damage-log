@@ -1,8 +1,8 @@
 ﻿{
 	"author": "itsschwer",
 	"name": "DamageLog",
-	"version_number": "0.0.0",
-	"website_url": "",
+	"version_number": "0.1.0",
+	"website_url": "https://github.com/itsschwer/ror2-damage-log",
 	"description": "",
 	"dependencies": [
 		"bbepis-BepInExPack-5.4.2113"

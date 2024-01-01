@@ -11,7 +11,7 @@ namespace DamageLog
         public const string GUID = Author + "." + Name;
         public const string Author = "itsschwer";
         public const string Name = "DamageLog";
-        public const string Version = "0.0.0";
+        public const string Version = "0.1.0";
 
         internal static new Config Config { get; private set; }
         internal static void ReloadConfig() => RequestConfigReload?.Invoke();
