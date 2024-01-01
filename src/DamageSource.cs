@@ -44,6 +44,8 @@ namespace DamageLog
             GetAttackerNameAndPortrait(e.attacker, isFallDamage, isVoidFogDamage, out attackerName, out attackerPortrait);
             eliteIcon = GetEliteIcon(e.attacker?.GetComponent<CharacterBody>());
 
+            if (identifier == "??") identifier += $" | {e.damageType} | {e.damageColorIndex} | {e.damage}";
+
             timeStart = Time.time;
             time = timeStart;
             hits = 1;
@@ -106,17 +108,10 @@ namespace DamageLog
         public static Texture GetAlternativePortrait(string attackerName)
         {
             if (attackerName == Language.GetString("SHRINE_BLOOD_NAME"))
-                return null; // shrine of blood icon
+                return null; //todo: shrine of blood icon
             if (attackerName == Language.GetString("VOID_CHEST_NAME")
              || attackerName == Language.GetString("VOID_TRIPLE_NAME"))
                 return DLC1Content.Buffs.EliteVoid.iconSprite.texture;
-            if (attackerName == Language.GetString("POT2_BODY_NAME")) // Attacker game object not passed :/
-                return RoR2Content.Buffs.ClayGoo.iconSprite.texture;
-            // if (attackerName == Language.GetString("SULFURPOD_BODY_NAME")) 
-                // Body uses texMysteryIcon (but poison ticks eventually get attributed to planet as body is destroyed
-                // -- same applies to enemies (e.g. debuffs, glacial explosions, blazing trails, overloading explosions))
-            if (attackerName == Language.GetString("FUSIONCELL_BODY_NAME")) // Attacker game object not passed :/
-                return null; // texMysteryIcon
             if (attackerName == Language.GetString("ARTIFACTSHELL_BODY_NAME"))
                 return RoR2Content.Items.ArtifactKey.pickupIconSprite.texture;
             return null;
