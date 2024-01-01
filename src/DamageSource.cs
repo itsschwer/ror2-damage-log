@@ -90,6 +90,7 @@ namespace DamageLog
                 Texture attackerPortrait = attacker.GetComponent<CharacterBody>()?.portraitIcon;
 
                 if (!string.IsNullOrEmpty(attackerName)) name = attackerName;
+                if (attackerPortrait == null) attackerPortrait = GetAlternativePortrait(attackerName);
                 if (attackerPortrait != null) portrait = attackerPortrait;
             }
             else if (isFallDamage) {
@@ -100,6 +101,24 @@ namespace DamageLog
                 name = "Void Fog";
                 portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
             }
+        }
+
+        public static Texture GetAlternativePortrait(string attackerName)
+        {
+            if (attackerName == Language.GetString("SHRINE_BLOOD_NAME"))
+                return null; // shrine of blood icon
+            if (attackerName == Language.GetString("VOID_CHEST_NAME")
+             || attackerName == Language.GetString("VOID_TRIPLE_NAME"))
+                return DLC1Content.Buffs.EliteVoid.iconSprite.texture;
+            if (attackerName == Language.GetString("POT2_BODY_NAME"))
+                return RoR2Content.Buffs.ClayGoo.iconSprite.texture;
+            if (attackerName == Language.GetString("SULFURPOD_BODY_NAME"))
+                return RoR2Content.Buffs.Poisoned.iconSprite.texture;
+            if (attackerName == Language.GetString("FUSIONCELL_BODY_NAME"))
+                return null; // question mark
+            if (attackerName == Language.GetString("ARTIFACTSHELL_BODY_NAME"))
+                return RoR2Content.Items.ArtifactKey.pickupIconSprite.texture;
+            return null;
         }
 
         public static Sprite GetEliteIcon(CharacterBody body) => GetEliteBuffDef(body)?.iconSprite;
