@@ -6,9 +6,9 @@
     - dio respawn
 - blood shrine
 - void cradle / potential *(voidtouched buff icon? `AffixVoid`)*
-- abandoned aqueduct tar pots *(tar buff icon? `ClayGoo`)*
-- rallypoint delta fusion cells *(question mark icon from death screen?)*
-- sulfur pools bubbles/pods *(poison buff icon? `Poisoned`)*
+- abandoned aqueduct tar pots *&* rallypoint delta fusion cells
+    - texMysteryIcon
+    - how does the death screen know this attacker *(null attacker in DamageDealtMessage)*?
 
 ## reference
 

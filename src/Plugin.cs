@@ -66,6 +66,7 @@ namespace DamageLog
 
 
 #if DEBUG
+        private int idx;
         private float cd;
         private void Update()
         {
@@ -79,10 +80,10 @@ namespace DamageLog
         private void ChangeStage()
         {
             if (!UnityEngine.Networking.NetworkServer.active || !Run.instance) return;
-            var stages = SceneCatalog.allStageSceneDefs;
-            var random = UnityEngine.Random.Range(0, stages.Length - 1);
+            string[] stages = [ "voidstage", "goolake", "frozenwall", "sulfurpools", "artifactworld" ];
+            idx++; if (idx >= stages.Length) idx = 0;
             Run.instance.GenerateStageRNG();
-            UnityEngine.Networking.NetworkManager.singleton.ServerChangeScene(stages[random].cachedName);
+            UnityEngine.Networking.NetworkManager.singleton.ServerChangeScene(stages[idx]);
         }
 #endif
     }

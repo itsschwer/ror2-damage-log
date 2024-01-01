@@ -99,7 +99,7 @@ namespace DamageLog
             }
             else if (isVoidFogDamage) {
                 name = "Void Fog";
-                portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
+                portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture; // Uncoloured
             }
         }
 
@@ -110,12 +110,13 @@ namespace DamageLog
             if (attackerName == Language.GetString("VOID_CHEST_NAME")
              || attackerName == Language.GetString("VOID_TRIPLE_NAME"))
                 return DLC1Content.Buffs.EliteVoid.iconSprite.texture;
-            if (attackerName == Language.GetString("POT2_BODY_NAME"))
+            if (attackerName == Language.GetString("POT2_BODY_NAME")) // Attacker game object not passed :/
                 return RoR2Content.Buffs.ClayGoo.iconSprite.texture;
-            if (attackerName == Language.GetString("SULFURPOD_BODY_NAME"))
-                return RoR2Content.Buffs.Poisoned.iconSprite.texture;
-            if (attackerName == Language.GetString("FUSIONCELL_BODY_NAME"))
-                return null; // question mark
+            // if (attackerName == Language.GetString("SULFURPOD_BODY_NAME")) 
+                // Body uses texMysteryIcon (but poison ticks eventually get attributed to planet as body is destroyed
+                // -- same applies to enemies (e.g. debuffs, glacial explosions, blazing trails, overloading explosions))
+            if (attackerName == Language.GetString("FUSIONCELL_BODY_NAME")) // Attacker game object not passed :/
+                return null; // texMysteryIcon
             if (attackerName == Language.GetString("ARTIFACTSHELL_BODY_NAME"))
                 return RoR2Content.Items.ArtifactKey.pickupIconSprite.texture;
             return null;
