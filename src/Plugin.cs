@@ -48,18 +48,7 @@ namespace DamageLog
         {
             if (!body.isPlayerControlled) return;
 
-            new DamageLog(FindBodyUser(body));
-        }
-
-        public static NetworkUser FindBodyUser(CharacterBody body)
-        {
-            if (body == null) return null;
-
-            foreach (NetworkUser user in NetworkUser.readOnlyInstancesList) {
-                if (user.GetCurrentBody() == body) return user;
-            }
-
-            return null;
+            new DamageLog(Util.LookUpBodyNetworkUser(body));
         }
 
 
