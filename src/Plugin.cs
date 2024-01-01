@@ -63,10 +63,13 @@ namespace DamageLog
 
             cd -= UnityEngine.Time.deltaTime;
             if (UnityEngine.Input.GetKeyDown(Plugin.Config.ChangeStageKey)) {
+                NetworkUser user = FindObjectOfType<DamageLogUI>()?.user ?? LocalUserManager.GetFirstLocalUser().currentNetworkUser;
                 bool ctrlKey = UnityEngine.Input.GetKey("left ctrl") || UnityEngine.Input.GetKey("right ctrl");
                 bool shiftKey = UnityEngine.Input.GetKey("left shift") || UnityEngine.Input.GetKey("right shift");
-                if (ctrlKey) GiveRevive();
-                else if (shiftKey) GiveItems();
+                if (ctrlKey && shiftKey) GiveItems(user);
+                else if (ctrlKey && UnityEngine.Input.GetKey(UnityEngine.KeyCode.S)) GiveItem(user, RoR2Content.Items.ExecuteLowHealthElite);
+                else if (ctrlKey) GiveItem(user, RoR2Content.Items.ExtraLife);
+                else if (shiftKey) SpawnRandomInteractable(user);
                 else if (cd < 0) {
                     cd = 4;
                     ChangeStage();
@@ -82,22 +85,37 @@ namespace DamageLog
             UnityEngine.Networking.NetworkManager.singleton.ServerChangeScene(stages[idx]);
         }
 
-        private void GiveItems()
+        private void GiveItems(NetworkUser user)
         {
-            NetworkUser user = FindObjectOfType<DamageLogUI>()?.user ?? LocalUserManager.GetFirstLocalUser().currentNetworkUser;
-            if (user?.master == null) return;
+            if (user?.master?.inventory == null) return;
 
             user.master.inventory.GiveItem(RoR2Content.Items.Medkit, 20);
             user.master.inventory.GiveItem(RoR2Content.Items.FallBoots, 100);
             user.master.inventory.GiveItem(RoR2Content.Items.SprintBonus, 8);
         }
 
-        private void GiveRevive()
+        private void GiveItem(NetworkUser user, ItemDef item)
         {
-            NetworkUser user = FindObjectOfType<DamageLogUI>()?.user ?? LocalUserManager.GetFirstLocalUser().currentNetworkUser;
-            if (user?.master == null) return;
+            if (user?.master?.inventory == null) return;
+            user.master.inventory.GiveItem(item, 1);
+        }
 
-            user.master.inventory.GiveItem(RoR2Content.Items.ExtraLife, 1);
+        private void SpawnRandomInteractable(NetworkUser user)
+        {
+            if (user?.GetCurrentBody() == null) return;
+
+            Director.Interactable interactable = (Director.Interactable)UnityEngine.Random.Range((int)Director.Interactable.Scrapper, (int)Director.Interactable.VoidChest);
+            if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.S)) interactable = Director.Interactable.Scrapper;
+            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.C)) interactable = Director.Interactable.ShrineChance;
+            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.B)) interactable = Director.Interactable.ShrineBlood;
+            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.V)) interactable = Director.Interactable.VoidChest;
+            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.P)) interactable = Director.Interactable.VoidTriple;
+            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.F)) {
+                Director.SpawnNearBody(Director.CreateCauldronSpawnCard(), user.GetCurrentBody());
+                return;
+            }
+
+            Director.SpawnInteractable(interactable, user.GetCurrentBody());
         }
 #endif
     }

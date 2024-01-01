@@ -47,8 +47,9 @@ namespace DamageLog
 
 
 
-
+#pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
         public NetworkUser user { get; private set; }
+#pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
         private new GameObject gameObject;
         private Canvas canvas;
         private HGTextMeshProUGUI text;
