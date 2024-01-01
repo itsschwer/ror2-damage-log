@@ -70,8 +70,9 @@ namespace DamageLog
         private float cd;
         private void Update()
         {
-            cd -= UnityEngine.Time.deltaTime;
+            if (!UnityEngine.Networking.NetworkServer.active || !Run.instance) return;
 
+            cd -= UnityEngine.Time.deltaTime;
             if (UnityEngine.Input.GetKeyDown(Plugin.Config.ChangeStageKey)) {
                 if (UnityEngine.Input.GetKey("left shift") || UnityEngine.Input.GetKey("right shift")) {
                     NetworkUser user = FindObjectOfType<DamageLogUI>()?.user ?? LocalUserManager.GetFirstLocalUser().currentNetworkUser;
@@ -86,8 +87,7 @@ namespace DamageLog
 
         private void ChangeStage()
         {
-            if (!UnityEngine.Networking.NetworkServer.active || !Run.instance) return;
-            string[] stages = ["artifactworld", "goolake", "frozenwall", "sulfurpools", "voidstage", "arena" ];
+            string[] stages = [ "artifactworld", "goolake", "frozenwall", "sulfurpools", "voidstage", "arena" ];
             idx++; if (idx >= stages.Length) idx = 0;
             Run.instance.GenerateStageRNG();
             UnityEngine.Networking.NetworkManager.singleton.ServerChangeScene(stages[idx]);
