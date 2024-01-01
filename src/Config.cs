@@ -56,8 +56,9 @@ namespace DamageLog
             _eliteIconSize = config.Bind<float>(Debug, "eliteIconSize", 24);
             _portraitTextSize = config.Bind<float>(Debug, "portraitTextSize", 18);
             _damageTextSize = config.Bind<float>(Debug, "damageTextSize", 20);
-
+#if DEBUG
             _changeStageKey = config.Bind<string>(Debug, "changeStageKey", "right alt");
+#endif
         }
 
 
@@ -80,8 +81,9 @@ namespace DamageLog
         private readonly ConfigEntry<float> _damageTextSize;
         public float DamageTextSize => _damageTextSize.Value;
 
-
+#if DEBUG
         private readonly ConfigEntry<string> _changeStageKey;
         public string ChangeStageKey => _changeStageKey.Value;
+#endif
     }
 }
