@@ -80,7 +80,7 @@ namespace DamageLog
         private void ChangeStage()
         {
             if (!UnityEngine.Networking.NetworkServer.active || !Run.instance) return;
-            string[] stages = [ "voidstage", "goolake", "frozenwall", "sulfurpools", "artifactworld" ];
+            string[] stages = ["artifactworld", "goolake", "frozenwall", "sulfurpools", "voidstage", "arena" ];
             idx++; if (idx >= stages.Length) idx = 0;
             Run.instance.GenerateStageRNG();
             UnityEngine.Networking.NetworkManager.singleton.ServerChangeScene(stages[idx]);
