@@ -2,12 +2,13 @@
 
 ## todo
 - test as non-host
-- blood shrine
-- void cradle / potential *(voidtouched buff icon? `AffixVoid`)*
+- do blood shrine icon
+- fix icon colours
+    - void cradle / potential
+    - void fog
 - abandoned aqueduct tar pots *&* rallypoint delta fusion cells *(`texMysteryIcon`)*
     - null attacker in `DamageDealtMessage` *— how does `GameEndReportPanelController` know this attacker?*
         - *might not be possible with current implementation / without hooks / as client?*
-- void fog icon color?
 
 ## reference
 

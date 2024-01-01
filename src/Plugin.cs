@@ -67,7 +67,6 @@ namespace DamageLog
                 bool ctrlKey = UnityEngine.Input.GetKey("left ctrl") || UnityEngine.Input.GetKey("right ctrl");
                 bool shiftKey = UnityEngine.Input.GetKey("left shift") || UnityEngine.Input.GetKey("right shift");
                 if (ctrlKey && shiftKey) GiveItems(user);
-                else if (ctrlKey && UnityEngine.Input.GetKey(UnityEngine.KeyCode.S)) GiveItem(user, RoR2Content.Items.ExecuteLowHealthElite);
                 else if (ctrlKey) GiveItem(user, RoR2Content.Items.ExtraLife);
                 else if (shiftKey) SpawnRandomInteractable(user);
                 else if (cd < 0) {
@@ -104,16 +103,10 @@ namespace DamageLog
         {
             if (user?.GetCurrentBody() == null) return;
 
-            Director.Interactable interactable = (Director.Interactable)UnityEngine.Random.Range((int)Director.Interactable.Scrapper, (int)Director.Interactable.VoidChest);
-            if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.S)) interactable = Director.Interactable.Scrapper;
-            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.C)) interactable = Director.Interactable.ShrineChance;
-            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.B)) interactable = Director.Interactable.ShrineBlood;
+            Director.Interactable interactable = (Director.Interactable)UnityEngine.Random.Range((int)Director.Interactable.ShrineBlood, (int)Director.Interactable.VoidChest);
+            if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.B)) interactable = Director.Interactable.ShrineBlood;
             else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.V)) interactable = Director.Interactable.VoidChest;
             else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.P)) interactable = Director.Interactable.VoidTriple;
-            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.F)) {
-                Director.SpawnNearBody(Director.CreateCauldronSpawnCard(), user.GetCurrentBody());
-                return;
-            }
 
             Director.SpawnInteractable(interactable, user.GetCurrentBody());
         }
