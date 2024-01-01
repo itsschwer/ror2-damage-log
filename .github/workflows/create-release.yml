@@ -9,9 +9,7 @@ on:
         type: boolean
 
 jobs:
-  create-artifact:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: itsschwer/pressure-drop/.github/workflows/create-release.yml@main
-        with:
-          debug: ${{ inputs.debug }}
+  create-release:
+    uses: itsschwer/pressure-drop/.github/workflows/create-release.yml@main
+    with:
+      debug: ${{ inputs.debug }}
