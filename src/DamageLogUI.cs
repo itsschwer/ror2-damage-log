@@ -48,7 +48,7 @@ namespace DamageLog
 
 
 
-        private NetworkUser user;
+        public NetworkUser user { get; private set; }
         private new GameObject gameObject;
         private Canvas canvas;
         private HGTextMeshProUGUI text;

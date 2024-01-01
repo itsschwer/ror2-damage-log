@@ -74,10 +74,11 @@ namespace DamageLog
 
             if (UnityEngine.Input.GetKeyDown(Plugin.Config.ChangeStageKey)) {
                 if (UnityEngine.Input.GetKey("left shift") || UnityEngine.Input.GetKey("right shift")) {
-                    Give(LocalUserManager.GetFirstLocalUser().cachedMaster);
+                    NetworkUser user = FindObjectOfType<DamageLogUI>()?.user ?? LocalUserManager.GetFirstLocalUser().currentNetworkUser;
+                    Give(user.master);
                 }
                 else if (cd < 0) {
-                    cd = 5;
+                    cd = 4;
                     ChangeStage();
                 }
             }
@@ -95,7 +96,7 @@ namespace DamageLog
         private void Give(CharacterMaster master)
         {
             master.inventory.GiveItem(RoR2Content.Items.Medkit, 20);
-            master.inventory.GiveItem(RoR2Content.Items.FallBoots);
+            master.inventory.GiveItem(RoR2Content.Items.FallBoots, 100);
             master.inventory.GiveItem(RoR2Content.Items.SprintBonus, 8);
         }
 #endif
