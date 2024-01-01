@@ -63,10 +63,10 @@ namespace DamageLog
 
             cd -= UnityEngine.Time.deltaTime;
             if (UnityEngine.Input.GetKeyDown(Plugin.Config.ChangeStageKey)) {
-                if (UnityEngine.Input.GetKey("left shift") || UnityEngine.Input.GetKey("right shift")) {
-                    NetworkUser user = FindObjectOfType<DamageLogUI>()?.user ?? LocalUserManager.GetFirstLocalUser().currentNetworkUser;
-                    Give(user.master);
-                }
+                bool ctrlKey = UnityEngine.Input.GetKey("left ctrl") || UnityEngine.Input.GetKey("right ctrl");
+                bool shiftKey = UnityEngine.Input.GetKey("left shift") || UnityEngine.Input.GetKey("right shift");
+                if (ctrlKey) GiveRevive();
+                else if (shiftKey) GiveItems();
                 else if (cd < 0) {
                     cd = 4;
                     ChangeStage();
@@ -82,11 +82,22 @@ namespace DamageLog
             UnityEngine.Networking.NetworkManager.singleton.ServerChangeScene(stages[idx]);
         }
 
-        private void Give(CharacterMaster master)
+        private void GiveItems()
         {
-            master.inventory.GiveItem(RoR2Content.Items.Medkit, 20);
-            master.inventory.GiveItem(RoR2Content.Items.FallBoots, 100);
-            master.inventory.GiveItem(RoR2Content.Items.SprintBonus, 8);
+            NetworkUser user = FindObjectOfType<DamageLogUI>()?.user ?? LocalUserManager.GetFirstLocalUser().currentNetworkUser;
+            if (user?.master == null) return;
+
+            user.master.inventory.GiveItem(RoR2Content.Items.Medkit, 20);
+            user.master.inventory.GiveItem(RoR2Content.Items.FallBoots, 100);
+            user.master.inventory.GiveItem(RoR2Content.Items.SprintBonus, 8);
+        }
+
+        private void GiveRevive()
+        {
+            NetworkUser user = FindObjectOfType<DamageLogUI>()?.user ?? LocalUserManager.GetFirstLocalUser().currentNetworkUser;
+            if (user?.master == null) return;
+
+            user.master.inventory.GiveItem(RoR2Content.Items.ExtraLife, 1);
         }
 #endif
     }

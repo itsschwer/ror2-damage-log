@@ -1,9 +1,7 @@
 # damage indicator
 
 ## todo
-- test
-    - as non-host
-    - dio respawn
+- test as non-host
 - blood shrine
 - void cradle / potential *(voidtouched buff icon? `AffixVoid`)*
 - abandoned aqueduct tar pots *&* rallypoint delta fusion cells *(`texMysteryIcon`)*
