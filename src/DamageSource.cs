@@ -18,6 +18,7 @@ namespace DamageLog
         public readonly string identifier;
 
         public readonly Texture attackerPortrait;
+        public readonly Color color;
         public readonly string attackerName;
         public readonly Sprite eliteIcon;
 
@@ -41,7 +42,7 @@ namespace DamageLog
             isVoidFogDamage = IsVoidFogDamage(e);
 
             identifier = GenerateIdentifier(e.attacker, isFallDamage, isVoidFogDamage);
-            GetAttackerNameAndPortrait(e.attacker, isFallDamage, isVoidFogDamage, out attackerName, out attackerPortrait);
+            GetAttackerInfo(e.attacker, isFallDamage, isVoidFogDamage, out attackerName, out attackerPortrait, out color);
             eliteIcon = GetEliteIcon(e.attacker?.GetComponent<CharacterBody>());
 
             if (identifier == "??") identifier += $" | {e.damageType} | {e.damageColorIndex} | {e.damage}";
@@ -82,17 +83,18 @@ namespace DamageLog
             // Could use position to differentiate void fog instances?
         }
 
-        public static void GetAttackerNameAndPortrait(GameObject attacker, bool isFallDamage, bool isVoidFogDamage, out string name, out Texture portrait)
+        public static void GetAttackerInfo(GameObject attacker, bool isFallDamage, bool isVoidFogDamage, out string name, out Texture portrait, out Color color)
         {
             name = Language.GetString("UNIDENTIFIED_KILLER_NAME");
             portrait = PlanetPortrait;
+            color = Color.white;
 
             if (attacker != null) {
                 string attackerName = Util.GetBestBodyName(attacker);
                 Texture attackerPortrait = attacker.GetComponent<CharacterBody>()?.portraitIcon;
 
                 if (!string.IsNullOrEmpty(attackerName)) name = attackerName;
-                if (attackerPortrait == null) attackerPortrait = GetAlternativePortrait(attackerName, attacker);
+                if (attackerPortrait == null) attackerPortrait = GetAlternativePortrait(attackerName, ref color, attacker);
                 if (attackerPortrait != null) portrait = attackerPortrait;
             }
             else if (isFallDamage) {
@@ -101,17 +103,22 @@ namespace DamageLog
             }
             else if (isVoidFogDamage) {
                 name = "Void Fog";
-                portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture; // Uncoloured
+                portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
+                color = DamageColor.FindColor(DamageColorIndex.Void);
             }
         }
 
-        public static Texture GetAlternativePortrait(string attackerName, GameObject attacker = null)
+        public static Texture GetAlternativePortrait(string attackerName, ref Color color, GameObject attacker = null)
         {
-            if (attackerName == Language.GetString("SHRINE_BLOOD_NAME"))
+            if (attackerName == Language.GetString("SHRINE_BLOOD_NAME")) {
+                color = ColorCatalog.GetColor(ColorCatalog.ColorIndex.Blood);
                 return attacker?.GetComponent<ShrineBloodBehavior>()?.symbolTransform?.GetComponent<MeshRenderer>()?.material?.mainTexture;
+            }
             if (attackerName == Language.GetString("VOID_CHEST_NAME")
-             || attackerName == Language.GetString("VOID_TRIPLE_NAME"))
+             || attackerName == Language.GetString("VOID_TRIPLE_NAME")) {
+                color = DamageColor.FindColor(DamageColorIndex.Void);
                 return DLC1Content.Buffs.EliteVoid.iconSprite.texture;
+            }
             if (attackerName == Language.GetString("ARTIFACTSHELL_BODY_NAME"))
                 return RoR2Content.Items.ArtifactKey.pickupIconSprite.texture;
             return null;
@@ -143,7 +150,7 @@ namespace DamageLog
 
             // Include name to differentiate when an attacker becomes elite (e.g. Voidtouched)
             if (attacker != null) {
-                GetAttackerNameAndPortrait(attacker, isFallDamage, isVoidFogDamage, out string name, out _);
+                GetAttackerInfo(attacker, isFallDamage, isVoidFogDamage, out string name, out _, out _);
                 identifier += '·' + name;
             }
 

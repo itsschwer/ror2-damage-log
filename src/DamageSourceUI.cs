@@ -78,6 +78,7 @@ namespace DamageLog
 
             portrait.gameObject.SetActive(true);
             portrait.texture = src.attackerPortrait;
+            portrait.color = src.color;
 
             if (src.eliteIcon != null) {
                 elite.sprite = src.eliteIcon;
