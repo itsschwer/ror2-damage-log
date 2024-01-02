@@ -1,13 +1,32 @@
-# damage indicator
+# damage log
 
-## todo
-- test as non-host
-- abandoned aqueduct tar pots *&* rallypoint delta fusion cells *(`texMysteryIcon`)*
-    - null attacker in `DamageDealtMessage` *— how does `GameEndReportPanelController` know this attacker?*
-        - *might not be possible with current implementation / without hooks / as client?*
+A client-side mod that adds a damage log to the HUD to show what you have taken damage from recently.
 
-## reference
+> ***sample image here please!***
 
-- [Bubbet · DamageHistory](https://github.com/Bubbet/Risk-Of-Rain-Mods/tree/master/DamageHistory) *(inspiration, design, Harmony patches)*
-- [NotTsunami · ShowDeathCause](https://github.com/NotTsunami/ShowDeathCause) *(finding `RoR2.Util.GetBestBodyName()`, fall/void damage icons)*
-- [xoxfaby · BetterUI](https://github.com/xoxfaby/BetterUI) *(tooltips)*
+## why?
+
+sometimes it can be hard to tell what you are taking damage from.
+
+## configurable
+
+> The configuration file is automatically reloaded when the UI is created *(at the start of each stage)*
+
+> ***tba***
+
+## issues
+
+- Has not yet been thoroughly tested as non-host
+- Damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
+    - *null attacker in `DamageDealtMessage`*
+        - *how does `GameEndReportPanelController` know this attacker??*
+        - *why do Sulfur Bubbles (Sulfur Pools) not have the same issue?*
+- Damage inflicted by enemies that have been killed *(debuffs, delayed explosions, projectiles, trails)* may be attributed to *The Planet* as the reference to the original attacker no longer exists
+
+## see also
+
+- [DamageHistory](https://thunderstore.io/package/Bubbet/DamageHistory/) [<sup>*src*</sup>](https://github.com/Bubbet/Risk-Of-Rain-Mods/tree/master/DamageHistory) by [Bubbet](https://thunderstore.io/package/Bubbet/) — alternative, inspired this implementation
+    - tracks damage until fully healed(?)
+    - text only
+    - a bit hard to parse
+- [ShowDeathCause](https://thunderstore.io/package/NotTsunami/ShowDeathCause/) [<sup>*src*</sup>](https://github.com/NotTsunami/ShowDeathCause) by [NotTsunami](https://thunderstore.io/package/NotTsunami/) — shows extra information about the attacker that killed you on the game end screen
