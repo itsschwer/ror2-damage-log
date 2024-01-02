@@ -14,7 +14,7 @@ namespace DamageLog.Unity {
             CreateCanvas();
             // CreateDebug();
             CreateText();
-            CreateLayout();
+            if (useLayout) CreateLayout();
         }
 
         private void CreateCanvas()
@@ -41,7 +41,7 @@ namespace DamageLog.Unity {
 
             AnchorTopStretch(rect);
             rect.pivot = Vector2.one;
-            rect.sizeDelta = new Vector2(((RectTransform)gameObject.transform).sizeDelta.x, 0);
+            rect.sizeDelta = useLayout ? new Vector2(((RectTransform)gameObject.transform).sizeDelta.x, 0) : Vector2.zero;
 
             tmp = obj.AddComponent<TextMeshProUGUI>();
             tmp.fontSize = textSize;
@@ -77,7 +77,7 @@ namespace DamageLog.Unity {
 
 
 
-
+        [SerializeField] private bool useLayout = true;
         public float textSize = 12;
         public float spacing = 12;
         public float portraitSize = -1;

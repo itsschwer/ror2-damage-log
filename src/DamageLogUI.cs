@@ -110,7 +110,7 @@ namespace DamageLog
 
             AnchorTopStretch(rect);
             rect.pivot = Vector2.one;
-            rect.sizeDelta = new Vector2(((RectTransform)gameObject.transform).sizeDelta.x, 0);
+            rect.sizeDelta = Plugin.Config.SimpleTextMode ? Vector2.zero : new Vector2(((RectTransform)gameObject.transform).sizeDelta.x, 0);
 
             text = obj.AddComponent<HGTextMeshProUGUI>();
             text.fontSize = Plugin.Config.TextSize;
