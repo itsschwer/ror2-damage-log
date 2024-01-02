@@ -25,8 +25,8 @@ sometimes it can be hard to tell what you are taking damage from.
 
 ## see also
 
-- [DamageHistory](https://thunderstore.io/package/Bubbet/DamageHistory/) [<sup>*src*</sup>](https://github.com/Bubbet/Risk-Of-Rain-Mods/tree/master/DamageHistory) by [Bubbet](https://thunderstore.io/package/Bubbet/) — alternative, inspired this implementation
+- [DamageHistory](https://thunderstore.io/package/Bubbet/DamageHistory/) <sup>[*src*](https://github.com/Bubbet/Risk-Of-Rain-Mods/tree/master/DamageHistory)</sup> by [Bubbet](https://thunderstore.io/package/Bubbet/) — alternative, inspired this implementation
     - tracks damage until fully healed(?)
     - text only
     - a bit hard to parse
-- [ShowDeathCause](https://thunderstore.io/package/NotTsunami/ShowDeathCause/) [<sup>*src*</sup>](https://github.com/NotTsunami/ShowDeathCause) by [NotTsunami](https://thunderstore.io/package/NotTsunami/) — shows extra information about the attacker that killed you on the game end screen
+- [ShowDeathCause](https://thunderstore.io/package/NotTsunami/ShowDeathCause/) <sup>[*src*](https://github.com/NotTsunami/ShowDeathCause)</sup> by [NotTsunami](https://thunderstore.io/package/NotTsunami/) — shows extra information about the attacker that killed you on the game end screen
