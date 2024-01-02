@@ -2,7 +2,7 @@
 
 A client-side mod that adds a damage log to the HUD to show what you have taken damage from recently.
 
-> ***sample image here please!***
+![damage log sample screenshot](https://github.com/itsschwer/ror2-damage-log/blob/main/xtra/demo.png?raw=true)
 
 ## why?
 
@@ -12,7 +12,16 @@ sometimes it can be hard to tell what you are taking damage from.
 
 > The configuration file is automatically reloaded when the UI is created *(at the start of each stage)*
 
-> ***tba***
+- how long entries are logged for can be adjusted
+- how many entries are logged can be adjusted
+- the log only being visible in the scoreboard can be enabled
+- the log being be presented in simple text mode can be enabled
+
+Portraits mode | Simple text mode
+--- | ---
+![portraits mode damage log sample screenshot](https://github.com/itsschwer/ror2-damage-log/blob/main/xtra/compare-portrait.png?raw=true) | ![simple text mode damage log sample screenshot](https://github.com/itsschwer/ror2-damage-log/blob/main/xtra/compare-text.png?raw=true)
+
+- the size of various DamageLog UI elements can be adjusted *(under the `m_Debug` section)*
 
 ## issues
 
