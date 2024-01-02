@@ -23,11 +23,11 @@ namespace DamageLog
             user.master.inventory.GiveItem(item, count);
         }
 
-        public static void SpawnNearBody(SpawnCard spawnCard, CharacterBody body, TeamIndex teamIndexOverride = TeamIndex.Void)
+        public static void SpawnAtBody(SpawnCard spawnCard, CharacterBody body, TeamIndex teamIndexOverride = TeamIndex.Void)
         {
             DirectorPlacementRule placement = new DirectorPlacementRule {
-                spawnOnTarget = body.coreTransform,
-                placementMode = DirectorPlacementRule.PlacementMode.NearestNode
+                position = body.footPosition,
+                placementMode = DirectorPlacementRule.PlacementMode.Direct
             };
             DirectorCore.GetMonsterSpawnDistance(DirectorCore.MonsterSpawnDistance.Standard, out placement.minDistance, out placement.maxDistance);
             GameObject obj = DirectorCore.instance.TrySpawnObject(new DirectorSpawnRequest(spawnCard, placement, RoR2Application.rng) { teamIndexOverride = teamIndexOverride });
@@ -62,7 +62,7 @@ namespace DamageLog
                 "RoR2/DLC1/VoidTriple/iscVoidTriple.asset"
             ];
 
-            SpawnNearBody(LoadInteractableSpawnCard(paths[(int)interactable]), body);
+            SpawnAtBody(LoadInteractableSpawnCard(paths[(int)interactable]), body);
         }
 
         public static void SpawnRandomInteractable(NetworkUser user)
