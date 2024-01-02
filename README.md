@@ -15,7 +15,7 @@ sometimes it can be hard to tell what you are taking damage from.
 - how long entries are logged for can be adjusted
 - how many entries are logged can be adjusted
 - the log only being visible in the scoreboard can be enabled
-- the log being be presented in simple text mode can be enabled
+- the log being presented in simple text mode can be enabled
 
 Portraits mode | Simple text mode
 --- | ---
@@ -25,12 +25,12 @@ Portraits mode | Simple text mode
 
 ## issues
 
-- Has not yet been thoroughly tested as non-host
-- Damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
+- has not yet been thoroughly tested as non-host
+- damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
     - *null attacker in `DamageDealtMessage`*
         - *how does `GameEndReportPanelController` know this attacker??*
         - *why do Sulfur Pods (Sulfur Pools) not have the same issue?*
-- Damage inflicted by enemies that have been killed *(debuffs, delayed explosions, projectiles, trails)* may be attributed to *The Planet* as the reference to the original attacker no longer exists
+- damage inflicted by enemies that have been killed *(debuffs, delayed explosions, projectiles, trails)* may be attributed to *The Planet* as the reference to the original attacker no longer exists
 
 ## see also
 
