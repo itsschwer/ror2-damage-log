@@ -77,7 +77,8 @@ namespace DamageLog.Unity {
 
 
 
-        [SerializeField] private bool useLayout = true;
+
+        [SerializeField] bool useLayout = true;
         public float textSize = 12;
         public float spacing = 12;
         public float portraitSize = -1;
