@@ -54,7 +54,7 @@ namespace DamageLog
 
 
 
-#if DEBUG && CHEATS
+#if DEBUG
         private float cd;
         private void Update()
         {

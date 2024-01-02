@@ -15,6 +15,9 @@ namespace DamageLog
         private readonly ConfigEntry<bool> _onlyShowWithScoreboard;
         public bool OnlyShowWithScoreboard => _onlyShowWithScoreboard.Value;
 
+        private readonly ConfigEntry<bool> _showIdentifier;
+        public bool ShowIdentifier => _showIdentifier.Value;
+
         private readonly ConfigEntry<bool> _simpleTextMode;
         public bool SimpleTextMode => _simpleTextMode.Value;
 
@@ -37,6 +40,9 @@ namespace DamageLog
             _onlyShowWithScoreboard = config.Bind<bool>(Display, "onlyShowWithScoreboard", false,
                 "Only show the Damage Log when the scoreboard is open.");
 
+            _showIdentifier = config.Bind<bool>(Display, "showDamageIdentifier", false,
+                "Show damage identifier in tooltip.");
+
             _simpleTextMode = config.Bind<bool>(Display, "useSimpleTextMode", false,
                 "Display Damage Log entries as text instead of portraits with tooltips.");
 
@@ -50,7 +56,6 @@ namespace DamageLog
 
             const string Debug = "m_Debug";
             _textSize = config.Bind<float>(Debug, "textModeFontSize", 12);
-
             _spacing = config.Bind<float>(Debug, "portraitSpacing", 6);
             _portraitSize = config.Bind<float>(Debug, "portraitSize", 78);
             _eliteIconSize = config.Bind<float>(Debug, "eliteIconSize", 24);
@@ -64,7 +69,6 @@ namespace DamageLog
 
         private readonly ConfigEntry<float> _textSize;
         public float TextSize => _textSize.Value;
-
 
         private readonly ConfigEntry<float> _spacing;
         public float Spacing => _spacing.Value;

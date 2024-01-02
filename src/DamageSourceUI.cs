@@ -114,10 +114,12 @@ namespace DamageLog
             if (src.hits == 1) sb.Append($" <style=cEvent>({src.hpPercent:0.0%} health remaining)</style>");
             else sb.Append($" in <style=cStack>{src.hits} hits</style> over <style=cSub>{(src.time - src.timeStart):0.00s}</style>");
             sb.AppendLine(".");
-#if DEBUG
-            sb.AppendLine();
-            sb.AppendLine($"<style=cIsDamage>{src.identifier}</style>");
-#endif
+
+            if (Plugin.Config.ShowIdentifier) {
+                sb.AppendLine();
+                sb.AppendLine($"<style=cIsDamage>{src.identifier}</style>");
+            }
+
             return sb.ToString();
         }
 

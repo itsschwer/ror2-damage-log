@@ -1,4 +1,4 @@
-﻿#if DEBUG && CHEATS
+﻿#if DEBUG
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
