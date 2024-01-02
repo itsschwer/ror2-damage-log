@@ -1,3 +1,6 @@
+### 0.2.2
+- Add configuration option `showDamageIdentifier`
+
 ### 0.2.1
 - Thunderstore release
 - Finish 'configurable' section of README
