@@ -2,10 +2,10 @@
 
 ## todo
 - test as non-host
-- do blood shrine icon
 - fix icon colours
     - void cradle / potential
     - void fog
+    - blood shrine *(maybe try assign material?)*
 - abandoned aqueduct tar pots *&* rallypoint delta fusion cells *(`texMysteryIcon`)*
     - null attacker in `DamageDealtMessage` *— how does `GameEndReportPanelController` know this attacker?*
         - *might not be possible with current implementation / without hooks / as client?*

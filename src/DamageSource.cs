@@ -92,7 +92,7 @@ namespace DamageLog
                 Texture attackerPortrait = attacker.GetComponent<CharacterBody>()?.portraitIcon;
 
                 if (!string.IsNullOrEmpty(attackerName)) name = attackerName;
-                if (attackerPortrait == null) attackerPortrait = GetAlternativePortrait(attackerName);
+                if (attackerPortrait == null) attackerPortrait = GetAlternativePortrait(attackerName, attacker);
                 if (attackerPortrait != null) portrait = attackerPortrait;
             }
             else if (isFallDamage) {
@@ -105,10 +105,10 @@ namespace DamageLog
             }
         }
 
-        public static Texture GetAlternativePortrait(string attackerName)
+        public static Texture GetAlternativePortrait(string attackerName, GameObject attacker = null)
         {
             if (attackerName == Language.GetString("SHRINE_BLOOD_NAME"))
-                return null; //todo: shrine of blood icon
+                return attacker?.GetComponent<ShrineBloodBehavior>()?.symbolTransform?.GetComponent<MeshRenderer>()?.material?.mainTexture;
             if (attackerName == Language.GetString("VOID_CHEST_NAME")
              || attackerName == Language.GetString("VOID_TRIPLE_NAME"))
                 return DLC1Content.Buffs.EliteVoid.iconSprite.texture;
