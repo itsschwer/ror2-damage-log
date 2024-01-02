@@ -140,19 +140,6 @@ namespace DamageLog
             if (!Plugin.Config.SimpleTextMode) PopulateUI(log);
         }
 
-        private void PopulateUI(DamageLog log)
-        {
-            List<DamageSource> entries = log.GetEntries();
-            for (int i = 0; i < uiEntries.Count; i++) {
-                if (i >= entries.Count) { uiEntries[i].Clear(); continue; }
-
-                float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
-                if (log.TryPrune(entries[i], endTime, i)) { uiEntries[i].Clear(); continue; }
-
-                uiEntries[i].Display(entries[i], endTime - entries[i].time);
-            }
-        }
-
         private static NetworkUser CycleUser(bool reverse, NetworkUser current)
         {
             if (DamageLog.Logs.Count <= 0) return null;
@@ -168,6 +155,19 @@ namespace DamageLog
             if (DamageLog.Logs.ContainsKey(user)) return user;
             // Probably fine
             return CycleUser(reverse, user);
+        }
+
+        private void PopulateUI(DamageLog log)
+        {
+            List<DamageSource> entries = log.GetEntries();
+            for (int i = 0; i < uiEntries.Count; i++) {
+                if (i >= entries.Count) { uiEntries[i].Clear(); continue; }
+
+                float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
+                if (log.TryPrune(entries[i], endTime, i)) { uiEntries[i].Clear(); continue; }
+
+                uiEntries[i].Display(entries[i], endTime - entries[i].time);
+            }
         }
 
         private static string GenerateTextLog(DamageLog log)

@@ -65,7 +65,7 @@ namespace DamageLog
             SpawnAtBody(LoadInteractableSpawnCard(paths[(int)interactable]), body);
         }
 
-        public static void SpawnRandomInteractable(NetworkUser user)
+        public static void SpawnInteractable(NetworkUser user)
         {
             if (user?.GetCurrentBody() == null) return;
 

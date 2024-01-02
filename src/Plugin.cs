@@ -67,7 +67,7 @@ namespace DamageLog
                 bool shiftKey = UnityEngine.Input.GetKey("left shift") || UnityEngine.Input.GetKey("right shift");
                 if (ctrlKey && shiftKey) GiveItems(user);
                 else if (ctrlKey) Debug.GiveItem(user, RoR2Content.Items.ExtraLife);
-                else if (shiftKey) Debug.SpawnRandomInteractable(user);
+                else if (shiftKey) Debug.SpawnInteractable(user);
                 else if (cd < 0) { cd = 4; Debug.ChangeStage(); }
             }
         }

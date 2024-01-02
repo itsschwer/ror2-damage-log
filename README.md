@@ -20,7 +20,7 @@ sometimes it can be hard to tell what you are taking damage from.
 - Damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
     - *null attacker in `DamageDealtMessage`*
         - *how does `GameEndReportPanelController` know this attacker??*
-        - *why do Sulfur Bubbles (Sulfur Pools) not have the same issue?*
+        - *why do Sulfur Pods (Sulfur Pools) not have the same issue?*
 - Damage inflicted by enemies that have been killed *(debuffs, delayed explosions, projectiles, trails)* may be attributed to *The Planet* as the reference to the original attacker no longer exists
 
 ## see also
