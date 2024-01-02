@@ -55,7 +55,6 @@ namespace DamageLog
 
 
 #if DEBUG
-        private int idx;
         private float cd;
         private void Update()
         {
@@ -67,48 +66,17 @@ namespace DamageLog
                 bool ctrlKey = UnityEngine.Input.GetKey("left ctrl") || UnityEngine.Input.GetKey("right ctrl");
                 bool shiftKey = UnityEngine.Input.GetKey("left shift") || UnityEngine.Input.GetKey("right shift");
                 if (ctrlKey && shiftKey) GiveItems(user);
-                else if (ctrlKey) GiveItem(user, RoR2Content.Items.ExtraLife);
-                else if (shiftKey) SpawnRandomInteractable(user);
-                else if (cd < 0) {
-                    cd = 4;
-                    ChangeStage();
-                }
+                else if (ctrlKey) Debug.GiveItem(user, RoR2Content.Items.ExtraLife);
+                else if (shiftKey) Debug.SpawnRandomInteractable(user);
+                else if (cd < 0) { cd = 4; Debug.ChangeStage(); }
             }
         }
 
-        private void ChangeStage()
+        private static void GiveItems(NetworkUser user)
         {
-            string[] stages = [ "artifactworld", "goolake", "frozenwall", "sulfurpools", "voidstage", "arena" ];
-            idx++; if (idx >= stages.Length) idx = 0;
-            Run.instance.GenerateStageRNG();
-            UnityEngine.Networking.NetworkManager.singleton.ServerChangeScene(stages[idx]);
-        }
-
-        private void GiveItems(NetworkUser user)
-        {
-            if (user?.master?.inventory == null) return;
-
-            user.master.inventory.GiveItem(RoR2Content.Items.Medkit, 20);
-            user.master.inventory.GiveItem(RoR2Content.Items.FallBoots, 100);
-            user.master.inventory.GiveItem(RoR2Content.Items.SprintBonus, 8);
-        }
-
-        private void GiveItem(NetworkUser user, ItemDef item)
-        {
-            if (user?.master?.inventory == null) return;
-            user.master.inventory.GiveItem(item, 1);
-        }
-
-        private void SpawnRandomInteractable(NetworkUser user)
-        {
-            if (user?.GetCurrentBody() == null) return;
-
-            Director.Interactable interactable = (Director.Interactable)UnityEngine.Random.Range((int)Director.Interactable.ShrineBlood, (int)Director.Interactable.VoidTriple + 1);
-            if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.B)) interactable = Director.Interactable.ShrineBlood;
-            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.V)) interactable = Director.Interactable.VoidChest;
-            else if (UnityEngine.Input.GetKey(UnityEngine.KeyCode.P)) interactable = Director.Interactable.VoidTriple;
-
-            Director.SpawnInteractable(interactable, user.GetCurrentBody());
+            Debug.GiveItem(user, RoR2Content.Items.Medkit, 20);
+            Debug.GiveItem(user, RoR2Content.Items.FallBoots, 100);
+            Debug.GiveItem(user, RoR2Content.Items.SprintBonus, 8);
         }
 #endif
     }

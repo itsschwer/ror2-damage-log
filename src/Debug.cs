@@ -6,8 +6,23 @@ using UnityEngine.Networking;
 
 namespace DamageLog
 {
-    public static class Director
+    public static class Debug
     {
+        private static int stageIndex;
+        public static void ChangeStage()
+        {
+            string[] stages = ["artifactworld", "goolake", "frozenwall", "sulfurpools", "voidstage", "arena"];
+            stageIndex++; if (stageIndex >= stages.Length) stageIndex = 0;
+            Run.instance.GenerateStageRNG();
+            NetworkManager.singleton.ServerChangeScene(stages[stageIndex]);
+        }
+
+        public static void GiveItem(NetworkUser user, ItemDef item, int count = 1)
+        {
+            if (user?.master?.inventory == null) return;
+            user.master.inventory.GiveItem(item, count);
+        }
+
         public static void SpawnNearBody(SpawnCard spawnCard, CharacterBody body, TeamIndex teamIndexOverride = TeamIndex.Void)
         {
             DirectorPlacementRule placement = new DirectorPlacementRule {
@@ -33,6 +48,12 @@ namespace DamageLog
             return spawn;
         }
 
+        public enum Interactable {
+            ShrineBlood,
+            VoidChest,
+            VoidTriple
+        }
+
         public static void SpawnInteractable(Interactable interactable, CharacterBody body)
         {
             string[] paths = [
@@ -44,10 +65,16 @@ namespace DamageLog
             SpawnNearBody(LoadInteractableSpawnCard(paths[(int)interactable]), body);
         }
 
-        public enum Interactable {
-            ShrineBlood,
-            VoidChest,
-            VoidTriple
+        public static void SpawnRandomInteractable(NetworkUser user)
+        {
+            if (user?.GetCurrentBody() == null) return;
+
+            Interactable interactable = (Interactable)Random.Range((int)Interactable.ShrineBlood, (int)Interactable.VoidTriple + 1);
+            if (Input.GetKey(KeyCode.B)) interactable = Interactable.ShrineBlood;
+            else if (Input.GetKey(KeyCode.V)) interactable = Interactable.VoidChest;
+            else if (Input.GetKey(KeyCode.P)) interactable = Interactable.VoidTriple;
+
+            SpawnInteractable(interactable, user.GetCurrentBody());
         }
     }
 }
