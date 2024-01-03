@@ -39,10 +39,18 @@ namespace DamageLog
         private static void OnGameEndSetPlayerInfo(RunReport.PlayerInfo playerInfo)
         {
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
-            if (ui == null) { Log.Warning($"{Plugin.GUID}> failed to update canvas (missing)."); return; }
+            if (ui == null) {
+                Log.Warning($"{Plugin.GUID}> failed to update canvas (missing)."); 
+               return;
+            }
 
-            if (DamageLog.Logs.TryGetValue(playerInfo?.networkUser, out DamageLog log)) ui.text.SetText(GenerateTextLog(log));
-            else Log.Warning($"{Plugin.GUID}> failed to update find damage log for {playerInfo?.networkUser?.masterController?.GetDisplayName()}");
+            if (!DamageLog.Logs.TryGetValue(playerInfo?.networkUser, out DamageLog log)) {
+                Log.Warning($"{Plugin.GUID}> failed to find damage log for {playerInfo?.networkUser?.masterController?.GetDisplayName()}");
+                return;
+            }
+
+            ui.UpdateText(log);
+            ui.UpdatePortraits(log);
         }
 
 
@@ -121,6 +129,11 @@ namespace DamageLog
 
 
 
+        /// <remarks>
+        /// This component is disabled on game end.
+        /// Call <see cref="UpdateText"/> and <see cref="UpdatePortraits"/>
+        /// manually if the display needs to be updated.
+        /// </remarks>
         private void Update()
         {
             // Scoreboard visibility logic from RoR2UI.HUD.Update()
@@ -134,32 +147,21 @@ namespace DamageLog
 
             if (user == null || !DamageLog.Logs.TryGetValue(user, out DamageLog log)) return;
 
+            UpdateText(log);
+            UpdatePortraits(log);
+        }
+
+        private void UpdateText(DamageLog log)
+        {
             text.SetText(GenerateTextLog(log));
             Vector2 size = text.rectTransform.sizeDelta;
             if (size.y != text.preferredHeight) text.rectTransform.sizeDelta = new Vector2(size.x, text.preferredHeight);
-
-            if (!Plugin.Config.SimpleTextMode) PopulateUI(log);
         }
 
-        private static NetworkUser CycleUser(bool reverse, NetworkUser current)
+        private void UpdatePortraits(DamageLog log)
         {
-            if (DamageLog.Logs.Count <= 0) return null;
+            if (Plugin.Config.SimpleTextMode) return;
 
-            int i = (current == null) ? 0 : NetworkUser.readOnlyInstancesList.IndexOf(current);
-            if (reverse) i--;
-            else i++;
-
-            if (i < 0) i = NetworkUser.readOnlyInstancesList.Count - 1;
-            else if (i >= NetworkUser.readOnlyInstancesList.Count) i = 0;
-            NetworkUser user = NetworkUser.readOnlyInstancesList[i];
-
-            if (DamageLog.Logs.ContainsKey(user)) return user;
-            // Probably fine
-            return CycleUser(reverse, user);
-        }
-
-        private void PopulateUI(DamageLog log)
-        {
             List<DamageSource> entries = log.GetEntries();
             for (int i = 0; i < uiEntries.Count; i++) {
                 if (i >= entries.Count) { uiEntries[i].Clear(); continue; }
@@ -197,6 +199,26 @@ namespace DamageLog
             }
 
             return sb.ToString();
+        }
+
+
+
+
+        private static NetworkUser CycleUser(bool reverse, NetworkUser current)
+        {
+            if (DamageLog.Logs.Count <= 0) return null;
+
+            int i = (current == null) ? 0 : NetworkUser.readOnlyInstancesList.IndexOf(current);
+            if (reverse) i--;
+            else i++;
+
+            if (i < 0) i = NetworkUser.readOnlyInstancesList.Count - 1;
+            else if (i >= NetworkUser.readOnlyInstancesList.Count) i = 0;
+            NetworkUser user = NetworkUser.readOnlyInstancesList[i];
+
+            if (DamageLog.Logs.ContainsKey(user)) return user;
+            // Probably fine
+            return CycleUser(reverse, user);
         }
 
 
