@@ -38,12 +38,13 @@ namespace DamageLog
         [HarmonyPostfix, HarmonyPatch(typeof(GameEndReportPanelController), nameof(GameEndReportPanelController.SetPlayerInfo))]
         private static void OnGameEndSetPlayerInfo(RunReport.PlayerInfo playerInfo)
         {
-            if (playerInfo?.networkUser == null) return;
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
-            if (ui == null) return;
+            if (ui == null) { Log.Warning($"{Plugin.GUID}> failed to update canvas (missing)."); return; }
 
-            if (DamageLog.Logs.TryGetValue(playerInfo.networkUser, out DamageLog log)) ui.text.SetText(GenerateTextLog(log));
+            if (DamageLog.Logs.TryGetValue(playerInfo?.networkUser, out DamageLog log)) ui.text.SetText(GenerateTextLog(log));
+            else Log.Warning($"{Plugin.GUID}> failed to update find damage log for {playerInfo?.networkUser?.masterController?.GetDisplayName()}");
         }
+
 
 
 
