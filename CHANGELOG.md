@@ -1,3 +1,7 @@
+### 0.2.3
+- Fix Voidtouched elite icon color
+- Fix portraits not updating on GameEnd screen *(not showing the correct damage log in multiplayer)*
+
 ### 0.2.2
 - Add configuration option `showDamageIdentifier`
 
