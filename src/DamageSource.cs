@@ -18,9 +18,10 @@ namespace DamageLog
         public readonly string identifier;
 
         public readonly Texture attackerPortrait;
-        public readonly Color color;
+        public readonly Color attackerColor;
         public readonly string attackerName;
         public readonly Sprite eliteIcon;
+        public readonly Color eliteColor;
 
         public readonly bool isPlayerDamage;
         public readonly bool isFallDamage;
@@ -37,13 +38,14 @@ namespace DamageLog
 
         public DamageSource(DamageDealtMessage e)
         {
-            isPlayerDamage = e.attacker?.GetComponent<CharacterBody>()?.isPlayerControlled ?? false;
+            CharacterBody body = e.attacker?.GetComponent<CharacterBody>();
+            isPlayerDamage = body?.isPlayerControlled ?? false;
             isFallDamage = IsFallDamage(e);
             isVoidFogDamage = IsVoidFogDamage(e);
 
             identifier = GenerateIdentifier(e.attacker, isFallDamage, isVoidFogDamage);
-            GetAttackerInfo(e.attacker, isFallDamage, isVoidFogDamage, out attackerName, out attackerPortrait, out color);
-            eliteIcon = GetEliteIcon(e.attacker?.GetComponent<CharacterBody>());
+            GetAttackerInfo(e.attacker, isFallDamage, isVoidFogDamage, out attackerName, out attackerPortrait, out attackerColor);
+            GetEliteIcon(body, out eliteIcon, out eliteColor);
 
             if (identifier == "??") identifier += $" | {e.damageType} | {e.damageColorIndex} | {e.damage}";
 
@@ -124,7 +126,13 @@ namespace DamageLog
             return null;
         }
 
-        public static Sprite GetEliteIcon(CharacterBody body) => GetEliteBuffDef(body)?.iconSprite;
+        public static void GetEliteIcon(CharacterBody body, out Sprite icon, out Color color)
+        {
+            BuffDef buff = GetEliteBuffDef(body);
+            icon = buff?.iconSprite;
+            color = buff?.buffColor ?? Color.white;
+        }
+
         public static BuffDef GetEliteBuffDef(CharacterBody body)
         {
             BuffDef def = null;
