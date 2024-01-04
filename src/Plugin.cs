@@ -24,7 +24,7 @@ namespace DamageLog
             Config = new Config(base.Config);
             new Harmony(Info.Metadata.GUID).PatchAll();
             RequestConfigReload = base.Config.Reload;
-            Log.Message($"{Plugin.GUID}> awake.");
+            Log.Message($"~awake.");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
@@ -32,7 +32,7 @@ namespace DamageLog
         {
             CharacterBody.onBodyStartGlobal += TrackBody;
             HUD.shouldHudDisplay += DamageLogUI.Init;
-            Log.Message($"{Plugin.GUID}> enabled.");
+            Log.Message($"~enabled.");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
@@ -41,7 +41,7 @@ namespace DamageLog
             DamageLog.ClearAll();
             CharacterBody.onBodyStartGlobal -= TrackBody;
             HUD.shouldHudDisplay -= DamageLogUI.Init;
-            Log.Message($"{Plugin.GUID}> disabled.");
+            Log.Message($"~disabled.");
         }
 
         private static void TrackBody(CharacterBody body)

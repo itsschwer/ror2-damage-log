@@ -28,10 +28,10 @@ namespace DamageLog
                 ui.gameObject.transform.SetParent(__instance.transform);
                 ui.enabled = false;
                 ui.canvas.enabled = true;
-                Log.Debug($"{Plugin.GUID}> moved canvas.");
+                Log.Debug("Moved canvas.");
             }
             else {
-                Log.Warning($"{Plugin.GUID}> failed to move canvas (missing).");
+                Log.Warning("Failed to move canvas (missing).");
             }
         }
 
@@ -40,12 +40,12 @@ namespace DamageLog
         {
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
             if (ui == null) {
-                Log.Warning($"{Plugin.GUID}> failed to update canvas (missing)."); 
+                Log.Warning("Failed to update canvas (missing)."); 
                return;
             }
 
             if (!DamageLog.Logs.TryGetValue(playerInfo?.networkUser, out DamageLog log)) {
-                Log.Warning($"{Plugin.GUID}> failed to find damage log for {playerInfo?.networkUser?.masterController?.GetDisplayName()}");
+                Log.Warning($"Failed to find damage log for {playerInfo?.networkUser?.masterController?.GetDisplayName()}");
                 return;
             }
 
@@ -76,7 +76,7 @@ namespace DamageLog
             CreateCanvas(parent);
             CreateText();
             if (!Plugin.Config.SimpleTextMode) CreateLayout();
-            Log.Debug($"{Plugin.GUID}> created canvas.");
+            Log.Debug($"Created canvas.");
         }
 
         private void CreateCanvas(GameObject parent)

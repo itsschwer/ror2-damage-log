@@ -6,9 +6,11 @@ namespace DamageLog
     {
         private static ManualLogSource _logSource;
 
-        internal static void Init(ManualLogSource logSource)
+        internal static void Init(ManualLogSource baseLogger)
         {
-            _logSource = logSource;
+            // Use Plugin.GUID instead of Plugin.Name as source name
+            Logger.Sources.Remove(baseLogger);
+            _logSource = Logger.CreateLogSource(Plugin.GUID);
         }
 
         internal static void Debug(object data) => _logSource.LogDebug(data);
