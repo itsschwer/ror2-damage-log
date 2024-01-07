@@ -42,24 +42,14 @@ namespace DamageLog
             if (Logs.TryGetValue(user, out DamageLog log)) log.Cease();
             Logs[user] = this;
 
-            GlobalEventManager.onCharacterDeathGlobal += OnDeath;
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
             Log.Debug($"Tracking {user.userName}.");
         }
 
-        private void OnDeath(DamageReport report)
-        {
-            if (report != null && report.victimBody != body) return;
-
-            timeOfDeath = Time.time;
-            GlobalEventManager.onCharacterDeathGlobal -= OnDeath;
-        }
-
         private void Cease(CharacterBody body = null)
         {
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
-            GlobalEventManager.onCharacterDeathGlobal -= OnDeath;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (body?.master != null) body.master.onBodyDestroyed -= Cease;
             Log.Debug($"Untracking {user.userName}.");
@@ -68,6 +58,9 @@ namespace DamageLog
         private void Record(DamageDealtMessage e)
         {
             if (e.victim != body.gameObject) return;
+
+            HealthComponent h = e.victim.GetComponent<HealthComponent>();
+            if (h != null && !h.alive) timeOfDeath = Time.time;
 
             string key = DamageSource.GenerateIdentifier(e.attacker, DamageSource.IsFallDamage(e), DamageSource.IsVoidFogDamage(e));
             if (entries.TryGetValue(key, out DamageSource src)) src.Add(e);
