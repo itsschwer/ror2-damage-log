@@ -106,7 +106,7 @@ namespace DamageLog
             layout.spacing = Plugin.Config.Spacing;
 
             for (int i = 0; i < Plugin.Config.EntryMaxCount; i++) {
-                uiEntries.Add(DamageSourceUI.Create((RectTransform)gameObject.transform));
+                uiEntries.Add(DamageSourceUI.Create((RectTransform)gameObject.transform).Clear());
             }
         }
 
@@ -123,7 +123,7 @@ namespace DamageLog
 
             text = obj.AddComponent<HGTextMeshProUGUI>();
             text.fontSize = Plugin.Config.TextSize;
-            text.SetText("Damage Log");
+            text.SetText("<style=cDeath>Damage Log <null></style>");
         }
 
 

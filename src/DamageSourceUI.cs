@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using RoR2;
+﻿using RoR2;
 using RoR2.UI;
 using TMPro;
 using UnityEngine;
@@ -105,7 +104,11 @@ namespace DamageLog
             tooltip.bodyToken = GenerateTooltipString(src);
         }
 
-        public void Clear() => portrait.gameObject.SetActive(false);
+        public DamageSourceUI Clear()
+        {
+            portrait.gameObject.SetActive(false);
+            return this;
+        }
 
         private static string GenerateTooltipString(DamageSource src)
         {
