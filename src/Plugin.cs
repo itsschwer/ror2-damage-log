@@ -48,7 +48,7 @@ namespace DamageLog
         {
             if (!body.isPlayerControlled) return;
 
-            new DamageLog(Util.LookUpBodyNetworkUser(body));
+            new DamageLog(Util.LookUpBodyNetworkUser(body), body);
         }
 
 

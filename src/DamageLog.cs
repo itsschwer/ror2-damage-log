@@ -32,13 +32,12 @@ namespace DamageLog
         public float timeOfDeath { get; private set; }  = -1;
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
-        public DamageLog(NetworkUser user)
+        public DamageLog(NetworkUser user, CharacterBody body)
         {
-            if (user && user.GetCurrentBody() == null) Log.Warning($"{user.userName} has no body yet?");
-            if (user?.GetCurrentBody() == null) return;
+            if (user == null || body == null) return;
 
             this.user = user;
-            this.body = user.GetCurrentBody();
+            this.body = body;
 
             if (Logs.TryGetValue(user, out DamageLog log)) log.Cease();
             Logs[user] = this;
