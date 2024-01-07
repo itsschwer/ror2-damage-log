@@ -1,3 +1,5 @@
+- Change simple text mode damage color to be consistent with portraits mode
+
 ### 0.2.4
 - Fix portraits mode displaying white squares when `DamageLogUI` is initialised without a `DamageLog`
 - Fix issue where `DamageLog`s would fail to be created when playing as non-host
