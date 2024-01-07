@@ -45,7 +45,7 @@ namespace DamageLog
             GlobalEventManager.onCharacterDeathGlobal += OnDeath;
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
-            Log.Debug($"Tracking {Plugin.GetUserName(user)}.");
+            Log.Debug($"Tracking {user.userName}.");
         }
 
         private void OnDeath(DamageReport report)
@@ -62,7 +62,7 @@ namespace DamageLog
             GlobalEventManager.onCharacterDeathGlobal -= OnDeath;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (body?.master != null) body.master.onBodyDestroyed -= Cease;
-            Log.Debug($"Untracking {Plugin.GetUserName(user)}.");
+            Log.Debug($"Untracking {user.userName}.");
         }
 
         private void Record(DamageDealtMessage e)
