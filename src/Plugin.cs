@@ -68,6 +68,9 @@ namespace DamageLog
             Log.Warning("TrackNetworkUsers end");
         }
 
+        public static string GetUserName(NetworkUser user)
+            => user?.masterController?.GetDisplayName() ?? user?.userName;
+
 
 
 

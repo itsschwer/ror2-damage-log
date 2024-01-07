@@ -46,7 +46,7 @@ namespace DamageLog
             }
 
             if (!DamageLog.Logs.TryGetValue(playerInfo?.networkUser, out DamageLog log)) {
-                Log.Warning($"Failed to find damage log for {playerInfo?.networkUser?.masterController?.GetDisplayName()}");
+                Log.Warning($"Failed to find damage log for {Plugin.GetUserName(playerInfo?.networkUser)}");
                 return;
             }
 
@@ -177,7 +177,7 @@ namespace DamageLog
         private static string GenerateTextLog(DamageLog log)
         {
             System.Text.StringBuilder sb = new();
-            sb.AppendLine($"<style=cWorldEvent>Damage Log <{log.user.masterController.GetDisplayName()}></style>");
+            sb.AppendLine($"<style=cWorldEvent>Damage Log <{Plugin.GetUserName(log.user)}></style>");
 
             if (!Plugin.Config.SimpleTextMode) return sb.ToString();
 
