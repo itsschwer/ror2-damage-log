@@ -18,6 +18,7 @@ namespace DamageLog
 
             hud.gameObject.AddComponent<DamageLogUI>();
             DamageLogUI.hud = hud;
+            Plugin.TrackNetworkUsers();
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(GameEndReportPanelController), nameof(GameEndReportPanelController.Awake))]

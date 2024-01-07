@@ -51,6 +51,23 @@ namespace DamageLog
             new DamageLog(Util.LookUpBodyNetworkUser(body));
         }
 
+        /// <summary>
+        /// Backup method for non-hosts.
+        /// </summary>
+        /// <remarks>
+        /// Completely unreliable.
+        /// </remarks>
+        internal static void TrackNetworkUsers()
+        {
+            Log.Warning($"TrackNetworkUsers {NetworkUser.readOnlyInstancesList.Count}");
+            if (UnityEngine.Networking.NetworkServer.active) return;
+
+            for (int i = 0; i < NetworkUser.readOnlyInstancesList.Count; i++) {
+                new DamageLog(NetworkUser.readOnlyInstancesList[i]);
+            }
+            Log.Warning("TrackNetworkUsers end");
+        }
+
 
 
 
