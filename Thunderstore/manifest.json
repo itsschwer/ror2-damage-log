@@ -1,7 +1,7 @@
 ﻿{
 	"author": "itsschwer",
 	"name": "DamageLog",
-	"version_number": "0.2.3",
+	"version_number": "0.2.4",
 	"website_url": "https://github.com/itsschwer/ror2-damage-log",
 	"description": "Adds a damage log to the HUD to show what you have taken damage from recently — [ client-side ]",
 	"dependencies": [

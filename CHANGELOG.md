@@ -1,3 +1,4 @@
+### 0.2.4
 - Fix portraits mode displaying white squares when `DamageLogUI` is initialised without a `DamageLog`
 - Fix issue where `DamageLog`s would fail to be created when playing as non-host
     - *Sometimes `NetworkUser` and `CharacterBody` would not yet be linked together(?), despite both existing*
