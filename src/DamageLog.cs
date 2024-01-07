@@ -34,6 +34,7 @@ namespace DamageLog
 
         public DamageLog(NetworkUser user)
         {
+            if (user && user.GetCurrentBody() == null) Log.Warning($"{user.userName} has no body yet?");
             if (user?.GetCurrentBody() == null) return;
 
             this.user = user;
