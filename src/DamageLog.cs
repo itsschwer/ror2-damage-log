@@ -61,6 +61,7 @@ namespace DamageLog
 
             HealthComponent h = e.victim.GetComponent<HealthComponent>();
             if (h != null && !h.alive) timeOfDeath = Time.time;
+            Log.Warning($"{user.userName} | alive? {h?.alive} | {h?.health} | {h?.combinedHealthFraction:0.0%}");
 
             string key = DamageSource.GenerateIdentifier(e.attacker, DamageSource.IsFallDamage(e), DamageSource.IsVoidFogDamage(e));
             if (entries.TryGetValue(key, out DamageSource src)) src.Add(e);

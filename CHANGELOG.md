@@ -1,3 +1,4 @@
+- Rework how time of death is recorded
 - Change simple text mode damage color to be consistent with portraits mode
 
 ### 0.2.4

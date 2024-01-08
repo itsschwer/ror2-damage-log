@@ -65,6 +65,10 @@ namespace DamageLog
             return this;
         }
 
+        /// <summary>
+        /// HealthComponent current health may not be up to date when called (on clients)??
+        /// </summary>
+        /// <param name="victim"></param>
         private void UpdateHpDamagePercent(GameObject victim)
         {
             HealthComponent health = victim?.GetComponent<HealthComponent>();
