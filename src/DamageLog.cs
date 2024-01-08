@@ -68,7 +68,7 @@ namespace DamageLog
                 entries.Add(key, latest);
             }
 
-            if (latest.hpPercent <= 0f) timeOfDeath = Time.time;
+            if (latest.remainingHpPercent <= 0f) timeOfDeath = Time.time;
 
             if (entries.Count > Plugin.Config.EntryMaxCount) Prune();
         }

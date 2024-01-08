@@ -88,7 +88,7 @@ namespace DamageLog
                 elite.enabled = false;
             }
 
-            damage.SetText($"<style=cIsDamage>-{src.damagePercent:0.0%}</style>");
+            damage.SetText($"<style=cIsDamage>-{src.totalDamagePercent:0.0%}</style>");
 
             bool singleHit = (src.hits == 1);
             if (singleHit) hits.SetText("");
@@ -114,8 +114,8 @@ namespace DamageLog
         {
             System.Text.StringBuilder sb = new();
 
-            sb.Append($"Dealt <style=cIsHealth>{src.damage:0.0}</style> damage");
-            if (src.hits == 1) sb.Append($" <style=cEvent>({src.hpPercent:0.0%} health remaining)</style>");
+            sb.Append($"Dealt <style=cIsHealth>{src.totalDamage:0.0}</style> damage");
+            if (src.hits == 1) sb.Append($" <style=cEvent>({src.remainingHpPercent:0.0%} health remaining)</style>");
             else sb.Append($" in <style=cStack>{src.hits} hits</style> over <style=cSub>{(src.time - src.timeStart):0.00s}</style>");
             sb.AppendLine(".");
 

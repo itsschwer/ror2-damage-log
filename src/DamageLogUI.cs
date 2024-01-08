@@ -192,8 +192,8 @@ namespace DamageLog
 
                 bool singleHit = (src.hits == 1);
                 if (!singleHit) sb.Append($"<style=cStack>×{src.hits}</style>");
-                sb.Append($" · <style=cIsDamage>-{src.damagePercent:0.0%}</style>");
-                if (singleHit) sb.Append($" <style=cEvent>({src.hpPercent:0.0%})</style>");
+                sb.Append($" · <style=cIsDamage>-{src.totalDamagePercent:0.0%}</style>");
+                if (singleHit) sb.Append($" <style=cEvent>({src.remainingHpPercent:0.0%})</style>");
 
                 sb.AppendLine($" · <style=cSub>{(endTime - src.time):0.00s}</style>");
             }

@@ -31,9 +31,9 @@ namespace DamageLog
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
         public float time { get; private set; }
         public int hits { get; private set; }
-        public float damage { get; private set; }
-        public float damagePercent { get; private set; }
-        public float hpPercent { get; private set; }
+        public float totalDamage { get; private set; }
+        public float totalDamagePercent { get; private set; }
+        public float remainingHpPercent { get; private set; }
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
         public DamageSource(DamageDealtMessage e)
@@ -52,7 +52,7 @@ namespace DamageLog
             timeStart = Time.time;
             time = timeStart;
             hits = 1;
-            damage = e.damage;
+            totalDamage = e.damage;
             UpdateHpDamagePercent(e.victim, e.damage);
         }
 
@@ -60,7 +60,7 @@ namespace DamageLog
         {
             time = Time.time;
             hits++;
-            damage += e.damage;
+            totalDamage += e.damage;
             UpdateHpDamagePercent(e.victim, e.damage);
             return this;
         }
@@ -73,10 +73,10 @@ namespace DamageLog
         {
             HealthComponent health = victim?.GetComponent<HealthComponent>();
             if (health != null) {
-                hpPercent = UnityEngine.Networking.NetworkServer.active ?
+                remainingHpPercent = UnityEngine.Networking.NetworkServer.active ?
                     health.combinedHealthFraction :
                     ((health.combinedHealth - latestHitDamage) / health.fullCombinedHealth);
-                damagePercent = damage / health.fullCombinedHealth;
+                totalDamagePercent = totalDamage / health.fullCombinedHealth;
             }
         }
 
