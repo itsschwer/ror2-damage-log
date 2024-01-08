@@ -27,9 +27,7 @@ Portraits mode | Simple text mode
 
 *please report any issues to the [GitHub repository](https://github.com/itsschwer/ror2-damage-log/issues)!*
 
-- has not yet been *thoroughly* tested as non-host
-    - on non-hosts, timers will continue for ~4s after a player dies, when the body is destroyed, instead of stopping as soon as death occurs
-        - *is `GlobalEventManager.onCharacterDeathGlobal` not invoked on client?*
+- has not yet been thoroughly tested as non-host
 - damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
     - *null attacker in `DamageDealtMessage`*
         - *how does `GameEndReportPanelController` know this attacker??*

@@ -59,13 +59,16 @@ namespace DamageLog
         {
             if (e.victim != body.gameObject) return;
 
-            HealthComponent h = e.victim.GetComponent<HealthComponent>();
-            if (h != null && !h.alive) timeOfDeath = Time.time;
-            Log.Warning($"{user.userName} | alive? {h?.alive} | {h?.health} | {h?.combinedHealthFraction:0.0%}");
-
             string key = DamageSource.GenerateIdentifier(e.attacker, DamageSource.IsFallDamage(e), DamageSource.IsVoidFogDamage(e));
-            if (entries.TryGetValue(key, out DamageSource src)) src.Add(e);
-            else entries.Add(key, new DamageSource(e));
+            if (entries.TryGetValue(key, out DamageSource latest)) {
+                latest.Add(e);
+            }
+            else {
+                latest = new DamageSource(e);
+                entries.Add(key, latest);
+            }
+
+            if (latest.hpPercent <= 0f) timeOfDeath = Time.time;
 
             if (entries.Count > Plugin.Config.EntryMaxCount) Prune();
         }

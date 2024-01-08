@@ -53,7 +53,7 @@ namespace DamageLog
             time = timeStart;
             hits = 1;
             damage = e.damage;
-            UpdateHpDamagePercent(e.victim);
+            UpdateHpDamagePercent(e.victim, e.damage);
         }
 
         public DamageSource Add(DamageDealtMessage e)
@@ -61,19 +61,21 @@ namespace DamageLog
             time = Time.time;
             hits++;
             damage += e.damage;
-            UpdateHpDamagePercent(e.victim);
+            UpdateHpDamagePercent(e.victim, e.damage);
             return this;
         }
 
-        /// <summary>
-        /// HealthComponent current health may not be up to date when called (on clients)??
-        /// </summary>
+        /// <remarks>
+        /// <see cref="HealthComponent"/> may(?) not be updated to account for damage when called on non-host.
+        /// </remarks>
         /// <param name="victim"></param>
-        private void UpdateHpDamagePercent(GameObject victim)
+        private void UpdateHpDamagePercent(GameObject victim, float latestHitDamage)
         {
             HealthComponent health = victim?.GetComponent<HealthComponent>();
             if (health != null) {
-                hpPercent = health.combinedHealthFraction;
+                hpPercent = UnityEngine.Networking.NetworkServer.active ?
+                    health.combinedHealthFraction :
+                    ((health.combinedHealth - latestHitDamage) / health.fullCombinedHealth);
                 damagePercent = damage / health.fullCombinedHealth;
             }
         }
