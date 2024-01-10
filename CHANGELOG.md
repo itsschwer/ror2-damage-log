@@ -1,3 +1,4 @@
+# 1.0.0
 - Rework how time of death is recorded *(fix timers continuing until body is destroyed on non-hosts)*
 - Change simple text mode damage color to be consistent with portraits mode
 

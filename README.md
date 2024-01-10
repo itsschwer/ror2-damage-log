@@ -27,12 +27,10 @@ Portraits mode | Simple text mode
 
 *please report any issues to the [GitHub repository](https://github.com/itsschwer/ror2-damage-log/issues)!*
 
-- has not yet been thoroughly tested as non-host
-- damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
-    - *null attacker in `DamageDealtMessage`*
-        - *how does `GameEndReportPanelController` know this attacker??*
-        - *why do Sulfur Pods (Sulfur Pools) not have the same issue?*
 - damage inflicted by enemies that have been killed *(debuffs, delayed explosions, projectiles, trails)* may be attributed to *The Planet* as the reference to the original attacker no longer exists
+- damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
+    - *sometimes attributed correctly on non-hosts?*
+    - *why do Sulfur Pods (Sulfur Pools) not have the same issue?*
 
 ## see also
 
