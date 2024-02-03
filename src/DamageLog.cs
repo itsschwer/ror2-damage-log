@@ -15,9 +15,11 @@ namespace DamageLog
             Logs.Clear();
         }
 
-        private readonly Dictionary<string, DamageSource> entries = [];
 
-        public readonly NetworkUser user;
+
+
+        public readonly string targetDisplayName;
+        private readonly Dictionary<string, DamageSource> entries = [];
 
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
         private CharacterBody _body;
@@ -36,15 +38,20 @@ namespace DamageLog
         {
             if (user == null || body == null) return;
 
-            this.user = user;
-            this.body = body;
-
+            targetDisplayName = user.userName;
+            
             if (Logs.TryGetValue(user, out DamageLog log)) log.Cease();
-            Logs[user] = this;
+            Logs[user] = Track(body);
+        }
+
+        private DamageLog Track(CharacterBody body)
+        {
+            this.body = body;
 
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
-            Log.Debug($"Tracking {user.userName}.");
+            Log.Debug($"Tracking {targetDisplayName}.");
+            return this;
         }
 
         private void Cease(CharacterBody body = null)
@@ -52,7 +59,7 @@ namespace DamageLog
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (body?.master != null) body.master.onBodyDestroyed -= Cease;
-            Log.Debug($"Untracking {user.userName}.");
+            Log.Debug($"Untracking {targetDisplayName}.");
         }
 
         private void Record(DamageDealtMessage e)
