@@ -5,89 +5,89 @@ namespace DamageLog
     internal sealed class Config
     {
         // Constraints
-        private readonly ConfigEntry<float> _entryMaxRetainTime;
-        public float EntryMaxRetainTime => _entryMaxRetainTime.Value < 1 ? 1 : _entryMaxRetainTime.Value;
+        private readonly ConfigEntry<float> entryMaxRetainTime;
+        public float EntryMaxRetainTime => entryMaxRetainTime.Value < 1 ? 1 : entryMaxRetainTime.Value;
 
-        private readonly ConfigEntry<int> _entryMaxCount;
-        public int EntryMaxCount => _entryMaxCount.Value > 0 ? _entryMaxCount.Value : 1;
+        private readonly ConfigEntry<int> entryMaxCount;
+        public int EntryMaxCount => entryMaxCount.Value > 0 ? entryMaxCount.Value : 1;
 
         // Display
-        private readonly ConfigEntry<bool> _onlyShowWithScoreboard;
-        public bool OnlyShowWithScoreboard => _onlyShowWithScoreboard.Value;
+        private readonly ConfigEntry<bool> onlyShowWithScoreboard;
+        public bool OnlyShowWithScoreboard => onlyShowWithScoreboard.Value;
 
-        private readonly ConfigEntry<bool> _showIdentifier;
-        public bool ShowIdentifier => _showIdentifier.Value;
+        private readonly ConfigEntry<bool> showDamageIdentifier;
+        public bool ShowIdentifier => showDamageIdentifier.Value;
 
-        private readonly ConfigEntry<bool> _simpleTextMode;
-        public bool SimpleTextMode => _simpleTextMode.Value;
+        private readonly ConfigEntry<bool> useSimpleTextMode;
+        public bool SimpleTextMode => useSimpleTextMode.Value;
 
         // Controls
-        private readonly ConfigEntry<string> _cycleUserKey;
-        public string CycleUserKey => _cycleUserKey.Value;
+        private readonly ConfigEntry<string> cycleUserKey;
+        public string CycleUserKey => cycleUserKey.Value;
 
 
         public Config(ConfigFile config)
         {
             const string Constraints = "Constraints";
-            _entryMaxRetainTime = config.Bind<float>(Constraints, "entryMaxRetainTime", 10f,
+            entryMaxRetainTime = config.Bind<float>(Constraints, nameof(entryMaxRetainTime), 10f,
                 "The maximum length of time (seconds) a Damage Log entry will be retained for.\nMinimum is 1.");
             
-            _entryMaxCount = config.Bind<int>(Constraints, "entryMaxCount", 16,
+            entryMaxCount = config.Bind<int>(Constraints, nameof(entryMaxCount), 16,
                 "The (soft) maximum number of Damage Log entries to retain at a time.\nMinimum is 1.");
 
 
             const string Display = "Display";
-            _onlyShowWithScoreboard = config.Bind<bool>(Display, "onlyShowWithScoreboard", false,
+            onlyShowWithScoreboard = config.Bind<bool>(Display, nameof(onlyShowWithScoreboard), false,
                 "Only show the Damage Log when the scoreboard is open.");
 
-            _showIdentifier = config.Bind<bool>(Display, "showDamageIdentifier", false,
+            showDamageIdentifier = config.Bind<bool>(Display, nameof(showDamageIdentifier), false,
                 "Show damage identifier in tooltip.");
 
-            _simpleTextMode = config.Bind<bool>(Display, "useSimpleTextMode", false,
+            useSimpleTextMode = config.Bind<bool>(Display, nameof(useSimpleTextMode), false,
                 "Display Damage Log entries as text instead of portraits with tooltips.");
 
 
             const string Controls = "Controls";
-            _cycleUserKey = config.Bind<string>(Controls, "cycleUserKey", "left alt",
+            cycleUserKey = config.Bind<string>(Controls, nameof(cycleUserKey), "left alt",
                 "The key to use to cycle which user's Damage Log should be shown.\nKey names follow the naming conventions outlined at: https://docs.unity3d.com/2019.4/Documentation/Manual/class-InputManager.html#:~:text=Key%20family");
 
 
 
 
             const string Debug = "m_Debug";
-            _textSize = config.Bind<float>(Debug, "textModeFontSize", 12);
-            _spacing = config.Bind<float>(Debug, "portraitSpacing", 6);
-            _portraitSize = config.Bind<float>(Debug, "portraitSize", 78);
-            _eliteIconSize = config.Bind<float>(Debug, "eliteIconSize", 24);
-            _portraitTextSize = config.Bind<float>(Debug, "portraitTextSize", 18);
-            _damageTextSize = config.Bind<float>(Debug, "damageTextSize", 20);
+            textSize = config.Bind<float>(Debug, nameof(textSize), 12);
+            portraitSpacing = config.Bind<float>(Debug, nameof(portraitSpacing), 6);
+            portraitSize = config.Bind<float>(Debug, nameof(portraitSize), 78);
+            eliteIconSize = config.Bind<float>(Debug, nameof(eliteIconSize), 24);
+            portraitTextSize = config.Bind<float>(Debug, nameof(portraitTextSize), 18);
+            damageTextSize = config.Bind<float>(Debug, nameof(damageTextSize), 20);
 #if DEBUG
-            _changeStageKey = config.Bind<string>(Debug, "changeStageKey", "right alt");
+            changeStageKey = config.Bind<string>(Debug, nameof(changeStageKey), "right alt");
 #endif
         }
 
 
-        private readonly ConfigEntry<float> _textSize;
-        public float TextSize => _textSize.Value;
+        private readonly ConfigEntry<float> textSize;
+        public float TextSize => textSize.Value;
 
-        private readonly ConfigEntry<float> _spacing;
-        public float Spacing => _spacing.Value;
+        private readonly ConfigEntry<float> portraitSpacing;
+        public float Spacing => portraitSpacing.Value;
 
-        private readonly ConfigEntry<float> _portraitSize;
-        public float PortraitSize => _portraitSize.Value;
+        private readonly ConfigEntry<float> portraitSize;
+        public float PortraitSize => portraitSize.Value;
 
-        private readonly ConfigEntry<float> _eliteIconSize;
-        public float EliteIconSize => _eliteIconSize.Value;
+        private readonly ConfigEntry<float> eliteIconSize;
+        public float EliteIconSize => eliteIconSize.Value;
 
-        private readonly ConfigEntry<float> _portraitTextSize;
-        public float PortraitTextSize => _portraitTextSize.Value;
+        private readonly ConfigEntry<float> portraitTextSize;
+        public float PortraitTextSize => portraitTextSize.Value;
 
-        private readonly ConfigEntry<float> _damageTextSize;
-        public float DamageTextSize => _damageTextSize.Value;
+        private readonly ConfigEntry<float> damageTextSize;
+        public float DamageTextSize => damageTextSize.Value;
 
 #if DEBUG
-        private readonly ConfigEntry<string> _changeStageKey;
-        public string ChangeStageKey => _changeStageKey.Value;
+        private readonly ConfigEntry<string> changeStageKey;
+        public string ChangeStageKey => changeStageKey.Value;
 #endif
     }
 }
