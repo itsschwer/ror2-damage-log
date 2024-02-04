@@ -149,23 +149,16 @@ namespace DamageLog
             bool cycleUser = Input.GetKeyDown(Plugin.Config.CycleUserKey);
             bool cycleBoss = Plugin.Config.TrackBosses && Input.GetKeyDown(Plugin.Config.CycleBossKey);
 
-            DamageLog log = null;
             if (cycleUser) {
-                if (showingBoss) {
-                    user = CycleUser(user, shiftKey);
-                    showingBoss = false;
-                }
-                if (user != null) DamageLog.UserLogs.TryGetValue(user, out log);
+                if (!showingBoss) user = CycleUser(user, shiftKey);
+                showingBoss = false;
             }
             else if (cycleBoss) {
-                if (!showingBoss) {
-                    bossIndex = CycleCollection(bossIndex, DamageLog.BossLogs, shiftKey);
-                    showingBoss = true;
-                }
-                TryGetDamageLog(bossIndex, DamageLog.BossLogs, out log);
+                if (showingBoss) bossIndex = CycleCollection(bossIndex, DamageLog.BossLogs, shiftKey);
+                showingBoss = true;
             }
 
-            if (log != null) {
+            if ((!showingBoss && DamageLog.UserLogs.TryGetValue(user, out DamageLog log)) || (showingBoss && TryGetDamageLog(bossIndex, DamageLog.BossLogs, out log))) {
                 UpdateText(log);
                 UpdatePortraits(log);
             }
