@@ -22,6 +22,10 @@ namespace DamageLog
 
     internal sealed class Config
     {
+        // Bosses
+        private readonly ConfigEntry<bool> trackBosses;
+        public bool TrackBosses => trackBosses.Value;
+
         // Constraints
         private readonly ConfigEntry<float> entryMaxRetainTime;
         public float EntryMaxRetainTime => entryMaxRetainTime.Value < 1 ? 1 : entryMaxRetainTime.Value;
@@ -43,9 +47,16 @@ namespace DamageLog
         private readonly ConfigEntry<string> cycleUserKey;
         public string CycleUserKey => cycleUserKey.Value;
 
+        private readonly ConfigEntry<string> cycleBossKey;
+        public string CycleBossKey => cycleBossKey.Value;
+
 
         public Config(ConfigFile config)
         {
+            trackBosses = config.Bind<bool>("Bosses", nameof(trackBosses), false,
+                "Include bosses as Damage Log targets.");
+
+
             const string Constraints = "Constraints";
             entryMaxRetainTime = config.Bind<float>(Constraints, nameof(entryMaxRetainTime), 10f,
                 "The maximum length of time (seconds) a Damage Log entry will be retained for.\nMinimum is 1.");
@@ -69,6 +80,8 @@ namespace DamageLog
             cycleUserKey = config.BindInputKey(Controls, nameof(cycleUserKey), "left alt",
                 "The key to use to cycle which user's Damage Log should be shown.");
 
+            cycleBossKey = config.BindInputKey(Controls, nameof(cycleBossKey), "`",
+                "The key to use to cycle which boss's Damage Log should be shown.");
 
 
 

@@ -46,9 +46,12 @@ namespace DamageLog
 
         private static void TrackBody(CharacterBody body)
         {
-            if (!body.isPlayerControlled) return;
-
-            new DamageLog(Util.LookUpBodyNetworkUser(body), body);
+            if (body.isPlayerControlled) {
+                new DamageLog(Util.LookUpBodyNetworkUser(body), body);
+            }
+            else if (Plugin.Config.TrackBosses && body.isBoss) {
+                new DamageLog(body, DamageLog.BossLogs);
+            }
         }
 
 
@@ -77,6 +80,7 @@ namespace DamageLog
             Debug.GiveItem(user, RoR2Content.Items.Medkit, 20);
             Debug.GiveItem(user, RoR2Content.Items.FallBoots, 100);
             Debug.GiveItem(user, RoR2Content.Items.SprintBonus, 8);
+            Debug.GiveItem(user, RoR2Content.Items.BossDamageBonus, 1000);
         }
 #endif
     }

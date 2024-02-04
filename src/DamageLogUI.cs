@@ -4,6 +4,7 @@ using RoR2.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DamageLog
 {
@@ -59,6 +60,9 @@ namespace DamageLog
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
         public NetworkUser user { get; private set; }
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
+        private int bossIndex = 0;
+        private bool showingBoss = false;
+
         private new GameObject gameObject;
         private Canvas canvas;
         private HGTextMeshProUGUI text;
@@ -143,12 +147,28 @@ namespace DamageLog
 
             bool shiftKey = Input.GetKey("left shift") || Input.GetKey("right shift");
             bool cycleUser = Input.GetKeyDown(Plugin.Config.CycleUserKey);
-            if (cycleUser) user = CycleUser(shiftKey, user);
+            bool cycleBoss = Plugin.Config.TrackBosses && Input.GetKeyDown(Plugin.Config.CycleBossKey);
 
-            if (user == null || !DamageLog.UserLogs.TryGetValue(user, out DamageLog log)) return;
+            DamageLog log = null;
+            if (cycleUser) {
+                if (showingBoss) {
+                    user = CycleUser(user, shiftKey);
+                    showingBoss = false;
+                }
+                if (user != null) DamageLog.UserLogs.TryGetValue(user, out log);
+            }
+            else if (cycleBoss) {
+                if (!showingBoss) {
+                    bossIndex = CycleCollection(bossIndex, DamageLog.BossLogs, shiftKey);
+                    showingBoss = true;
+                }
+                TryGetDamageLog(bossIndex, DamageLog.BossLogs, out log);
+            }
 
-            UpdateText(log);
-            UpdatePortraits(log);
+            if (log != null) {
+                UpdateText(log);
+                UpdatePortraits(log);
+            }
         }
 
         private void UpdateText(DamageLog log)
@@ -204,21 +224,38 @@ namespace DamageLog
 
 
 
-        private static NetworkUser CycleUser(bool reverse, NetworkUser current)
+        private static NetworkUser CycleUser(NetworkUser current, bool reverse)
         {
             if (DamageLog.UserLogs.Count <= 0) return null;
 
             int i = (current == null) ? 0 : NetworkUser.readOnlyInstancesList.IndexOf(current);
-            if (reverse) i--;
-            else i++;
-
-            if (i < 0) i = NetworkUser.readOnlyInstancesList.Count - 1;
-            else if (i >= NetworkUser.readOnlyInstancesList.Count) i = 0;
+            i = CycleCollection(i,NetworkUser.readOnlyInstancesList , reverse);
             NetworkUser user = NetworkUser.readOnlyInstancesList[i];
 
             if (DamageLog.UserLogs.ContainsKey(user)) return user;
             // Probably fine
-            return CycleUser(reverse, user);
+            return CycleUser(user, reverse);
+        }
+
+        private static int CycleCollection(int index, System.Collections.ICollection collection, bool reverse) {
+            if (reverse) index--;
+            else index++;
+
+#pragma warning disable Harmony003 // Harmony non-ref patch parameters modified | false positive?
+            if (index < 0) index = collection.Count - 1;
+            else if (index >= collection.Count) index = 0;
+#pragma warning restore Harmony003 // Harmony non-ref patch parameters modified | false positive?
+
+            return index;
+        }
+
+        private static bool TryGetDamageLog<TKey>(int index, Dictionary<TKey, DamageLog> dictionary, out DamageLog log) {
+            log = null;
+            if (index < 0) return false;
+            if (index > dictionary.Count) return false;
+
+            log = dictionary.ElementAt(index).Value;
+            return true;
         }
 
 

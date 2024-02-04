@@ -8,17 +8,27 @@ namespace DamageLog
     public sealed class DamageLog
     {
         public static readonly Dictionary<NetworkUser, DamageLog> UserLogs = [];
+        public static readonly Dictionary<int, DamageLog> BossLogs = [];
 
         internal static void ClearAll()
         {
             foreach (DamageLog log in UserLogs.Values) log.Cease();
             UserLogs.Clear();
+
+            ClearBossLogs();
+        }
+
+        internal static void ClearBossLogs()
+        {
+            foreach (DamageLog log in BossLogs.Values) log.Cease();
+            BossLogs.Clear();
         }
 
 
 
 
         public readonly string targetDisplayName;
+        private readonly bool entriesExpire = true;
         private readonly Dictionary<string, DamageSource> entries = [];
 
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
@@ -39,9 +49,21 @@ namespace DamageLog
             if (user == null || body == null) return;
 
             targetDisplayName = user.userName;
-            
+
             if (UserLogs.TryGetValue(user, out DamageLog log)) log.Cease();
             UserLogs[user] = Track(body);
+        }
+
+        public DamageLog(CharacterBody body, Dictionary<int, DamageLog> collection)
+        {
+            if (body == null) return;
+
+            targetDisplayName = Util.GetBestBodyName(body.gameObject);
+            entriesExpire = false;
+
+            int key = body.GetInstanceID();
+            if (collection.TryGetValue(key, out DamageLog log)) log.Cease();
+            collection[key] = Track(body);
         }
 
         private DamageLog Track(CharacterBody body)
@@ -92,7 +114,8 @@ namespace DamageLog
 
         public bool TryPrune(DamageSource src, float endTime, int i)
         {
-            if (i > Plugin.Config.EntryMaxCount || (endTime - src.time >= Plugin.Config.EntryMaxRetainTime)) {
+            bool expired = (entriesExpire && (endTime - src.time >= Plugin.Config.EntryMaxRetainTime));
+            if (i > Plugin.Config.EntryMaxCount || expired) {
                 entries.Remove(src.identifier);
                 return true;
             }
