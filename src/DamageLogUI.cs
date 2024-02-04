@@ -246,7 +246,7 @@ namespace DamageLog
         private static bool TryGetDamageLog<TKey>(int index, Dictionary<TKey, DamageLog> dictionary, out DamageLog log) {
             log = null;
             if (index < 0) return false;
-            if (index > dictionary.Count) return false;
+            if (index >= dictionary.Count) return false;
 
             log = dictionary.ElementAt(index).Value;
             return true;

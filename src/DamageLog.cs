@@ -88,7 +88,7 @@ namespace DamageLog
 
         private void Record(DamageDealtMessage e)
         {
-            if (e.victim != body.gameObject) return;
+            if (body != null && e.victim != body.gameObject) return;
 
             string key = DamageSource.GenerateIdentifier(e.attacker, DamageSource.IsFallDamage(e), DamageSource.IsVoidFogDamage(e));
             if (entries.TryGetValue(key, out DamageSource latest)) {
