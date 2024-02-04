@@ -64,8 +64,9 @@ namespace DamageLog
             entriesExpire = false;
 
             CombatSquad squad = BossGroup.FindBossGroup(body)?.combatSquad;
+            // Shrine of the Mountain and "Horde of Many" member count is dynamic, '1' will be omitted
             if (squad != null && squad.memberCount > 1) {
-                targetDisplayName += $" <style=cStack>{squad.membersList.IndexOf(body.master) + 1}</style>";
+                targetDisplayName += $" <style=cStack>{squad.readOnlyMembersList.IndexOf(body.master) + 1}</style>";
             }
 
             int key = body.GetInstanceID();

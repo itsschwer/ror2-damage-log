@@ -50,6 +50,7 @@ namespace DamageLog
 
         public enum Interactable {
             ShrineBlood,
+            ShrineBoss,
             VoidChest,
             VoidTriple
         }
@@ -58,6 +59,7 @@ namespace DamageLog
         {
             string[] paths = [
                 "RoR2/Base/ShrineBlood/iscShrineBloodSnowy.asset",
+                "RoR2/Base/ShrineBoss/iscShrineBossSnowy.asset",
                 "RoR2/DLC1/VoidChest/iscVoidChest.asset",
                 "RoR2/DLC1/VoidTriple/iscVoidTriple.asset"
             ];
@@ -70,7 +72,8 @@ namespace DamageLog
             if (user?.GetCurrentBody() == null) return;
 
             Interactable interactable = (Interactable)Random.Range((int)Interactable.ShrineBlood, (int)Interactable.VoidTriple + 1);
-            if (Input.GetKey(KeyCode.B)) interactable = Interactable.ShrineBlood;
+                 if (Input.GetKey(KeyCode.B)) interactable = Interactable.ShrineBlood;
+            else if (Input.GetKey(KeyCode.M)) interactable = Interactable.ShrineBoss;
             else if (Input.GetKey(KeyCode.V)) interactable = Interactable.VoidChest;
             else if (Input.GetKey(KeyCode.P)) interactable = Interactable.VoidTriple;
 
