@@ -39,6 +39,7 @@ namespace DamageLog
             damage = AddChild<HGTextMeshProUGUI>(obj, "damage");
             AnchorTopRight(damage.rectTransform);
             damage.raycastTarget = false;
+            damage.enableWordWrapping = false;
             damage.alignment = TextAlignmentOptions.TopRight;
             damage.rectTransform.sizeDelta = Vector2.one * (width - Plugin.Config.EliteIconSize);
             damage.fontSize = Plugin.Config.DamageTextSize;
@@ -46,6 +47,7 @@ namespace DamageLog
             hits = AddChild<HGTextMeshProUGUI>(obj, "hits");
             AnchorBottomLeft(hits.rectTransform);
             hits.raycastTarget = false;
+            hits.enableWordWrapping = false;
             hits.alignment = TextAlignmentOptions.BottomLeft;
             hits.rectTransform.sizeDelta = Vector2.one * (width / 2);
             hits.fontSize = Plugin.Config.PortraitTextSize;
@@ -53,6 +55,7 @@ namespace DamageLog
             time = AddChild<HGTextMeshProUGUI>(obj, "time");
             AnchorBottomRight(time.rectTransform);
             time.raycastTarget = false;
+            time.enableWordWrapping = false;
             time.alignment = TextAlignmentOptions.BottomRight;
             time.rectTransform.sizeDelta = Vector2.one * (width / 2);
             time.fontSize = Plugin.Config.PortraitTextSize;
