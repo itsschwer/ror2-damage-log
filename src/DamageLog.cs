@@ -58,6 +58,8 @@ namespace DamageLog
         public DamageLog(CharacterBody body, Dictionary<int, DamageLog> collection)
         {
             if (body == null) return;
+            // Do not track "Horde of Many"
+            if (string.IsNullOrEmpty(body.subtitleNameToken) || body.subtitleNameToken == "NULL_SUBTITLE") return;
 
             targetDisplayName = Util.GetBestBodyName(body.gameObject);
             targetDisplayStyle = "cIsHealth";
