@@ -44,7 +44,7 @@ namespace DamageLog
                return;
             }
 
-            if (!DamageLog.Logs.TryGetValue(playerInfo?.networkUser, out DamageLog log)) {
+            if (!DamageLog.UserLogs.TryGetValue(playerInfo?.networkUser, out DamageLog log)) {
                 Log.Warning($"Failed to find damage log for {playerInfo?.networkUser.userName}");
                 return;
             }
@@ -145,7 +145,7 @@ namespace DamageLog
             bool cycleUser = Input.GetKeyDown(Plugin.Config.CycleUserKey);
             if (cycleUser) user = CycleUser(shiftKey, user);
 
-            if (user == null || !DamageLog.Logs.TryGetValue(user, out DamageLog log)) return;
+            if (user == null || !DamageLog.UserLogs.TryGetValue(user, out DamageLog log)) return;
 
             UpdateText(log);
             UpdatePortraits(log);
@@ -206,7 +206,7 @@ namespace DamageLog
 
         private static NetworkUser CycleUser(bool reverse, NetworkUser current)
         {
-            if (DamageLog.Logs.Count <= 0) return null;
+            if (DamageLog.UserLogs.Count <= 0) return null;
 
             int i = (current == null) ? 0 : NetworkUser.readOnlyInstancesList.IndexOf(current);
             if (reverse) i--;
@@ -216,7 +216,7 @@ namespace DamageLog
             else if (i >= NetworkUser.readOnlyInstancesList.Count) i = 0;
             NetworkUser user = NetworkUser.readOnlyInstancesList[i];
 
-            if (DamageLog.Logs.ContainsKey(user)) return user;
+            if (DamageLog.UserLogs.ContainsKey(user)) return user;
             // Probably fine
             return CycleUser(reverse, user);
         }

@@ -7,12 +7,12 @@ namespace DamageLog
 {
     public sealed class DamageLog
     {
-        public static readonly Dictionary<NetworkUser, DamageLog> Logs = [];
+        public static readonly Dictionary<NetworkUser, DamageLog> UserLogs = [];
 
         internal static void ClearAll()
         {
-            foreach (DamageLog log in Logs.Values) log.Cease();
-            Logs.Clear();
+            foreach (DamageLog log in UserLogs.Values) log.Cease();
+            UserLogs.Clear();
         }
 
 
@@ -40,8 +40,8 @@ namespace DamageLog
 
             targetDisplayName = user.userName;
             
-            if (Logs.TryGetValue(user, out DamageLog log)) log.Cease();
-            Logs[user] = Track(body);
+            if (UserLogs.TryGetValue(user, out DamageLog log)) log.Cease();
+            UserLogs[user] = Track(body);
         }
 
         private DamageLog Track(CharacterBody body)
