@@ -28,6 +28,7 @@ namespace DamageLog
 
 
         public readonly string targetDisplayName;
+        public readonly string targetDisplayStyle;
         private readonly bool entriesExpire = true;
         private readonly Dictionary<string, DamageSource> entries = [];
 
@@ -59,6 +60,7 @@ namespace DamageLog
             if (body == null) return;
 
             targetDisplayName = Util.GetBestBodyName(body.gameObject);
+            targetDisplayStyle = "cIsHealth";
             entriesExpire = false;
 
             int key = body.GetInstanceID();

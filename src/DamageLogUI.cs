@@ -189,7 +189,8 @@ namespace DamageLog
         private static string GenerateTextLog(DamageLog log)
         {
             System.Text.StringBuilder sb = new();
-            sb.AppendLine($"<style=cWorldEvent>Damage Log <{log.targetDisplayName}></style>");
+            string target = string.IsNullOrWhiteSpace(log.targetDisplayStyle) ? log.targetDisplayName : $"<style={log.targetDisplayStyle}>{log.targetDisplayName}</style>";
+            sb.AppendLine($"<style=cWorldEvent>Damage Log <{target}></style>");
 
             if (!Plugin.Config.SimpleTextMode) return sb.ToString();
 
