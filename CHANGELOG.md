@@ -1,3 +1,9 @@
+- Add ability to generate damage logs for bosses
+    - Must be enabled in configuration file
+- Change portrait for void cradles/potentials
+    - Now uses the *Survivors of the Void* icon rather than the Voidtouched icon
+- Code refactoring
+
 # 1.0.0
 - Rework how time of death is recorded *(fix timers continuing until body is destroyed on non-hosts)*
 - Change simple text mode damage color to be consistent with portraits mode

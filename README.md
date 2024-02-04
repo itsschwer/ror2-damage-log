@@ -16,6 +16,7 @@ sometimes it can be hard to tell what you are taking damage from.
 - how many entries are logged can be adjusted
 - the log only being visible in the scoreboard can be enabled
 - the log being presented in simple text mode can be enabled
+- damage logs for bosses can be enabled
 
 Portraits mode | Simple text mode
 --- | ---
