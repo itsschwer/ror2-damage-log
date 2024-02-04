@@ -79,8 +79,8 @@ namespace DamageLog
         {
             Debug.GiveItem(user, RoR2Content.Items.Medkit, 20);
             Debug.GiveItem(user, RoR2Content.Items.FallBoots, 100);
-            Debug.GiveItem(user, RoR2Content.Items.SprintBonus, 8);
-            Debug.GiveItem(user, RoR2Content.Items.BossDamageBonus, 1000);
+            Debug.GiveItem(user, RoR2Content.Items.AlienHead, 10);
+            Debug.GiveItem(user, RoR2Content.Items.SprintBonus, 10);
         }
 #endif
     }

@@ -13,12 +13,19 @@ namespace DamageLog
     {
         private static HUD hud;
 
+        /// <remarks>
+        /// Subscribes to <see cref="HUD.shouldHudDisplay"/>, which functionally appears to be invoked at the start of each stage.
+        /// </remarks>
+        /// <param name="hud"></param>
+        /// <param name="shouldDisplay"></param>
         public static void Init(HUD hud, ref bool shouldDisplay)
         {
             if (DamageLogUI.hud != null) return;
 
+            Log.Debug($"Adding to HUD.");
             hud.gameObject.AddComponent<DamageLogUI>();
             DamageLogUI.hud = hud;
+            DamageLog.ClearBossLogs();
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(GameEndReportPanelController), nameof(GameEndReportPanelController.Awake))]
@@ -68,9 +75,9 @@ namespace DamageLog
         private HGTextMeshProUGUI text;
         private readonly List<DamageSourceUI> uiEntries = [];
 
-        /// <summary>
+        /// <remarks>
         /// Awake() is too early for accessing hud members.
-        /// </summary>
+        /// </remarks>
         private void Start() => CreateUI(hud.mainContainer);
 
         private void CreateUI(GameObject parent)
@@ -153,8 +160,8 @@ namespace DamageLog
                 if (!showingBoss) user = CycleUser(user, shiftKey);
                 showingBoss = false;
             }
-            else if (cycleBoss) {
-                if (showingBoss) bossIndex = CycleCollection(bossIndex, DamageLog.BossLogs, shiftKey);
+            else if (cycleBoss && DamageLog.BossLogs.Count > 0) {
+                if (showingBoss) bossIndex = CycleCollectionIndex(bossIndex, DamageLog.BossLogs, shiftKey);
                 showingBoss = true;
             }
 
@@ -223,7 +230,7 @@ namespace DamageLog
             if (DamageLog.UserLogs.Count <= 0) return null;
 
             int i = (current == null) ? 0 : NetworkUser.readOnlyInstancesList.IndexOf(current);
-            i = CycleCollection(i,NetworkUser.readOnlyInstancesList , reverse);
+            i = CycleCollectionIndex(i,NetworkUser.readOnlyInstancesList , reverse);
             NetworkUser user = NetworkUser.readOnlyInstancesList[i];
 
             if (DamageLog.UserLogs.ContainsKey(user)) return user;
@@ -231,7 +238,7 @@ namespace DamageLog
             return CycleUser(user, reverse);
         }
 
-        private static int CycleCollection(int index, System.Collections.ICollection collection, bool reverse) {
+        private static int CycleCollectionIndex(int index, System.Collections.ICollection collection, bool reverse) {
             if (reverse) index--;
             else index++;
 

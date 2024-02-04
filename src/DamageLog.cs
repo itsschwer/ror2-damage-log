@@ -63,6 +63,11 @@ namespace DamageLog
             targetDisplayStyle = "cIsHealth";
             entriesExpire = false;
 
+            CombatSquad squad = BossGroup.FindBossGroup(body)?.combatSquad;
+            if (squad != null && squad.memberCount > 1) {
+                targetDisplayName += $" <style=cStack>{squad.membersList.IndexOf(body.master) + 1}</style>";
+            }
+
             int key = body.GetInstanceID();
             if (collection.TryGetValue(key, out DamageLog log)) log.Cease();
             collection[key] = Track(body);
