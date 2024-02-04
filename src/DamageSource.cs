@@ -15,6 +15,19 @@ namespace DamageLog
             }
         }
 
+        private static Texture _SotVPortrait;
+        public static Texture SotVPortrait {
+            get {
+                if (_SotVPortrait == null) {
+                    _SotVPortrait = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/UI/texVoidExpansionIcon.png").WaitForCompletion();
+                }
+                return _SotVPortrait;
+            }
+        }
+
+
+
+
         public readonly string identifier;
 
         public readonly Texture attackerPortrait;
@@ -116,7 +129,7 @@ namespace DamageLog
             }
         }
 
-        public static Texture GetAlternativePortrait(string attackerName, ref Color color, GameObject attacker = null)
+        public static Texture GetAlternativePortrait(string attackerName, ref Color color, GameObject attacker)
         {
             if (attackerName == Language.GetString("SHRINE_BLOOD_NAME")) {
                 color = ColorCatalog.GetColor(ColorCatalog.ColorIndex.Blood);
@@ -124,8 +137,7 @@ namespace DamageLog
             }
             if (attackerName == Language.GetString("VOID_CHEST_NAME")
              || attackerName == Language.GetString("VOID_TRIPLE_NAME")) {
-                color = DamageColor.FindColor(DamageColorIndex.Void);
-                return DLC1Content.Buffs.EliteVoid.iconSprite.texture;
+                return SotVPortrait;
             }
             if (attackerName == Language.GetString("ARTIFACTSHELL_BODY_NAME"))
                 return RoR2Content.Items.ArtifactKey.pickupIconSprite.texture;
