@@ -2,6 +2,24 @@ using BepInEx.Configuration;
 
 namespace DamageLog
 {
+    internal static class ConfigUtility {
+        public static ConfigEntry<string> BindInputKey(this ConfigFile config, string section, string key, string defaultInputKey, string description) {
+            const string docs = "\nKey names follow the naming conventions outlined at: https://docs.unity3d.com/2019.4/Documentation/Manual/class-InputManager.html#:~:text=Key%20family";
+
+            ConfigEntry<string> entry = config.Bind<string>(section, key, defaultInputKey, description + docs);
+
+            try {
+                UnityEngine.Input.GetKeyDown(entry.Value);
+            }
+            catch (System.ArgumentException) {
+                Log.Warning($"Config> {section}.{key} | '{entry.Value}' is not a valid input key string, using '{defaultInputKey}' instead.");
+                entry.Value = defaultInputKey;
+            }
+
+            return entry;
+        }
+    }
+
     internal sealed class Config
     {
         // Constraints
@@ -48,8 +66,8 @@ namespace DamageLog
 
 
             const string Controls = "Controls";
-            cycleUserKey = config.Bind<string>(Controls, nameof(cycleUserKey), "left alt",
-                "The key to use to cycle which user's Damage Log should be shown.\nKey names follow the naming conventions outlined at: https://docs.unity3d.com/2019.4/Documentation/Manual/class-InputManager.html#:~:text=Key%20family");
+            cycleUserKey = config.BindInputKey(Controls, nameof(cycleUserKey), "left alt",
+                "The key to use to cycle which user's Damage Log should be shown.");
 
 
 
