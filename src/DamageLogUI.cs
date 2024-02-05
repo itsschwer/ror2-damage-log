@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using RoR2;
+﻿using RoR2;
 using RoR2.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,7 +7,6 @@ using System.Linq;
 
 namespace DamageLog
 {
-    [HarmonyPatch]
     internal sealed class DamageLogUI : MonoBehaviour
     {
         private static HUD hud;
@@ -28,32 +26,30 @@ namespace DamageLog
             DamageLog.ClearBossLogs();
         }
 
-        [HarmonyPostfix, HarmonyPatch(typeof(GameEndReportPanelController), nameof(GameEndReportPanelController.Awake))]
-        private static void OnGameEndPanel(GameEndReportPanelController __instance)
-        {
-            DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
-            if (ui?.gameObject != null) {
-                ui.gameObject.transform.SetParent(__instance.transform);
-                ui.enabled = false;
-                ui.canvas.enabled = true;
-                Log.Debug("Moved canvas.");
-            }
-            else {
-                Log.Warning("Failed to move canvas (missing).");
-            }
-        }
-
-        [HarmonyPostfix, HarmonyPatch(typeof(GameEndReportPanelController), nameof(GameEndReportPanelController.SetPlayerInfo))]
-        private static void OnGameEndSetPlayerInfo(RunReport.PlayerInfo playerInfo)
+        internal static void MoveToGameEndReportPanel(GameEndReportPanelController panel)
         {
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
             if (ui == null) {
-                Log.Warning("Failed to update canvas (missing)."); 
-               return;
+                Log.Warning("Failed to move canvas (missing).");
+                return;
             }
 
-            if (!DamageLog.UserLogs.TryGetValue(playerInfo?.networkUser, out DamageLog log)) {
-                Log.Warning($"Failed to find damage log for {playerInfo?.networkUser.userName}.");
+            ui.gameObject.transform.SetParent(panel.transform);
+            ui.enabled = false;
+            ui.canvas.enabled = true;
+            Log.Debug("Moved canvas.");
+        }
+
+        internal static void DisplayPlayerDamageLog(NetworkUser user)
+        {
+            DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
+            if (ui == null) {
+                Log.Warning("Failed to update canvas (missing).");
+                return;
+            }
+
+            if (!DamageLog.UserLogs.TryGetValue(user, out DamageLog log)) {
+                Log.Warning($"Failed to find damage log for {user.userName}.");
                 return;
             }
 
@@ -242,10 +238,8 @@ namespace DamageLog
             if (reverse) index--;
             else index++;
 
-#pragma warning disable Harmony003 // Harmony non-ref patch parameters modified | false positive?
             if (index < 0) index = collection.Count - 1;
             else if (index >= collection.Count) index = 0;
-#pragma warning restore Harmony003 // Harmony non-ref patch parameters modified | false positive?
 
             return index;
         }
