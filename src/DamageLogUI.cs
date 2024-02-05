@@ -3,7 +3,6 @@ using RoR2.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DamageLog
 {
@@ -47,7 +46,7 @@ namespace DamageLog
                 return;
             }
 
-            if (!Plugin.Data.UserLogs.TryGetValue(user, out DamageLog log)) {
+            if (!Plugin.Data.TryGetUserLog(user, out DamageLog log)) {
                 Log.Warning($"Failed to find damage log for {user.userName}.");
                 return;
             }
@@ -152,16 +151,16 @@ namespace DamageLog
             bool cycleBoss = Plugin.Config.TrackBosses && Input.GetKeyDown(Plugin.Config.CycleBossKey);
 
             if (cycleUser) {
-                if (!showingBoss) user = CycleUser(user, shiftKey);
+                if (!showingBoss) user = Plugin.Data.CycleUser(user, shiftKey);
                 showingBoss = false;
             }
-            else if (cycleBoss && Plugin.Data.BossLogs.Count > 0) {
-                if (showingBoss) bossIndex = CycleCollectionIndex(bossIndex, Plugin.Data.BossLogs, shiftKey);
+            else if (cycleBoss && Plugin.Data.HasBossLogs) {
+                if (showingBoss) bossIndex = Plugin.Data.CycleBossIndex(bossIndex, shiftKey);
                 showingBoss = true;
             }
 
-            if ((!showingBoss && Plugin.Data.UserLogs.TryGetValue(user, out DamageLog log))
-              || (showingBoss && TryGetDamageLog(bossIndex, Plugin.Data.BossLogs, out log))) {
+            if ((!showingBoss && Plugin.Data.TryGetUserLog(user, out DamageLog log))
+              || (showingBoss && Plugin.Data.TryGetBossLog(bossIndex, out log))) {
                 UpdateText(log);
                 UpdatePortraits(log);
             }
@@ -216,41 +215,6 @@ namespace DamageLog
             }
 
             return sb.ToString();
-        }
-
-
-
-
-        private static NetworkUser CycleUser(NetworkUser current, bool reverse)
-        {
-            if (Plugin.Data.UserLogs.Count <= 0) return null;
-
-            int i = (current == null) ? 0 : NetworkUser.readOnlyInstancesList.IndexOf(current);
-            i = CycleCollectionIndex(i,NetworkUser.readOnlyInstancesList , reverse);
-            NetworkUser user = NetworkUser.readOnlyInstancesList[i];
-
-            if (Plugin.Data.UserLogs.ContainsKey(user)) return user;
-            // Probably fine
-            return CycleUser(user, reverse);
-        }
-
-        private static int CycleCollectionIndex(int index, System.Collections.ICollection collection, bool reverse) {
-            if (reverse) index--;
-            else index++;
-
-            if (index < 0) index = collection.Count - 1;
-            else if (index >= collection.Count) index = 0;
-
-            return index;
-        }
-
-        private static bool TryGetDamageLog<TKey>(int index, Dictionary<TKey, DamageLog> dictionary, out DamageLog log) {
-            log = null;
-            if (index < 0) return false;
-            if (index >= dictionary.Count) return false;
-
-            log = dictionary.ElementAt(index).Value;
-            return true;
         }
 
 

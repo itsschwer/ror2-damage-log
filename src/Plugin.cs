@@ -61,7 +61,7 @@ namespace DamageLog
         {
             if (!body.isPlayerControlled) return;
 
-            new DamageLog(Util.LookUpBodyNetworkUser(body), body, Data.UserLogs);
+            new DamageLog(Util.LookUpBodyNetworkUser(body), body);
         }
 
         internal static void TrackBoss(BossGroup boss, CharacterMaster member)
@@ -70,7 +70,7 @@ namespace DamageLog
             CharacterBody body = member?.GetBody();
             if (body == null || !body.isBoss) return;
 
-            new DamageLog(body, boss, Data.BossLogs);
+            new DamageLog(body, boss);
         }
 
 

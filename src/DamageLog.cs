@@ -16,18 +16,17 @@ namespace DamageLog
         public float timeOfDeath { get; private set; }  = -1;
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
-        public DamageLog(NetworkUser user, CharacterBody body, Dictionary<NetworkUser, DamageLog> logs)
+        public DamageLog(NetworkUser user, CharacterBody body)
         {
             if (user == null || body == null) return;
 
             targetBody = body;
             targetDisplayName = user.userName;
 
-            if (logs.TryGetValue(user, out DamageLog log)) log.Cease();
-            logs[user] = Track(body);
+            Plugin.Data.AddUserLog(user, Track(body));
         }
 
-        public DamageLog(CharacterBody body, BossGroup boss, Dictionary<int, DamageLog> logs)
+        public DamageLog(CharacterBody body, BossGroup boss)
         {
             if (body == null) return;
             // Do not track "Horde of Many"
@@ -38,14 +37,13 @@ namespace DamageLog
             targetDisplayStyle = "cIsHealth";
             entriesExpire = false;
 
-            // Shrine of the Mountain and "Horde of Many" member count is dynamic, '1' will be omitted
+            // Member count is dynamic, '1' will (may?) be omitted
             if (boss.combatSquad != null && boss.combatSquad.memberCount > 1) {
                 targetDisplayName += $" <style=cStack>{boss.combatSquad.readOnlyMembersList.IndexOf(body.master) + 1}</style>";
             }
 
             int key = body.GetInstanceID();
-            if (logs.TryGetValue(key, out DamageLog log)) log.Cease();
-            logs[key] = Track(body);
+            Plugin.Data.AddBossLog(key, Track(body));
         }
 
         private DamageLog Track(CharacterBody body)
