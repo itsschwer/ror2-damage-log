@@ -10,7 +10,7 @@ namespace DamageLog
         public static readonly Dictionary<NetworkUser, DamageLog> UserLogs = [];
         public static readonly Dictionary<int, DamageLog> BossLogs = [];
 
-        internal static void ClearAll()
+        internal static void ClearLogs()
         {
             foreach (DamageLog log in UserLogs.Values) log.Cease();
             UserLogs.Clear();
@@ -47,7 +47,7 @@ namespace DamageLog
             UserLogs[user] = Track(body);
         }
 
-        public DamageLog(CharacterBody body, Dictionary<int, DamageLog> collection)
+        public DamageLog(CharacterBody body, BossGroup boss)
         {
             if (body == null) return;
             // Do not track "Horde of Many"
@@ -58,15 +58,14 @@ namespace DamageLog
             targetDisplayStyle = "cIsHealth";
             entriesExpire = false;
 
-            CombatSquad squad = BossGroup.FindBossGroup(body)?.combatSquad;
             // Shrine of the Mountain and "Horde of Many" member count is dynamic, '1' will be omitted
-            if (squad != null && squad.memberCount > 1) {
-                targetDisplayName += $" <style=cStack>{squad.readOnlyMembersList.IndexOf(body.master) + 1}</style>";
+            if (boss.combatSquad != null && boss.combatSquad.memberCount > 1) {
+                targetDisplayName += $" <style=cStack>{boss.combatSquad.readOnlyMembersList.IndexOf(body.master) + 1}</style>";
             }
 
             int key = body.GetInstanceID();
-            if (collection.TryGetValue(key, out DamageLog log)) log.Cease();
-            collection[key] = Track(body);
+            if (BossLogs.TryGetValue(key, out DamageLog log)) log.Cease();
+            BossLogs[key] = Track(body);
         }
 
         private DamageLog Track(CharacterBody body)

@@ -29,7 +29,7 @@ namespace DamageLog
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void OnEnable()
         {
-            CharacterBody.onBodyStartGlobal += TrackBody;
+            CharacterBody.onBodyStartGlobal += TrackUser;
             HUD.shouldHudDisplay += DamageLogUI.Init;
             Log.Message($"~enabled.");
         }
@@ -37,20 +37,26 @@ namespace DamageLog
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void OnDisable()
         {
-            DamageLog.ClearAll();
-            CharacterBody.onBodyStartGlobal -= TrackBody;
+            DamageLog.ClearLogs();
+            CharacterBody.onBodyStartGlobal -= TrackUser;
             HUD.shouldHudDisplay -= DamageLogUI.Init;
             Log.Message($"~disabled.");
         }
 
-        private static void TrackBody(CharacterBody body)
+        private static void TrackUser(CharacterBody body)
         {
-            if (body.isPlayerControlled) {
-                new DamageLog(Util.LookUpBodyNetworkUser(body), body);
-            }
-            else if (Plugin.Config.TrackBosses && body.isBoss) {
-                new DamageLog(body, DamageLog.BossLogs);
-            }
+            if (!body.isPlayerControlled) return;
+
+            new DamageLog(Util.LookUpBodyNetworkUser(body), body);
+        }
+
+        internal static void TrackBoss(BossGroup boss, CharacterMaster member)
+        {
+            if (!Plugin.Config.TrackBosses) return;
+            CharacterBody body = member?.GetBody();
+            if (body == null || !body.isBoss) return;
+
+            new DamageLog(body, boss);
         }
 
 
