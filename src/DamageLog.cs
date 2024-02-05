@@ -36,11 +36,17 @@ namespace DamageLog
         private CharacterBody _body;
         private CharacterBody body {
             get {
-                if (_body == null) Cease();
+                if (_body == null) {
+                    // Cease();
+                    Log.Warning($"{targetDisplayName} body was null. | {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
+                }
                 return _body;
             }
-            set { _body = value; }
+            set { _body = value; _master = _body?.master; }
         }
+
+        private CharacterMaster _master;
+        private CharacterMaster master => _master;
 
         public float timeOfDeath { get; private set; }  = -1;
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
@@ -82,14 +88,16 @@ namespace DamageLog
 
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
+            Log.Warning($"{targetDisplayName} | {body?.GetInstanceID()} | {body?.master.GetInstanceID()}");
             Log.Debug($"Tracking {targetDisplayName}.");
             return this;
         }
 
-        private void Cease(CharacterBody body = null)
+        private void Cease(CharacterBody _ = null)
         {
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
+            Log.Warning($"{targetDisplayName} | {body?.GetInstanceID()} | {body?.master.GetInstanceID()} | {master.GetInstanceID()}");
             if (body?.master != null) body.master.onBodyDestroyed -= Cease;
             Log.Debug($"Untracking {targetDisplayName}.");
         }
