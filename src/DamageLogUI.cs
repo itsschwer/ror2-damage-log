@@ -23,7 +23,6 @@ namespace DamageLog
             Log.Debug($"Adding to HUD.");
             hud.gameObject.AddComponent<DamageLogUI>();
             DamageLogUI.hud = hud;
-            DamageLog.ClearBossLogs();
         }
 
         internal static void MoveToGameEndReportPanel(GameEndReportPanelController panel)
@@ -48,7 +47,7 @@ namespace DamageLog
                 return;
             }
 
-            if (!DamageLog.UserLogs.TryGetValue(user, out DamageLog log)) {
+            if (!Plugin.Data.UserLogs.TryGetValue(user, out DamageLog log)) {
                 Log.Warning($"Failed to find damage log for {user.userName}.");
                 return;
             }
@@ -156,12 +155,13 @@ namespace DamageLog
                 if (!showingBoss) user = CycleUser(user, shiftKey);
                 showingBoss = false;
             }
-            else if (cycleBoss && DamageLog.BossLogs.Count > 0) {
-                if (showingBoss) bossIndex = CycleCollectionIndex(bossIndex, DamageLog.BossLogs, shiftKey);
+            else if (cycleBoss && Plugin.Data.BossLogs.Count > 0) {
+                if (showingBoss) bossIndex = CycleCollectionIndex(bossIndex, Plugin.Data.BossLogs, shiftKey);
                 showingBoss = true;
             }
 
-            if ((!showingBoss && DamageLog.UserLogs.TryGetValue(user, out DamageLog log)) || (showingBoss && TryGetDamageLog(bossIndex, DamageLog.BossLogs, out log))) {
+            if ((!showingBoss && Plugin.Data.UserLogs.TryGetValue(user, out DamageLog log))
+              || (showingBoss && TryGetDamageLog(bossIndex, Plugin.Data.BossLogs, out log))) {
                 UpdateText(log);
                 UpdatePortraits(log);
             }
@@ -223,13 +223,13 @@ namespace DamageLog
 
         private static NetworkUser CycleUser(NetworkUser current, bool reverse)
         {
-            if (DamageLog.UserLogs.Count <= 0) return null;
+            if (Plugin.Data.UserLogs.Count <= 0) return null;
 
             int i = (current == null) ? 0 : NetworkUser.readOnlyInstancesList.IndexOf(current);
             i = CycleCollectionIndex(i,NetworkUser.readOnlyInstancesList , reverse);
             NetworkUser user = NetworkUser.readOnlyInstancesList[i];
 
-            if (DamageLog.UserLogs.ContainsKey(user)) return user;
+            if (Plugin.Data.UserLogs.ContainsKey(user)) return user;
             // Probably fine
             return CycleUser(user, reverse);
         }

@@ -16,11 +16,14 @@ namespace DamageLog
         internal static void ReloadConfig() => RequestConfigReload?.Invoke();
         private static System.Action RequestConfigReload;
 
+        internal static Data Data { get; private set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void Awake()
         {
             Log.Init(Logger);
             Config = new Config(base.Config);
+            Data = new Data();
             new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll();
             RequestConfigReload = base.Config.Reload;
             Log.Message($"~awake.");
@@ -29,34 +32,45 @@ namespace DamageLog
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void OnEnable()
         {
+            Run.onRunStartGlobal += OnRunStartOrDestroy;
+            Run.onRunDestroyGlobal += OnRunStartOrDestroy;
             CharacterBody.onBodyStartGlobal += TrackUser;
             HUD.shouldHudDisplay += DamageLogUI.Init;
+            Stage.onStageStartGlobal += OnStageStart;
             Log.Message($"~enabled.");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void OnDisable()
         {
-            DamageLog.ClearLogs();
+            Run.onRunStartGlobal -= OnRunStartOrDestroy;
+            Run.onRunDestroyGlobal -= OnRunStartOrDestroy;
             CharacterBody.onBodyStartGlobal -= TrackUser;
             HUD.shouldHudDisplay -= DamageLogUI.Init;
+            Stage.onStageStartGlobal -= OnStageStart;
             Log.Message($"~disabled.");
         }
+
+        private static void OnRunStartOrDestroy(Run _)
+            => Data.ClearAll();
+        private static void OnStageStart(Stage _)
+            => Data.ClearBossLogs();
+
 
         private static void TrackUser(CharacterBody body)
         {
             if (!body.isPlayerControlled) return;
 
-            new DamageLog(Util.LookUpBodyNetworkUser(body), body);
+            new DamageLog(Util.LookUpBodyNetworkUser(body), body, Data.UserLogs);
         }
 
         internal static void TrackBoss(BossGroup boss, CharacterMaster member)
         {
-            if (!Plugin.Config.TrackBosses) return;
+            if (!Config.TrackBosses) return;
             CharacterBody body = member?.GetBody();
             if (body == null || !body.isBoss) return;
 
-            new DamageLog(body, boss);
+            new DamageLog(body, boss, Data.BossLogs);
         }
 
 

@@ -7,26 +7,6 @@ namespace DamageLog
 {
     public sealed class DamageLog
     {
-        public static readonly Dictionary<NetworkUser, DamageLog> UserLogs = [];
-        public static readonly Dictionary<int, DamageLog> BossLogs = [];
-
-        internal static void ClearLogs()
-        {
-            foreach (DamageLog log in UserLogs.Values) log.Cease();
-            UserLogs.Clear();
-
-            ClearBossLogs();
-        }
-
-        internal static void ClearBossLogs()
-        {
-            foreach (DamageLog log in BossLogs.Values) log.Cease();
-            BossLogs.Clear();
-        }
-
-
-
-
         public readonly string targetDisplayName;
         public readonly string targetDisplayStyle;
         private readonly bool entriesExpire = true;
@@ -36,18 +16,18 @@ namespace DamageLog
         public float timeOfDeath { get; private set; }  = -1;
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
-        public DamageLog(NetworkUser user, CharacterBody body)
+        public DamageLog(NetworkUser user, CharacterBody body, Dictionary<NetworkUser, DamageLog> logs)
         {
             if (user == null || body == null) return;
 
             targetBody = body;
             targetDisplayName = user.userName;
 
-            if (UserLogs.TryGetValue(user, out DamageLog log)) log.Cease();
-            UserLogs[user] = Track(body);
+            if (logs.TryGetValue(user, out DamageLog log)) log.Cease();
+            logs[user] = Track(body);
         }
 
-        public DamageLog(CharacterBody body, BossGroup boss)
+        public DamageLog(CharacterBody body, BossGroup boss, Dictionary<int, DamageLog> logs)
         {
             if (body == null) return;
             // Do not track "Horde of Many"
@@ -64,8 +44,8 @@ namespace DamageLog
             }
 
             int key = body.GetInstanceID();
-            if (BossLogs.TryGetValue(key, out DamageLog log)) log.Cease();
-            BossLogs[key] = Track(body);
+            if (logs.TryGetValue(key, out DamageLog log)) log.Cease();
+            logs[key] = Track(body);
         }
 
         private DamageLog Track(CharacterBody body)
@@ -76,7 +56,7 @@ namespace DamageLog
             return this;
         }
 
-        private void Cease(CharacterBody _ = null)
+        internal void Cease(CharacterBody _ = null)
         {
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
