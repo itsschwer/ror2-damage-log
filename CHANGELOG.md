@@ -2,6 +2,7 @@
     - Must be enabled in configuration file
 - Change portrait for void cradles/potentials
     - Now uses the *Survivors of the Void* icon rather than the Voidtouched icon
+- Renamed configuration option `textModeFontSize` to `textSize`
 - Code refactoring
 
 # 1.0.0
