@@ -31,23 +31,8 @@ namespace DamageLog
         public readonly string targetDisplayStyle;
         private readonly bool entriesExpire = true;
         private readonly Dictionary<string, DamageSource> entries = [];
-
+        private readonly CharacterBody targetBody;
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
-        private CharacterBody _body;
-        private CharacterBody body {
-            get {
-                if (_body == null) {
-                    // Cease();
-                    Log.Warning($"{targetDisplayName} body was null. | {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
-                }
-                return _body;
-            }
-            set { _body = value; _master = _body?.master; }
-        }
-
-        private CharacterMaster _master;
-        private CharacterMaster master => _master;
-
         public float timeOfDeath { get; private set; }  = -1;
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
@@ -55,6 +40,7 @@ namespace DamageLog
         {
             if (user == null || body == null) return;
 
+            targetBody = body;
             targetDisplayName = user.userName;
 
             if (UserLogs.TryGetValue(user, out DamageLog log)) log.Cease();
@@ -67,6 +53,7 @@ namespace DamageLog
             // Do not track "Horde of Many"
             if (string.IsNullOrEmpty(body.subtitleNameToken) || body.subtitleNameToken == "NULL_SUBTITLE") return;
 
+            targetBody = body;
             targetDisplayName = Util.GetBestBodyName(body.gameObject);
             targetDisplayStyle = "cIsHealth";
             entriesExpire = false;
@@ -84,11 +71,8 @@ namespace DamageLog
 
         private DamageLog Track(CharacterBody body)
         {
-            this.body = body;
-
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
-            Log.Warning($"{targetDisplayName} | {body?.GetInstanceID()} | {body?.master.GetInstanceID()}");
             Log.Debug($"Tracking {targetDisplayName}.");
             return this;
         }
@@ -97,14 +81,16 @@ namespace DamageLog
         {
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
-            Log.Warning($"{targetDisplayName} | {body?.GetInstanceID()} | {body?.master.GetInstanceID()} | {master.GetInstanceID()}");
-            if (body?.master != null) body.master.onBodyDestroyed -= Cease;
-            Log.Debug($"Untracking {targetDisplayName}.");
+            if (targetBody?.master != null) targetBody.master.onBodyDestroyed -= Cease;
+            else Log.Warning($"Could not unsubscribe {targetDisplayName} {nameof(CharacterMaster.onBodyDestroyed)}.");
+
+            var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
+            Log.Debug($"Untracking {targetDisplayName}. | {caller.DeclaringType}::{caller.Name}");
         }
 
         private void Record(DamageDealtMessage e)
         {
-            if (body == null || e.victim != body.gameObject) return;
+            if (targetBody == null || e.victim != targetBody.gameObject) return;
 
             string key = DamageSource.GenerateIdentifier(e.attacker, DamageSource.IsFallDamage(e), DamageSource.IsVoidFogDamage(e));
             if (entries.TryGetValue(key, out DamageSource latest)) {

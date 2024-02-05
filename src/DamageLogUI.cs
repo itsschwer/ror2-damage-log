@@ -53,7 +53,7 @@ namespace DamageLog
             }
 
             if (!DamageLog.UserLogs.TryGetValue(playerInfo?.networkUser, out DamageLog log)) {
-                Log.Warning($"Failed to find damage log for {playerInfo?.networkUser.userName}");
+                Log.Warning($"Failed to find damage log for {playerInfo?.networkUser.userName}.");
                 return;
             }
 
