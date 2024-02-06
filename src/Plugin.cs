@@ -68,7 +68,9 @@ namespace DamageLog
         {
             if (!Config.TrackBosses) return;
             CharacterBody body = member?.GetBody();
-            if (body == null || !body.isBoss) return;
+            if (body == null) Log.Warning($"{nameof(TrackBoss)}> null {nameof(body)}! {boss?.name} | {member?.name}");
+            if (body == null) return;
+            Log.Warning($"{nameof(TrackBoss)}> {nameof(body.isBoss)}: {body.isBoss}");
 
             new DamageLog(body, boss);
         }
