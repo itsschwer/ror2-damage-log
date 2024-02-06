@@ -192,7 +192,8 @@ namespace DamageLog
         {
             System.Text.StringBuilder sb = new();
             string target = string.IsNullOrWhiteSpace(log.targetDisplayStyle) ? log.targetDisplayName : $"<style={log.targetDisplayStyle}>{log.targetDisplayName}</style>";
-            sb.AppendLine($"<style=cWorldEvent>Damage Log <{target}></style>");
+            string discriminator = (log.targetDiscriminator == 0) ? "" : $" <style=cStack>{log.targetDiscriminator}</style>";
+            sb.AppendLine($"<style=cWorldEvent>Damage Log <{target}{discriminator}></style>");
 
             if (!Plugin.Config.SimpleTextMode) return sb.ToString();
 

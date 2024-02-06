@@ -72,7 +72,7 @@ namespace DamageLog
             if (body == null) return;
             Log.Warning($"{nameof(TrackBoss)}> {nameof(body.isBoss)}: {body.isBoss}");
 
-            new DamageLog(body, boss);
+            new DamageLog(body);
         }
 
 

@@ -5,32 +5,36 @@ namespace DamageLog
 {
     internal sealed class Data
     {
-        private readonly Dictionary<RoR2.NetworkUser, DamageLog> UserLogs = [];
-        private readonly Dictionary<int, DamageLog> BossLogs = [];
-        public bool HasBossLogs => BossLogs.Count > 0;
+        private readonly Dictionary<RoR2.NetworkUser, DamageLog> userLogs = [];
+        private readonly Dictionary<int, DamageLog> bossLogs = [];
+        public bool HasBossLogs => bossLogs.Count > 0;
+
+        private readonly Dictionary<string, int> encounters = [];
+        public int EncounterBody(string nameToken) => encounters.ContainsKey(nameToken) ? ++encounters[nameToken] : encounters[nameToken] = 1;
 
         internal void AddUserLog(RoR2.NetworkUser user, DamageLog log)
-            => Add(UserLogs, user, log);
+            => Add(userLogs, user, log);
 
         internal void AddBossLog(int instanceID, DamageLog log)
-            => Add(BossLogs, instanceID, log);
+            => Add(bossLogs, instanceID, log);
 
         internal bool TryGetUserLog(RoR2.NetworkUser user, out DamageLog log)
-            => UserLogs.TryGetValue(user, out log);
+            => userLogs.TryGetValue(user, out log);
 
         internal bool TryGetBossLog(int index, out DamageLog log)
-            => TryGetDamageLog(index, BossLogs, out log);
+            => TryGetDamageLog(index, bossLogs, out log);
 
         internal void ClearUserLogs()
         {
             Log.Debug("Clearing user damage logs.");
-            Clear(UserLogs);
+            Clear(userLogs);
         }
 
         internal void ClearBossLogs()
         {
             Log.Debug("Clearing boss damage logs.");
-            Clear(BossLogs);
+            Clear(bossLogs);
+            encounters.Clear();
         }
 
         internal void ClearAll()
@@ -44,19 +48,19 @@ namespace DamageLog
 
         internal RoR2.NetworkUser CycleUser(RoR2.NetworkUser current, bool reverse)
         {
-            if (UserLogs.Count <= 0) return null;
+            if (userLogs.Count <= 0) return null;
 
             int i = (current == null) ? 0 : RoR2.NetworkUser.readOnlyInstancesList.IndexOf(current);
             i = CycleCollectionIndex(i, RoR2.NetworkUser.readOnlyInstancesList, reverse);
             RoR2.NetworkUser user = RoR2.NetworkUser.readOnlyInstancesList[i];
 
-            if (UserLogs.ContainsKey(user)) return user;
+            if (userLogs.ContainsKey(user)) return user;
             // Probably fine
             return CycleUser(user, reverse);
         }
 
         internal int CycleBossIndex(int current, bool reverse)
-            => CycleCollectionIndex(current, BossLogs, reverse);
+            => CycleCollectionIndex(current, bossLogs, reverse);
 
         internal static int CycleCollectionIndex(int index, System.Collections.ICollection collection, bool reverse)
         {

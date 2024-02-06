@@ -9,6 +9,10 @@ namespace DamageLog
     {
         public readonly string targetDisplayName;
         public readonly string targetDisplayStyle;
+        public readonly int targetDiscriminator;
+#pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
+        public string targetLogName => (targetDiscriminator == 0) ? targetDisplayName : $"{targetDisplayName} {targetDiscriminator}";
+#pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
         private readonly bool entriesExpire = true;
         private readonly Dictionary<string, DamageSource> entries = [];
         private readonly CharacterBody targetBody;
@@ -26,7 +30,7 @@ namespace DamageLog
             Plugin.Data.AddUserLog(user, Track(body));
         }
 
-        public DamageLog(CharacterBody body, BossGroup boss)
+        public DamageLog(CharacterBody body)
         {
             if (body == null) return;
             // Do not track "Horde of Many"
@@ -35,12 +39,8 @@ namespace DamageLog
             targetBody = body;
             targetDisplayName = Util.GetBestBodyName(body.gameObject);
             targetDisplayStyle = "cIsHealth";
+            targetDiscriminator = Plugin.Data.EncounterBody(body.baseNameToken);
             entriesExpire = false;
-
-            // Member count is dynamic, '1' will (may?) be omitted
-            if (boss.combatSquad != null && boss.combatSquad.memberCount > 1) {
-                targetDisplayName += $" <style=cStack>{boss.combatSquad.readOnlyMembersList.IndexOf(body.master) + 1}</style>";
-            }
 
             int key = body.GetInstanceID();
             Plugin.Data.AddBossLog(key, Track(body));
@@ -50,7 +50,7 @@ namespace DamageLog
         {
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
-            Log.Debug($"Tracking {targetDisplayName}.");
+            Log.Debug($"Tracking {targetLogName}.");
             return this;
         }
 
@@ -59,10 +59,10 @@ namespace DamageLog
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (targetBody?.master != null) targetBody.master.onBodyDestroyed -= Cease;
-            else Log.Warning($"Could not unsubscribe {targetDisplayName} {nameof(CharacterMaster.onBodyDestroyed)}.");
+            else Log.Warning($"Could not unsubscribe {targetLogName} {nameof(CharacterMaster.onBodyDestroyed)}.");
 
             var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
-            Log.Debug($"Untracking {targetDisplayName}. | {caller.DeclaringType}::{caller.Name}");
+            Log.Debug($"Untracking {targetLogName}. | {caller.DeclaringType}::{caller.Name}");
         }
 
         private void Record(DamageDealtMessage e)
