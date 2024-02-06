@@ -5,7 +5,8 @@
 - Renamed configuration option `textModeFontSize` to `textSize`
 - Limit the lifetime of damage logs to that of a run
     - *Prevent potential memory leak where `NetworkUsers` accumulate without being cleared*
-- Major code refactoring
+- Fix logic errors *(`DamageLog.Cease()`, `DamageLog.Record()`)*
+- Code refactoring
 
 # 1.0.0
 - Rework how time of death is recorded *(fix timers continuing until body is destroyed on non-hosts)*
