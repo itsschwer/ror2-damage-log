@@ -12,7 +12,7 @@ namespace DamageLog
                 UnityEngine.Input.GetKeyDown(entry.Value);
             }
             catch (System.ArgumentException) {
-                Log.Warning($"Config> {section}.{key} | '{entry.Value}' is not a valid input key string, using '{defaultInputKey}' instead.");
+                Log.Warning($"{nameof(Config)}> {section}.{key} | '{entry.Value}' is not a valid input key string, using '{defaultInputKey}' instead.");
                 entry.Value = defaultInputKey;
             }
 

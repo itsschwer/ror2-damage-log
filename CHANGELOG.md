@@ -3,7 +3,9 @@
 - Change portrait for void cradles/potentials
     - Now uses the *Survivors of the Void* icon rather than the Voidtouched icon
 - Renamed configuration option `textModeFontSize` to `textSize`
-- Code refactoring
+- Limit the lifetime of damage logs to that of a run
+    - *Prevent potential memory leak where `NetworkUsers` accumulate without being cleared*
+- Major code refactoring
 
 # 1.0.0
 - Rework how time of death is recorded *(fix timers continuing until body is destroyed on non-hosts)*
