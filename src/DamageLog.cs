@@ -34,7 +34,7 @@ namespace DamageLog
         {
             if (body == null) return;
             // Do not track "Horde of Many"
-            if (string.IsNullOrEmpty(body.subtitleNameToken) || body.subtitleNameToken == "NULL_SUBTITLE") return;
+            if (IsIgnoredBossSubtitle(body.subtitleNameToken)) return;
 
             targetBody = body;
             targetDisplayName = Util.GetBestBodyName(body.gameObject);
@@ -109,6 +109,23 @@ namespace DamageLog
             if (list.Count > 1)
                 list.Sort((a, b) => System.Math.Sign(b.time - a.time)); // Newest first
             return list;
+        }
+
+
+
+
+        public static bool IsIgnoredBossSubtitle(string subtitleNameToken)
+        {
+            if (string.IsNullOrEmpty(subtitleNameToken)) return true;
+
+            switch (subtitleNameToken) {
+                default: return false;
+                case "NULL_SUBTITLE":
+                case "LUNARWISP_BODY_SUBTITLE":
+                case "LUNARGOLEM_BODY_SUBTITLE":
+                case "LUNAREXPLODER_BODY_SUBTITLE":
+                    return true;
+            }
         }
     }
 }
