@@ -67,8 +67,10 @@ namespace DamageLog
         internal static void TrackBoss(BossGroup boss, CharacterMaster member)
         {
             if (!Config.TrackBosses) return;
-            member.onBodyStart += TrackBoss;
             Log.Debug($"{nameof(TrackBoss)}> Discovered {member.name} | {boss.name}");
+            CharacterBody body = member.GetBody();
+            if (body != null) TrackBoss(body);
+            else member.onBodyStart += TrackBoss;
         }
 
         private static void TrackBoss(CharacterBody body)
