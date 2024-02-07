@@ -8,16 +8,16 @@ namespace DamageLog
     public sealed class DamageLog
     {
         public readonly string targetDisplayName;
-        public readonly string targetDisplayStyle;
         public readonly int targetDiscriminator;
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
-        public string targetLogName => (targetDiscriminator == 0) ? targetDisplayName : $"{targetDisplayName} {targetDiscriminator}";
+        private string targetName => (targetDiscriminator == 0) ? targetDisplayName : $"{targetDisplayName} {targetDiscriminator}";
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
-        private readonly bool entriesExpire = true;
+        public readonly bool isBoss = false;
         private readonly Dictionary<string, DamageSource> entries = [];
         private readonly CharacterBody targetBody;
+        private float timeOfDeath = -1;
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
-        public float timeOfDeath { get; private set; }  = -1;
+        public float time => (timeOfDeath > 0) ? timeOfDeath : Time.time;
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
         public DamageLog(NetworkUser user, CharacterBody body)
@@ -33,14 +33,12 @@ namespace DamageLog
         public DamageLog(CharacterBody body)
         {
             if (body == null) return;
-            // Do not track "Horde of Many"
             if (IsIgnoredBossSubtitle(body.subtitleNameToken)) return;
 
             targetBody = body;
             targetDisplayName = Util.GetBestBodyName(body.gameObject);
-            targetDisplayStyle = "cIsHealth";
             targetDiscriminator = Plugin.Data.EncounterBody(body.baseNameToken);
-            entriesExpire = false;
+            isBoss = true;
 
             int key = body.GetInstanceID();
             Plugin.Data.AddBossLog(key, Track(body));
@@ -50,7 +48,7 @@ namespace DamageLog
         {
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
-            Log.Debug($"Tracking {targetLogName}.");
+            Log.Debug($"Tracking {targetName}.");
             return this;
         }
 
@@ -59,10 +57,10 @@ namespace DamageLog
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (targetBody?.master != null) targetBody.master.onBodyDestroyed -= Cease;
-            else Log.Warning($"Could not unsubscribe {targetLogName} {nameof(CharacterMaster.onBodyDestroyed)}.");
+            else Log.Warning($"Could not unsubscribe {targetName} {nameof(CharacterMaster.onBodyDestroyed)}.");
 
             var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
-            Log.Debug($"Untracking {targetLogName}. | {caller.DeclaringType}::{caller.Name}");
+            Log.Debug($"Untracking {targetName}. | {caller.DeclaringType}::{caller.Name}");
         }
 
         private void Record(DamageDealtMessage e)
@@ -70,10 +68,11 @@ namespace DamageLog
             if (targetBody == null || e.victim != targetBody.gameObject) return;
 
             string key = DamageSource.GenerateIdentifier(e.attacker, DamageSource.IsFallDamage(e), DamageSource.IsVoidFogDamage(e));
-            if (entries.TryGetValue(key, out DamageSource latest)) {
+            if (entries.TryGetValue(key, out DamageSource latest) && !IsExpired(time - latest.time)) {
                 latest.Add(e);
             }
             else {
+                entries.Remove(key);
                 latest = new DamageSource(e);
                 entries.Add(key, latest);
             }
@@ -85,24 +84,37 @@ namespace DamageLog
 
         private void Prune()
         {
-            int i = 0;
-            float endTime = (timeOfDeath > 0) ? timeOfDeath : Time.time;
-            foreach (DamageSource src in GetEntries()) {
-                TryPrune(src, endTime, i);
-                i++;
-            }
+            Decay();
+            Displace();
         }
 
-        public bool TryPrune(DamageSource src, float endTime, int i)
+        private void Decay()
         {
-            bool expired = (entriesExpire && (endTime - src.time >= Plugin.Config.EntryMaxRetainTime));
-            if (i > Plugin.Config.EntryMaxCount || expired) {
-                entries.Remove(src.identifier);
-                return true;
+            float now = time;
+            foreach (DamageSource src in GetEntries()) {
+                if (IsExpired(now - src.time)) {
+                    entries.Remove(src.identifier);
+                }
             }
-            return false;
         }
 
+        private void Displace()
+        {
+            List<DamageSource> orderedEntries = GetEntries();
+            for (int i = 0; i < orderedEntries.Count; i++) {
+                if (i >= Plugin.Config.EntryMaxCount) {
+                    entries.Remove(orderedEntries[i].identifier);
+                }
+            }
+        }
+
+        public bool IsExpired(float elapsedTime)
+            => (!isBoss && elapsedTime > Plugin.Config.EntryMaxRetainTime);
+
+        /// <returns>
+        /// The <see cref="DamageSource"/>s contained in the <see cref="DamageLog"/>,
+        /// ordered by decreasing recency.
+        /// </returns>
         public List<DamageSource> GetEntries()
         {
             List<DamageSource> list = entries.Values.ToList();
@@ -120,10 +132,10 @@ namespace DamageLog
 
             switch (subtitleNameToken) {
                 default: return false;
-                case "NULL_SUBTITLE":
-                case "LUNARWISP_BODY_SUBTITLE":
-                case "LUNARGOLEM_BODY_SUBTITLE":
-                case "LUNAREXPLODER_BODY_SUBTITLE":
+                case "NULL_SUBTITLE":               // "Horde of Many"
+                case "LUNARWISP_BODY_SUBTITLE":     // "Zenith Designs"
+                case "LUNARGOLEM_BODY_SUBTITLE":    // "Zenith Designs"
+                case "LUNAREXPLODER_BODY_SUBTITLE": // "Zenith Designs"
                     return true;
             }
         }

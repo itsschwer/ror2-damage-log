@@ -3,6 +3,7 @@
 - Change portrait for void cradles/potentials
     - Now uses the *Survivors of the Void* icon rather than the Voidtouched icon
 - Renamed configuration option `textModeFontSize` to `textSize`
+- Separate damage source pruning logic from display logic *(make pruning behaviour more consistent)*
 - Limit the lifetime of damage logs to that of a run
     - *Prevent potential memory leak where `NetworkUsers` accumulate without being cleared*
 - Fix logic errors *(`DamageLog.Cease()`, `DamageLog.Record()`)*

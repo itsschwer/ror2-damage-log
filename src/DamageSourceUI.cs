@@ -74,9 +74,9 @@ namespace DamageLog
 
 
 
-        public void Display(DamageSource src, float hitTime)
+        public void Display(DamageSource src, float elapsedTime)
         {
-            if (src == null) { Clear(); return; }
+            if (src == null) { Hide(); return; }
 
             portrait.gameObject.SetActive(true);
             portrait.texture = src.attackerPortrait;
@@ -97,7 +97,7 @@ namespace DamageLog
             if (singleHit) hits.SetText("");
             else hits.SetText($"<style=cStack>×{src.hits}</style>");
 
-            time.SetText($"<style=cSub>{hitTime:0.00s}</style>");
+            time.SetText($"<style=cSub>{elapsedTime:0.00s}</style>");
 
             tooltip.titleColor = src.isPlayerDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.HardDifficulty)
                                   : src.isFallDamage ? ColorCatalog.GetColor(ColorCatalog.ColorIndex.NormalDifficulty)
@@ -107,7 +107,7 @@ namespace DamageLog
             tooltip.bodyToken = GenerateTooltipString(src);
         }
 
-        public DamageSourceUI Clear()
+        public DamageSourceUI Hide()
         {
             portrait.gameObject.SetActive(false);
             return this;

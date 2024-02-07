@@ -111,7 +111,7 @@ namespace DamageLog
             layout.spacing = Plugin.Config.Spacing;
 
             for (int i = 0; i < Plugin.Config.EntryMaxCount; i++) {
-                uiEntries.Add(DamageSourceUI.Create((RectTransform)gameObject.transform).Clear());
+                uiEntries.Add(DamageSourceUI.Create((RectTransform)gameObject.transform).Hide());
             }
         }
 
@@ -177,31 +177,30 @@ namespace DamageLog
         {
             if (Plugin.Config.SimpleTextMode) return;
 
+            float now = log.time;
             List<DamageSource> entries = log.GetEntries();
             for (int i = 0; i < uiEntries.Count; i++) {
-                if (i >= entries.Count) { uiEntries[i].Clear(); continue; }
+                if (i >= entries.Count) { uiEntries[i].Hide(); continue; }
 
-                float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
-                if (log.TryPrune(entries[i], endTime, i)) { uiEntries[i].Clear(); continue; }
-
-                uiEntries[i].Display(entries[i], endTime - entries[i].time);
+                float elapsedTime = now - entries[i].time;
+                if (log.IsExpired(elapsedTime)) uiEntries[i].Hide();
+                else uiEntries[i].Display(entries[i], elapsedTime);
             }
         }
 
         private static string GenerateTextLog(DamageLog log)
         {
             System.Text.StringBuilder sb = new();
-            string target = string.IsNullOrWhiteSpace(log.targetDisplayStyle) ? log.targetDisplayName : $"<style={log.targetDisplayStyle}>{log.targetDisplayName}</style>";
+            string name = log.isBoss ? $"<style=cIsHealth>{log.targetDisplayName}</style>" : log.targetDisplayName;
             string discriminator = (log.targetDiscriminator == 0) ? "" : $" <style=cStack>{log.targetDiscriminator}</style>";
-            sb.AppendLine($"<style=cWorldEvent>Damage Log <{target}{discriminator}></style>");
+            sb.AppendLine($"<style=cWorldEvent>Damage Log <{name}{discriminator}></style>");
 
             if (!Plugin.Config.SimpleTextMode) return sb.ToString();
 
-            int i = -1; // incremented before check
-            float endTime = (log.timeOfDeath > 0) ? log.timeOfDeath : Time.time;
+            float now = log.time;
             foreach (DamageSource src in log.GetEntries()) {
-                i++;
-                if (log.TryPrune(src, endTime, i)) continue;
+                float elapsedTime = now - src.time;
+                if (log.IsExpired(elapsedTime)) continue;
 
                 string style = src.isPlayerDamage ? "cDeath" : src.isFallDamage ? "cHumanObjective" : src.isVoidFogDamage ? "cIsVoid" : "";
                 if (string.IsNullOrEmpty(style)) sb.Append(src.attackerName);
@@ -212,7 +211,7 @@ namespace DamageLog
                 sb.Append($" · <style=cIsDamage>-{src.totalDamagePercent:0.0%}</style>");
                 if (singleHit) sb.Append($" <style=cEvent>({src.remainingHpPercent:0.0%})</style>");
 
-                sb.AppendLine($" · <style=cSub>{(endTime - src.time):0.00s}</style>");
+                sb.AppendLine($" · <style=cSub>{elapsedTime:0.00s}</style>");
             }
 
             return sb.ToString();
