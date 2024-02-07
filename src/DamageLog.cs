@@ -79,7 +79,7 @@ namespace DamageLog
 
             if (latest.remainingHpPercent <= 0f) timeOfDeath = Time.time;
 
-            if (entries.Count > Plugin.Config.EntryMaxCount) Prune();
+            if (entries.Count > Plugin.Config.EntryMaxCount && !isBoss) Prune();
         }
 
         private void Prune()
@@ -101,10 +101,8 @@ namespace DamageLog
         private void Displace()
         {
             List<DamageSource> orderedEntries = GetEntries();
-            for (int i = 0; i < orderedEntries.Count; i++) {
-                if (i >= Plugin.Config.EntryMaxCount) {
-                    entries.Remove(orderedEntries[i].identifier);
-                }
+            for (int i = Plugin.Config.EntryMaxCount; i < orderedEntries.Count; i++) {
+                entries.Remove(orderedEntries[i].identifier);
             }
         }
 
