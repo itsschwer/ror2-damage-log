@@ -34,7 +34,7 @@ namespace DamageLog
         {
             Run.onRunStartGlobal += OnRunStartOrDestroy;
             Run.onRunDestroyGlobal += OnRunStartOrDestroy;
-            CharacterBody.onBodyStartGlobal += TrackUser;
+            CharacterBody.onBodyStartGlobal += TrackBody;
             HUD.shouldHudDisplay += DamageLogUI.Init;
             Stage.onStageStartGlobal += OnStageStart;
             Log.Message($"~enabled.");
@@ -45,7 +45,7 @@ namespace DamageLog
         {
             Run.onRunStartGlobal -= OnRunStartOrDestroy;
             Run.onRunDestroyGlobal -= OnRunStartOrDestroy;
-            CharacterBody.onBodyStartGlobal -= TrackUser;
+            CharacterBody.onBodyStartGlobal -= TrackBody;
             HUD.shouldHudDisplay -= DamageLogUI.Init;
             Stage.onStageStartGlobal -= OnStageStart;
             Log.Message($"~disabled.");
@@ -57,11 +57,16 @@ namespace DamageLog
             => Data.ClearBossLogs();
 
 
-        private static void TrackUser(CharacterBody body)
+        private static void TrackBody(CharacterBody body)
         {
-            if (!body.isPlayerControlled) return;
-
-            new DamageLog(Util.LookUpBodyNetworkUser(body), body);
+            if (body.isPlayerControlled) {
+                new DamageLog(Util.LookUpBodyNetworkUser(body), body);
+            }
+            // Tracking bosses for clients...
+            else if (Config.TrackBosses && body.isBoss) {
+                Log.Debug($"{nameof(TrackBody)}> Found {body.name}");
+                new DamageLog(body);
+            }
         }
 
         internal static void TrackBoss(BossGroup boss, CharacterMaster member)
@@ -72,6 +77,7 @@ namespace DamageLog
                 Log.Debug($"{nameof(TrackBoss)}> Discovered and found {member.name} | {body.name} | {boss.name}");
                 new DamageLog(body);
             }
+            // Tracking bosses for clients...
             else {
                 Log.Debug($"{nameof(TrackBoss)}> Discovered {member.name} | {boss.name}");
                 member.onBodyStart += TrackBoss;
@@ -80,6 +86,7 @@ namespace DamageLog
 
         private static void TrackBoss(CharacterBody body)
         {
+            // Tracking bosses for clients...
             body.master.onBodyStart -= TrackBoss;
             Log.Debug($"{nameof(TrackBoss)}> Found {body.master.name} | {body.name}");
 
