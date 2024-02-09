@@ -13,8 +13,8 @@ namespace DamageLog
         public const string Version = "1.0.0";
 
         internal static new Config Config { get; private set; }
-        internal static void ReloadConfig() => RequestConfigReload?.Invoke();
-        private static System.Action RequestConfigReload;
+        internal static void RequestConfigReload() => ReloadConfig?.Invoke();
+        private static System.Action ReloadConfig;
 
         internal static Data Data { get; private set; }
 
@@ -25,7 +25,7 @@ namespace DamageLog
             Config = new Config(base.Config);
             Data = new Data();
             new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll();
-            RequestConfigReload = base.Config.Reload;
+            ReloadConfig = base.Config.Reload;
             Log.Message($"~awake.");
         }
 

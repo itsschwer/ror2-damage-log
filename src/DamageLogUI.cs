@@ -76,7 +76,7 @@ namespace DamageLog
 
         private void CreateUI(GameObject parent)
         {
-            Plugin.ReloadConfig();
+            Plugin.RequestConfigReload();
             user = hud?.localUserViewer?.currentNetworkUser;
             CreateCanvas(parent);
             CreateText();
