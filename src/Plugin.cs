@@ -34,7 +34,7 @@ namespace DamageLog
         {
             Run.onRunStartGlobal += OnRunStartOrDestroy;
             Run.onRunDestroyGlobal += OnRunStartOrDestroy;
-            CharacterBody.onBodyStartGlobal += TrackBody;
+            CharacterBody.onBodyStartGlobal += TrackUser;
             HUD.shouldHudDisplay += DamageLogUI.Init;
             Stage.onStageStartGlobal += OnStageStart;
             Log.Message($"~enabled.");
@@ -45,7 +45,7 @@ namespace DamageLog
         {
             Run.onRunStartGlobal -= OnRunStartOrDestroy;
             Run.onRunDestroyGlobal -= OnRunStartOrDestroy;
-            CharacterBody.onBodyStartGlobal -= TrackBody;
+            CharacterBody.onBodyStartGlobal -= TrackUser;
             HUD.shouldHudDisplay -= DamageLogUI.Init;
             Stage.onStageStartGlobal -= OnStageStart;
             Log.Message($"~disabled.");
@@ -57,16 +57,11 @@ namespace DamageLog
             => Data.ClearBossLogs();
 
 
-        private static void TrackBody(CharacterBody body)
+        private static void TrackUser(CharacterBody body)
         {
-            if (body.isPlayerControlled) {
-                new DamageLog(Util.LookUpBodyNetworkUser(body), body);
-            }
-            // Tracking bosses for clients...
-            else if (Config.TrackBosses && body.isBoss) {
-                Log.Debug($"{nameof(TrackBody)}> Found {body.name}");
-                new DamageLog(body);
-            }
+            if (!body.isPlayerControlled) return;
+            
+            new DamageLog(Util.LookUpBodyNetworkUser(body), body);
         }
 
         internal static void TrackBoss(BossGroup boss, CharacterMaster member)
