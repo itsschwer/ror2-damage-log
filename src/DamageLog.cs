@@ -57,7 +57,7 @@ namespace DamageLog
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (targetBody?.master != null) targetBody.master.onBodyDestroyed -= Cease;
-            else Log.Warning($"Could not unsubscribe {targetName} {nameof(CharacterMaster.onBodyDestroyed)}.");
+            else Log.Warning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {targetName}.");
 
             var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
             Log.Debug($"Untracking {targetName}. | {caller.DeclaringType}::{caller.Name}");
