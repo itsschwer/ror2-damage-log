@@ -68,16 +68,17 @@ namespace DamageLog
         {
             if (!Config.TrackBosses) return;
 
-            /* Not sure why this is unreliable on clients.
-             * Could be that body and master already exist,
-             * but master not yet linked to body??
+            /* May be unreliable on clients?
+             * Not all discovered bodies could be found/tracked when testing as client,
+             * but when testing as host, other clients seemed fine?
+             * ∴ May be affected by host connection/performance/other mods?
              */
             CharacterBody body = member.GetBody();
             if (body != null) {
                 Log.Debug($"{nameof(TrackBoss)}> Discovered and found {member.name} | {body.name} | {boss.name}");
                 new DamageLog(body);
             }
-            // Unreliable fallback for clients...
+            // Fallback for clients...
             else {
                 Log.Debug($"{nameof(TrackBoss)}> Discovered {member.name} | {boss.name}");
                 member.onBodyStart += TrackBoss;
@@ -86,7 +87,7 @@ namespace DamageLog
 
         private static void TrackBoss(CharacterBody body)
         {
-            // Unreliable fallback for clients...
+            // Fallback for clients...
             body.master.onBodyStart -= TrackBoss;
             Log.Debug($"{nameof(TrackBoss)}> Found {body.master.name} | {body.name}");
 
