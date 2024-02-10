@@ -16,7 +16,7 @@ sometimes it can be hard to tell what you are taking damage from.
 - how many entries are logged can be adjusted
 - the log only being visible in the scoreboard can be enabled
 - the log being presented in simple text mode can be enabled
-- damage logs for bosses can be enabled
+- *\[ **bonus** \]* generating damage logs for bosses can be enabled
 
 Portraits mode | Simple text mode
 --- | ---
@@ -24,7 +24,7 @@ Portraits mode | Simple text mode
 
 - the size of various DamageLog UI elements can be adjusted *(under the `m_Debug` section)*
 
-## issues
+## notes
 
 *please report any issues to the [GitHub repository](https://github.com/itsschwer/ror2-damage-log/issues)!*
 

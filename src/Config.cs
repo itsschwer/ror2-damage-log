@@ -62,7 +62,7 @@ namespace DamageLog
                 "The maximum length of time (seconds) a Damage Log entry will be retained for.\nMinimum is 1.");
             
             entryMaxCount = config.Bind<int>(Constraints, nameof(entryMaxCount), 16,
-                "The (soft) maximum number of Damage Log entries to retain at a time.\nMinimum is 1.");
+                "The maximum number of Damage Log entries to retain at a time.\nMinimum is 1.");
 
 
             const string Display = "Display";
