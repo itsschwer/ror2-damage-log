@@ -1,3 +1,4 @@
+## 1.1.0
 - Add ability to generate damage logs for bosses
     - Must be enabled in configuration file
 - Change portrait for void cradles/potentials
