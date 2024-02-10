@@ -32,6 +32,8 @@ Portraits mode | Simple text mode
 - damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
     - *sometimes attributed correctly on non-hosts?*
     - *why do Sulfur Pods (Sulfur Pools) not have the same issue?*
+- **\[ additional feature \]** boss damage logs do not reliably generate on clients
+    - boss damage log timers also may not reliably stop on boss death on clients
 
 ## see also
 

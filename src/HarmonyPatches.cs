@@ -16,19 +16,6 @@ namespace DamageLog
 
 
 
-        [HarmonyPostfix, HarmonyPatch(typeof(RoR2.BossGroup), nameof(RoR2.BossGroup.Awake))]
-        private static void BossGroup_Awake(RoR2.BossGroup __instance)
-        {
-            if (UnityEngine.Networking.NetworkServer.active) return;    // Only execute on clients
-
-            const string logId = $"{nameof(RoR2)}.{nameof(RoR2.BossGroup)}::{nameof(RoR2.BossGroup.Awake)}";
-            Log.Warning($"{logId}> ~start ({__instance.combatSquad.readOnlyMembersList.Count})");
-            foreach (RoR2.CharacterMaster memberMaster in __instance.combatSquad.readOnlyMembersList) {
-                Plugin.TrackBoss(__instance, memberMaster);
-            }
-            Log.Warning($"{logId}> ~end");
-        }
-
         [HarmonyPostfix, HarmonyPatch(typeof(RoR2.BossGroup), nameof(RoR2.BossGroup.OnMemberDiscovered))]
         private static void BossGroup_OnMemberDiscovered(RoR2.BossGroup __instance, RoR2.CharacterMaster memberMaster)
             => Plugin.TrackBoss(__instance, memberMaster);

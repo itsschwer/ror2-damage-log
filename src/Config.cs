@@ -54,7 +54,7 @@ namespace DamageLog
         public Config(ConfigFile config)
         {
             trackBosses = config.Bind<bool>("Bosses", nameof(trackBosses), false,
-                "Generate Damage Logs for bosses. Use " + nameof(cycleBossKey) + " to display these in the UI.");
+                "Generate Damage Logs for bosses. Use " + nameof(cycleBossKey) + " to display these in the UI.\nUnfortunately does not reliably generate for all bosses on multiplayer clients.");
 
 
             const string Constraints = "Constraints";

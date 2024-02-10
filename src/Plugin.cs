@@ -67,12 +67,17 @@ namespace DamageLog
         internal static void TrackBoss(BossGroup boss, CharacterMaster member)
         {
             if (!Config.TrackBosses) return;
+
+            /* Not sure why this is unreliable on clients.
+             * Could be that body and master already exist,
+             * but master not yet linked to body??
+             */
             CharacterBody body = member.GetBody();
             if (body != null) {
                 Log.Debug($"{nameof(TrackBoss)}> Discovered and found {member.name} | {body.name} | {boss.name}");
                 new DamageLog(body);
             }
-            // Tracking bosses for clients...
+            // Unreliable fallback for clients...
             else {
                 Log.Debug($"{nameof(TrackBoss)}> Discovered {member.name} | {boss.name}");
                 member.onBodyStart += TrackBoss;
@@ -81,7 +86,7 @@ namespace DamageLog
 
         private static void TrackBoss(CharacterBody body)
         {
-            // Tracking bosses for clients...
+            // Unreliable fallback for clients...
             body.master.onBodyStart -= TrackBoss;
             Log.Debug($"{nameof(TrackBoss)}> Found {body.master.name} | {body.name}");
 
