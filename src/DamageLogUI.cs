@@ -78,6 +78,7 @@ namespace DamageLog
         {
             Plugin.RequestConfigReload();
             user = hud?.localUserViewer?.currentNetworkUser;
+            if (user == null) Log.Warning("Failed to get HUD user (null).");
             CreateCanvas(parent);
             CreateText();
             if (!Plugin.Config.SimpleTextMode) CreateLayout();
@@ -141,7 +142,7 @@ namespace DamageLog
         /// </remarks>
         private void Update()
         {
-            // Scoreboard visibility logic from RoR2UI.HUD.Update()
+            // Scoreboard visibility logic from RoR2.UI.HUD.Update()
             bool visible = !Plugin.Config.OnlyShowWithScoreboard || (hud.localUserViewer?.inputPlayer != null && hud.localUserViewer.inputPlayer.GetButton("info"));
             canvas.enabled = visible;
             if (!visible) return;
@@ -159,7 +160,7 @@ namespace DamageLog
                 showingBoss = true;
             }
 
-            if ((!showingBoss && Plugin.Data.TryGetUserLog(user, out DamageLog log))
+            if ((!showingBoss && user != null && Plugin.Data.TryGetUserLog(user, out DamageLog log))
               || (showingBoss && Plugin.Data.TryGetBossLog(bossIndex, out log))) {
                 UpdateText(log);
                 UpdatePortraits(log);
