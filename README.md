@@ -8,6 +8,10 @@ A client-side mod that adds a damage log to the HUD to show what you have taken 
 
 sometimes it can be hard to tell what you are taking damage from.
 
+## controls
+
+`cycleUserKey` *(default: `left alt`)* can be used to cycle between player damage logs in multiplayer.
+
 ## configurable
 
 > The configuration file is automatically reloaded when the UI is created *(at the start of each stage)*
@@ -22,7 +26,7 @@ Portraits mode | Simple text mode
 --- | ---
 ![portraits mode damage log sample screenshot](https://github.com/itsschwer/ror2-damage-log/blob/main/xtra/compare-portrait.png?raw=true) | ![simple text mode damage log sample screenshot](https://github.com/itsschwer/ror2-damage-log/blob/main/xtra/compare-text.png?raw=true)
 
-- the size of various DamageLog UI elements can be adjusted *(under the `m_Debug` section)*
+- the size of various damage log UI elements can be adjusted *(under the `m_Debug` section)*
 
 ## notes
 
