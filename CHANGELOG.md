@@ -1,3 +1,7 @@
+### 1.1.1
+- Add 'controls' section to readme to better indicate the ability to cycle between user damage logs in multiplayer
+- Fix potential `ArgumentNullException` spam when the UI is initialised without a user
+
 ## 1.1.0
 - Add ability to generate damage logs for bosses
     - Must be enabled in configuration file
