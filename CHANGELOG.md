@@ -1,3 +1,4 @@
+### 1.1.2
 - Fix error preventing Run History entries from being viewed properly
 
 ### 1.1.1
