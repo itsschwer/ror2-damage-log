@@ -26,6 +26,11 @@ namespace DamageLog
 
         internal static void MoveToGameEndReportPanel(GameEndReportPanelController panel)
         {
+            if (hud == null) {
+                Log.Warning("Failed to move canvas (no HUD). This can safely be ignored if triggered by viewing Game End Report from Run History.");
+                return;
+            }
+
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
             if (ui == null) {
                 Log.Warning("Failed to move canvas (missing).");
@@ -40,6 +45,11 @@ namespace DamageLog
 
         internal static void DisplayPlayerDamageLog(NetworkUser user)
         {
+            if (hud == null) {
+                Log.Warning("Failed to update canvas (no HUD). This can safely be ignored if triggered by viewing Game End Report from Run History.");
+                return;
+            }
+
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
             if (ui == null) {
                 Log.Warning("Failed to update canvas (missing).");
