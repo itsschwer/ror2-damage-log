@@ -202,9 +202,9 @@ namespace DamageLog
         private static string GenerateTextLog(DamageLog log)
         {
             System.Text.StringBuilder sb = new();
-            string name = log.isBoss ? $"<style=cIsHealth>{log.targetDisplayName}</style>" : log.targetDisplayName;
-            string discriminator = (log.targetDiscriminator == 0) ? "" : $" <style=cStack>{log.targetDiscriminator}</style>";
-            sb.AppendLine($"<style=cWorldEvent>Damage Log <{name}{discriminator}></style>");
+            string name = log.isBoss ? $"<style=cIsHealth>{log.targetName}</style>" : log.targetName;
+            string identifier = (log.targetNetId == 0) ? "" : $" <style=cStack>{log.targetNetId}</style>";
+            sb.AppendLine($"<style=cWorldEvent>Damage Log <{name}{identifier}></style>");
 
             if (!Plugin.Config.SimpleTextMode) return sb.ToString();
 

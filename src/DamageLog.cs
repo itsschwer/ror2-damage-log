@@ -7,14 +7,15 @@ namespace DamageLog
 {
     public sealed class DamageLog
     {
-        public readonly string targetDisplayName;
-        public readonly int targetDiscriminator;
-#pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
-        private string targetName => (targetDiscriminator == 0) ? targetDisplayName : $"{targetDisplayName} {targetDiscriminator}";
-#pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
-        public readonly bool isBoss = false;
-        private readonly Dictionary<string, DamageSource> entries = [];
         private readonly CharacterBody targetBody;
+        public readonly string targetName;
+        public readonly bool isBoss = false;
+        public readonly uint targetNetId = 0;
+#pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
+        private string targetDisplayName => (targetNetId == 0) ? targetName : $"{targetName} {targetNetId}";
+#pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
+
+        private readonly Dictionary<string, DamageSource> entries = [];
         private float timeOfDeath = -1;
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
         public float time => (timeOfDeath > 0) ? timeOfDeath : Time.time;
@@ -25,7 +26,7 @@ namespace DamageLog
             if (user == null || body == null) return;
 
             targetBody = body;
-            targetDisplayName = user.userName;
+            targetName = user.userName;
 
             Plugin.Data.AddUserLog(user, Track(body));
         }
@@ -36,11 +37,11 @@ namespace DamageLog
             if (IsIgnoredBossSubtitle(body.subtitleNameToken)) return;
 
             targetBody = body;
-            targetDisplayName = Util.GetBestBodyName(body.gameObject);
-            targetDiscriminator = Plugin.Data.EncounterBody(body.baseNameToken);
+            targetName = Util.GetBestBodyName(body.gameObject);
             isBoss = true;
+            targetNetId = targetBody.netId.Value;
 
-            int key = body.GetInstanceID();
+            uint key = body.netId.Value;
             Plugin.Data.AddBossLog(key, Track(body));
         }
 
@@ -48,7 +49,7 @@ namespace DamageLog
         {
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
-            Log.Debug($"Tracking {targetName}.");
+            Log.Debug($"Tracking {targetDisplayName}.");
             return this;
         }
 
@@ -57,10 +58,10 @@ namespace DamageLog
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (targetBody?.master != null) targetBody.master.onBodyDestroyed -= Cease;
-            else Log.Warning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {targetName}.");
+            else Log.Warning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {targetDisplayName}.");
 
             var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
-            Log.Debug($"Untracking {targetName}. | {caller.DeclaringType}::{caller.Name}");
+            Log.Debug($"Untracking {targetDisplayName}. | {caller.DeclaringType}::{caller.Name}");
         }
 
         private void Record(DamageDealtMessage e)

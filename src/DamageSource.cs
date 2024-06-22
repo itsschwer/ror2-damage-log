@@ -171,7 +171,7 @@ namespace DamageLog
         public static string GenerateIdentifier(GameObject attacker, bool isFallDamage, bool isVoidFogDamage)
         {
             string identifier = "??";
-            if (attacker != null) identifier = attacker.GetInstanceID().ToString();
+            if (attacker != null) identifier = attacker.GetInstanceID().ToString(); // Replace with NetworkInstanceId?
             if (isFallDamage) identifier = "fall_damage";
             if (isVoidFogDamage) identifier = "void_fog_damage";
 

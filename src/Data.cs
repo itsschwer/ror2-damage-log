@@ -6,17 +6,14 @@ namespace DamageLog
     internal sealed class Data
     {
         private readonly Dictionary<RoR2.NetworkUser, DamageLog> userLogs = [];
-        private readonly Dictionary<int, DamageLog> bossLogs = [];
+        private readonly Dictionary<uint, DamageLog> bossLogs = [];
         public bool HasBossLogs => bossLogs.Count > 0;
-
-        private readonly Dictionary<string, int> encounters = [];
-        public int EncounterBody(string nameToken) => encounters.ContainsKey(nameToken) ? ++encounters[nameToken] : encounters[nameToken] = 1;
 
         internal void AddUserLog(RoR2.NetworkUser user, DamageLog log)
             => Add(userLogs, user, log);
 
-        internal void AddBossLog(int instanceID, DamageLog log)
-            => Add(bossLogs, instanceID, log);
+        internal void AddBossLog(uint netId, DamageLog log)
+            => Add(bossLogs, netId, log);
 
         internal bool TryGetUserLog(RoR2.NetworkUser user, out DamageLog log)
             => userLogs.TryGetValue(user, out log);
@@ -34,7 +31,6 @@ namespace DamageLog
         {
             Log.Debug("Clearing boss damage logs.");
             Clear(bossLogs);
-            encounters.Clear();
         }
 
         internal void ClearAll()
