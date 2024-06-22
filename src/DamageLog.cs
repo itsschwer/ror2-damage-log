@@ -13,7 +13,7 @@ namespace DamageLog
         public readonly uint targetNetId = 0;
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
         public string targetNetIdHex => targetNetId.ToString("x8");
-        private string targetDisplayName => (targetNetId == 0) ? targetName : $"{targetName} {targetNetIdHex}";
+        private string targetLogName => (targetNetId == 0) ? targetName : $"{targetName} <{targetNetIdHex}>";
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
         private readonly Dictionary<string, DamageSource> entries = [];
@@ -50,7 +50,7 @@ namespace DamageLog
         {
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
-            Log.Debug($"Tracking {targetDisplayName}.");
+            Log.Debug($"Tracking {targetLogName}.");
             return this;
         }
 
@@ -59,10 +59,10 @@ namespace DamageLog
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (targetBody?.master != null) targetBody.master.onBodyDestroyed -= Cease;
-            else Log.Warning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {targetDisplayName}.");
+            else Log.Warning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {targetLogName}.");
 
             var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
-            Log.Debug($"Untracking {targetDisplayName}. | {caller.DeclaringType}::{caller.Name}");
+            Log.Debug($"Untracking {targetLogName}. | {caller.DeclaringType}::{caller.Name}");
         }
 
         private void Record(DamageDealtMessage e)

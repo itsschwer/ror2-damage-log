@@ -204,7 +204,8 @@ namespace DamageLog
             System.Text.StringBuilder sb = new();
             string name = log.isBoss ? $"<style=cIsHealth>{log.targetName}</style>" : log.targetName;
             string identifier = (log.targetNetId == 0) ? "" : $" <style=cStack>{log.targetNetIdHex}</style>";
-            sb.AppendLine($"<style=cWorldEvent>Damage Log <{name}{identifier}></style>");
+            sb.AppendLine("<style=cWorldEvent>Damage Log");
+            sb.AppendLine($"<{name}{identifier}></style>");
 
             if (!Plugin.Config.SimpleTextMode) return sb.ToString();
 
