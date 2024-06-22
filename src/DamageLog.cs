@@ -12,7 +12,8 @@ namespace DamageLog
         public readonly bool isBoss = false;
         public readonly uint targetNetId = 0;
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
-        private string targetDisplayName => (targetNetId == 0) ? targetName : $"{targetName} {targetNetId}";
+        public string targetNetIdHex => targetNetId.ToString("x8");
+        private string targetDisplayName => (targetNetId == 0) ? targetName : $"{targetName} {targetNetIdHex}";
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
         private readonly Dictionary<string, DamageSource> entries = [];
