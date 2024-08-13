@@ -20,7 +20,7 @@ sometimes it can be hard to tell what you are taking damage from.
 - how many entries are logged can be adjusted
 - the log only being visible in the scoreboard can be enabled
 - the log being presented in simple text mode can be enabled
-- *\[ **bonus** \]* generating damage logs for bosses can be enabled
+- *\[ **bonus** :: experimental \]* generating damage logs for bosses can be enabled
 
 Portraits mode | Simple text mode
 --- | ---
@@ -36,6 +36,12 @@ Portraits mode | Simple text mode
 - damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
     - *sometimes attributed correctly on non-hosts?*
     - *why do Sulfur Pods (Sulfur Pools) not have the same issue?*
+- *\[ experimental \]* boss damage logs:
+    - bosses don't always have a damage log generated when playing as client?
+    - name doesn't capture elite prefix when playing as host?
+    - occasionally has significant discrepencies between host and client(s?)?
+    - sometimes doesn't capture the killing instance of damage?
+    - damage log timers continue counting after a boss is killed with Trophy Hunter's Tricorn?
 
 ## see also
 
