@@ -1,3 +1,9 @@
+### 1.1.4
+- Hotfix for the Seekers of the Storm patch
+    - Fixes damage logs not populating with entries when taking damage
+        - *`[Error  : Unity Log] Failed at InvokeHandler, probably malformed packet!`*
+    - *Please use the previous version of this mod if playing on an older game version!*
+
 ### 1.1.3
 - Track bosses by network id instead of instance id *(improve ability to identify shared boss logs between clients, replacing unreliable encounter counting)*
 

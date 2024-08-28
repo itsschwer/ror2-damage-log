@@ -94,7 +94,7 @@ namespace DamageLog
             else Log.Warning($"Could not {nameof(UpdateHpDamagePercent)}");
         }
 
-        public static bool IsFallDamage(DamageDealtMessage e) => e.damageType.HasFlag(DamageType.FallDamage);
+        public static bool IsFallDamage(DamageDealtMessage e) => e.damageType.damageType.HasFlag(DamageType.FallDamage);
 
         public static bool IsVoidFogDamage(DamageDealtMessage e)
         {
