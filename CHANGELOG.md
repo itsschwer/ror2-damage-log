@@ -1,3 +1,4 @@
+### 1.1.3
 - Track bosses by network id instead of instance id *(improve ability to identify shared boss logs between clients, replacing unreliable encounter counting)*
 
 ### 1.1.2
