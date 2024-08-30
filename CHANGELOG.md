@@ -1,7 +1,7 @@
-- Attempt to restore compatibility with pre-SotS
-    - *Haven't tried rolling back to a pre-SotS patch to test if this works, please report any issues to the [GitHub repository](https://github.com/itsschwer/ror2-damage-log/issues)!*
-- \[SotS\] Restore custom attacker portrait for Artifact Reliquary
+### 1.1.5
+- Restore custom attacker portrait for Artifact Reliquary
 - Code refactoring
+- Add 'versions' section to README
 
 ### 1.1.4
 - Hotfix for the Seekers of the Storm patch
@@ -60,7 +60,7 @@
 - Fix portrait color for void damage sources
 - Add description to manifest.json
 - Start writing proper README
-- Create CHANGELOG.md
+- Create CHANGELOG
 <!--  -->
 - \[debug\] Improve debugging features
 

@@ -10,7 +10,7 @@ namespace DamageLog
         public const string GUID = Author + "." + Name;
         public const string Author = "itsschwer";
         public const string Name = "DamageLog";
-        public const string Version = "1.1.4";
+        public const string Version = "1.1.5";
 
         internal new static BepInEx.Logging.ManualLogSource Logger;
 
