@@ -1,3 +1,7 @@
+- Attempt to restore compatibility with pre-SotS
+    - *Haven't tried rolling back to a pre-SotS patch to test if this works, please report any issues to the [GitHub repository](https://github.com/itsschwer/ror2-damage-log/issues)!*
+- Code refactoring
+
 ### 1.1.4
 - Hotfix for the Seekers of the Storm patch
     - Fixes damage logs not populating with entries when taking damage
@@ -5,7 +9,8 @@
     - *Please use the previous version of this mod if playing on an older game version!*
 
 ### 1.1.3
-- Track bosses by network id instead of instance id *(improve ability to identify shared boss logs between clients, replacing unreliable encounter counting)*
+- Track bosses by network id instead of instance id
+    - *Improve ability to identify shared boss logs between clients, replacing unreliable encounter counting*
 
 ### 1.1.2
 - Fix error preventing Run History entries from being viewed properly
@@ -56,7 +61,7 @@
 - Start writing proper README
 - Create CHANGELOG.md
 <!--  -->
-- [debug] Improve debugging features
+- \[debug\] Improve debugging features
 
 ## 0.1.0
 - Satisfactory build
