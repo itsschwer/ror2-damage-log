@@ -15,7 +15,7 @@ namespace DamageLog
         /// </remarks>
         /// <param name="hud"></param>
         /// <param name="shouldDisplay"></param>
-        public static void Init(HUD hud, ref bool shouldDisplay)
+        public static void Init(HUD hud, ref bool _)
         {
             if (DamageLogUI.hud != null) return;
 

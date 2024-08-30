@@ -69,7 +69,7 @@ namespace DamageLog
         {
             if (targetBody == null || e.victim != targetBody.gameObject) return;
 
-            string key = DamageSource.GenerateIdentifier(e.attacker, DamageSource.IsFallDamage(e), DamageSource.IsVoidFogDamage(e));
+            string key = e.GenerateIdentifier();
             if (entries.TryGetValue(key, out DamageSource latest) && !IsExpired(time - latest.time)) {
                 latest.Add(e);
             }

@@ -6,35 +6,21 @@ namespace DamageLog
     public sealed class DamageSource
     {
         private static Texture _PlanetPortrait;
-        public static Texture PlanetPortrait {
-            get {
-                if (_PlanetPortrait == null) {
-                    _PlanetPortrait = LegacyResourcesAPI.Load<Texture>("Textures/BodyIcons/texUnidentifiedKillerIcon");
-                }
-                return _PlanetPortrait;
-            }
-        }
+        private static Texture PlanetPortrait => _PlanetPortrait ??= LegacyResourcesAPI.Load<Texture>("Textures/BodyIcons/texUnidentifiedKillerIcon");
 
         private static Texture _SotVPortrait;
-        public static Texture SotVPortrait {
-            get {
-                if (_SotVPortrait == null) {
-                    _SotVPortrait = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/UI/texVoidExpansionIcon.png").WaitForCompletion();
-                }
-                return _SotVPortrait;
-            }
-        }
+        private static Texture SotVPortrait => _SotVPortrait ??= UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/UI/texVoidExpansionIcon.png").WaitForCompletion();
 
 
 
 
         public readonly string identifier;
 
-        public readonly Texture attackerPortrait;
-        public readonly Color attackerColor;
         public readonly string attackerName;
+        public readonly Texture attackerPortrait;
+        public readonly Color attackerPortraitColor;
         public readonly Sprite eliteIcon;
-        public readonly Color eliteColor;
+        public readonly Color eliteIconColor;
 
         public readonly bool isPlayerDamage;
         public readonly bool isFallDamage;
@@ -53,12 +39,13 @@ namespace DamageLog
         {
             CharacterBody body = e.attacker?.GetComponent<CharacterBody>();
             isPlayerDamage = body?.isPlayerControlled ?? false;
-            isFallDamage = IsFallDamage(e);
-            isVoidFogDamage = IsVoidFogDamage(e);
+            isFallDamage = e.IsFallDamage();
+            isVoidFogDamage = e.IsVoidFogDamage();
 
-            identifier = GenerateIdentifier(e.attacker, isFallDamage, isVoidFogDamage);
-            GetAttackerInfo(e.attacker, isFallDamage, isVoidFogDamage, out attackerName, out attackerPortrait, out attackerColor);
-            GetEliteIcon(body, out eliteIcon, out eliteColor);
+            identifier = e.GenerateIdentifier();
+            attackerName = e.GetAttackerName();
+            GetAttackerPortrait(e, out attackerPortrait, out attackerPortraitColor);
+            GetEliteIcon(body, out eliteIcon, out eliteIconColor);
 
             if (identifier == "??") identifier += $" | {e.damageType} | {e.damageColorIndex} | {e.damage}";
 
@@ -94,43 +81,30 @@ namespace DamageLog
             else Plugin.Logger.LogWarning($"Could not {nameof(UpdateHpDamagePercent)}");
         }
 
-        public static bool IsFallDamage(DamageDealtMessage e) => (e.damageType & DamageType.FallDamage) != 0;
 
-        public static bool IsVoidFogDamage(DamageDealtMessage e)
-        {
-            // RoR2.FogDamageController.FixedUpdate()
-            return (e.damageType == (DamageType.BypassArmor | DamageType.BypassBlock)
-                && e.damageColorIndex == DamageColorIndex.Void
-                && e.attacker == null);
-            // Could use position to differentiate void fog instances?
-        }
 
-        public static void GetAttackerInfo(GameObject attacker, bool isFallDamage, bool isVoidFogDamage, out string name, out Texture portrait, out Color color)
+
+        private static void GetAttackerPortrait(DamageDealtMessage e, out Texture portrait, out Color color)
         {
-            name = Language.GetString("UNIDENTIFIED_KILLER_NAME");
             portrait = PlanetPortrait;
             color = Color.white;
 
-            if (attacker != null) {
-                string attackerName = Util.GetBestBodyName(attacker);
-                Texture attackerPortrait = attacker.GetComponent<CharacterBody>()?.portraitIcon;
+            if (e.attacker != null) {
+                Texture attackerPortrait = e.attacker.GetComponent<CharacterBody>()?.portraitIcon;
 
-                if (!string.IsNullOrEmpty(attackerName)) name = attackerName;
-                if (attackerPortrait == null) attackerPortrait = GetAlternativePortrait(attackerName, ref color, attacker);
+                if (attackerPortrait == null) attackerPortrait = GetAlternativeAttackerPortrait(e.attacker, e.GetAttackerName(), ref color);
                 if (attackerPortrait != null) portrait = attackerPortrait;
             }
-            else if (isFallDamage) {
-                name = "The Ground";
+            else if (e.IsFallDamage()) {
                 portrait = RoR2Content.Artifacts.weakAssKneesArtifactDef.smallIconSelectedSprite.texture;
             }
-            else if (isVoidFogDamage) {
-                name = "Void Fog";
+            else if (e.IsVoidFogDamage()) {
                 portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
                 color = DamageColor.FindColor(DamageColorIndex.Void);
             }
         }
 
-        public static Texture GetAlternativePortrait(string attackerName, ref Color color, GameObject attacker)
+        private static Texture GetAlternativeAttackerPortrait(GameObject attacker, string attackerName, ref Color color)
         {
             if (attackerName == Language.GetString("SHRINE_BLOOD_NAME")) {
                 color = ColorCatalog.GetColor(ColorCatalog.ColorIndex.Blood);
@@ -145,14 +119,14 @@ namespace DamageLog
             return null;
         }
 
-        public static void GetEliteIcon(CharacterBody body, out Sprite icon, out Color color)
+        private static void GetEliteIcon(CharacterBody body, out Sprite icon, out Color color)
         {
             BuffDef buff = GetEliteBuffDef(body);
             icon = buff?.iconSprite;
             color = buff?.buffColor ?? Color.white;
         }
 
-        public static BuffDef GetEliteBuffDef(CharacterBody body)
+        private static BuffDef GetEliteBuffDef(CharacterBody body)
         {
             BuffDef def = null;
             if (body == null || !body.isElite) return def;
@@ -166,22 +140,6 @@ namespace DamageLog
             }
 
             return def;
-        }
-
-        public static string GenerateIdentifier(GameObject attacker, bool isFallDamage, bool isVoidFogDamage)
-        {
-            string identifier = "??";
-            if (attacker != null) identifier = attacker.GetInstanceID().ToString(); // Replace with NetworkInstanceId?
-            if (isFallDamage) identifier = "fall_damage";
-            if (isVoidFogDamage) identifier = "void_fog_damage";
-
-            // Include name to differentiate when an attacker becomes elite (e.g. Voidtouched)
-            if (attacker != null) {
-                GetAttackerInfo(attacker, isFallDamage, isVoidFogDamage, out string name, out _, out _);
-                identifier += '·' + name;
-            }
-
-            return identifier;
         }
     }
 }
