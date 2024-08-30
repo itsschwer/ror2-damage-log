@@ -1,5 +1,6 @@
 - Attempt to restore compatibility with pre-SotS
     - *Haven't tried rolling back to a pre-SotS patch to test if this works, please report any issues to the [GitHub repository](https://github.com/itsschwer/ror2-damage-log/issues)!*
+- \[SotS\] Restore custom attacker portrait for Artifact Reliquary
 - Code refactoring
 
 ### 1.1.4

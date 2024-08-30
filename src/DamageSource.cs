@@ -92,7 +92,7 @@ namespace DamageLog
             if (e.attacker != null) {
                 Texture attackerPortrait = e.attacker.GetComponent<CharacterBody>()?.portraitIcon;
 
-                if (attackerPortrait == null) attackerPortrait = GetAlternativeAttackerPortrait(e.attacker, e.GetAttackerName(), ref color);
+                if (attackerPortrait == null || attackerPortrait == PlanetPortrait) attackerPortrait = GetAlternativeAttackerPortrait(e.attacker, e.GetAttackerName(), ref color);
                 if (attackerPortrait != null) portrait = attackerPortrait;
             }
             else if (e.IsFallDamage()) {
