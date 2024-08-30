@@ -12,24 +12,28 @@ namespace DamageLog
         public const string Name = "DamageLog";
         public const string Version = "1.1.4";
 
+        internal new static BepInEx.Logging.ManualLogSource Logger;
+
         internal static new Config Config { get; private set; }
         internal static void RequestConfigReload() => ReloadConfig?.Invoke();
         private static System.Action ReloadConfig;
 
         internal static Data Data { get; private set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void Awake()
         {
-            Log.Init(Logger);
+            // Use Plugin.GUID instead of Plugin.Name as source name
+            BepInEx.Logging.Logger.Sources.Remove(base.Logger);
+            Logger = BepInEx.Logging.Logger.CreateLogSource(Plugin.GUID);
+
             Config = new Config(base.Config);
             Data = new Data();
             new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll();
             ReloadConfig = base.Config.Reload;
-            Log.Message($"~awake.");
+
+            Logger.LogMessage($"~awake.");
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void OnEnable()
         {
             Run.onRunStartGlobal += OnRunStartOrDestroy;
@@ -37,10 +41,10 @@ namespace DamageLog
             CharacterBody.onBodyStartGlobal += TrackUser;
             HUD.shouldHudDisplay += DamageLogUI.Init;
             Stage.onStageStartGlobal += OnStageStart;
-            Log.Message($"~enabled.");
+
+            Logger.LogMessage($"~enabled.");
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Unity Message")]
         private void OnDisable()
         {
             Run.onRunStartGlobal -= OnRunStartOrDestroy;
@@ -48,13 +52,12 @@ namespace DamageLog
             CharacterBody.onBodyStartGlobal -= TrackUser;
             HUD.shouldHudDisplay -= DamageLogUI.Init;
             Stage.onStageStartGlobal -= OnStageStart;
-            Log.Message($"~disabled.");
+
+            Logger.LogMessage($"~disabled.");
         }
 
-        private static void OnRunStartOrDestroy(Run _)
-            => Data.ClearAll();
-        private static void OnStageStart(Stage _)
-            => Data.ClearBossLogs();
+        private static void OnRunStartOrDestroy(Run _) => Data.ClearAll();
+        private static void OnStageStart(Stage _)      => Data.ClearBossLogs();
 
 
         private static void TrackUser(CharacterBody body)
@@ -75,12 +78,12 @@ namespace DamageLog
              */
             CharacterBody body = member.GetBody();
             if (body != null) {
-                Log.Debug($"{nameof(TrackBoss)}> Discovered and found {member.name} | {body.name} | {boss.name}");
+                Logger.LogDebug($"{nameof(TrackBoss)}> Discovered and found {member.name} | {body.name} | {boss.name}");
                 new DamageLog(body);
             }
             // Fallback for clients...
             else {
-                Log.Debug($"{nameof(TrackBoss)}> Discovered {member.name} | {boss.name}");
+                Logger.LogDebug($"{nameof(TrackBoss)}> Discovered {member.name} | {boss.name}");
                 member.onBodyStart += TrackBoss;
             }
         }
@@ -89,7 +92,7 @@ namespace DamageLog
         {
             // Fallback for clients...
             body.master.onBodyStart -= TrackBoss;
-            Log.Debug($"{nameof(TrackBoss)}> Found {body.master.name} | {body.name}");
+            Logger.LogDebug($"{nameof(TrackBoss)}> Found {body.master.name} | {body.name}");
 
             new DamageLog(body);
         }

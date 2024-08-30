@@ -23,13 +23,13 @@ namespace DamageLog
 
         internal void ClearUserLogs()
         {
-            Log.Debug("Clearing user damage logs.");
+            Plugin.Logger.LogDebug("Clearing user damage logs.");
             Clear(userLogs);
         }
 
         internal void ClearBossLogs()
         {
-            Log.Debug("Clearing boss damage logs.");
+            Plugin.Logger.LogDebug("Clearing boss damage logs.");
             Clear(bossLogs);
         }
 
@@ -76,7 +76,7 @@ namespace DamageLog
         {
             if (logs.TryGetValue(key, out DamageLog log)) {
                 log.Cease();
-                Log.Debug("Replacing existing damage log.");
+                Plugin.Logger.LogDebug("Replacing existing damage log.");
             }
             logs[key] = newLog;
         }

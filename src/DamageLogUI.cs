@@ -19,7 +19,7 @@ namespace DamageLog
         {
             if (DamageLogUI.hud != null) return;
 
-            Log.Debug($"Adding to HUD.");
+            Plugin.Logger.LogDebug($"Adding to HUD.");
             hud.gameObject.AddComponent<DamageLogUI>();
             DamageLogUI.hud = hud;
         }
@@ -27,37 +27,37 @@ namespace DamageLog
         internal static void MoveToGameEndReportPanel(GameEndReportPanelController panel)
         {
             if (hud == null) {
-                Log.Warning("Failed to move canvas (no HUD). This can safely be ignored if triggered by viewing Game End Report from Run History.");
+                Plugin.Logger.LogWarning("Failed to move canvas (no HUD). This can safely be ignored if triggered by viewing Game End Report from Run History.");
                 return;
             }
 
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
             if (ui == null) {
-                Log.Warning("Failed to move canvas (missing).");
+                Plugin.Logger.LogWarning("Failed to move canvas (missing).");
                 return;
             }
 
             ui.gameObject.transform.SetParent(panel.transform);
             ui.enabled = false;
             ui.canvas.enabled = true;
-            Log.Debug("Moved canvas.");
+            Plugin.Logger.LogDebug("Moved canvas.");
         }
 
         internal static void DisplayPlayerDamageLog(NetworkUser user)
         {
             if (hud == null) {
-                Log.Warning("Failed to update canvas (no HUD). This can safely be ignored if triggered by viewing Game End Report from Run History.");
+                Plugin.Logger.LogWarning("Failed to update canvas (no HUD). This can safely be ignored if triggered by viewing Game End Report from Run History.");
                 return;
             }
 
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
             if (ui == null) {
-                Log.Warning("Failed to update canvas (missing).");
+                Plugin.Logger.LogWarning("Failed to update canvas (missing).");
                 return;
             }
 
             if (!Plugin.Data.TryGetUserLog(user, out DamageLog log)) {
-                Log.Warning($"Failed to find damage log for {user.userName}.");
+                Plugin.Logger.LogWarning($"Failed to find damage log for {user.userName}.");
                 return;
             }
 
@@ -88,11 +88,11 @@ namespace DamageLog
         {
             Plugin.RequestConfigReload();
             user = hud?.localUserViewer?.currentNetworkUser;
-            if (user == null) Log.Warning("Failed to get HUD user (null).");
+            if (user == null) Plugin.Logger.LogWarning("Failed to get HUD user (null).");
             CreateCanvas(parent);
             CreateText();
             if (!Plugin.Config.SimpleTextMode) CreateLayout();
-            Log.Debug($"Created canvas.");
+            Plugin.Logger.LogDebug($"Created canvas.");
         }
 
         private void CreateCanvas(GameObject parent)

@@ -50,7 +50,7 @@ namespace DamageLog
         {
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
-            Log.Debug($"Tracking {targetLogName}.");
+            Plugin.Logger.LogDebug($"Tracking {targetLogName}.");
             return this;
         }
 
@@ -59,10 +59,10 @@ namespace DamageLog
             if (timeOfDeath <= 0) timeOfDeath = Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (targetBody?.master != null) targetBody.master.onBodyDestroyed -= Cease;
-            else Log.Warning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {targetLogName}.");
+            else Plugin.Logger.LogWarning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {targetLogName}.");
 
             var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
-            Log.Debug($"Untracking {targetLogName}. | {caller.DeclaringType}::{caller.Name}");
+            Plugin.Logger.LogDebug($"Untracking {targetLogName}. | {caller.DeclaringType}::{caller.Name}");
         }
 
         private void Record(DamageDealtMessage e)

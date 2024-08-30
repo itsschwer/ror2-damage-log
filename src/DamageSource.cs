@@ -91,7 +91,7 @@ namespace DamageLog
                     ((health.combinedHealth - latestHitDamage) / health.fullCombinedHealth);
                 totalDamagePercent = totalDamage / health.fullCombinedHealth;
             }
-            else Log.Warning($"Could not {nameof(UpdateHpDamagePercent)}");
+            else Plugin.Logger.LogWarning($"Could not {nameof(UpdateHpDamagePercent)}");
         }
 
         public static bool IsFallDamage(DamageDealtMessage e) => (e.damageType & DamageType.FallDamage) != 0;
