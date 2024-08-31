@@ -11,15 +11,17 @@ namespace DamageLog
         private static HUD hud;
 
         /// <remarks>
-        /// Subscribes to <see cref="HUD.shouldHudDisplay"/>, which functionally appears to be invoked at the start of each stage.
+        /// Subscribes to <see cref="HUD.shouldHudDisplay"/>, which is invoked in <see cref="HUD.UpdateHudVisibility"/>, which is called in <see cref="HUD.Update"/> (i.e. every frame).
+        /// Therefore, a guard clause is used to prevent multiple <see cref="DamageLogUI"/> components being added to the same <see cref="HUD"/> instance.
+        /// Functionally, this instantiates a <see cref="DamageLogUI"/> once at the start of each stage.
         /// </remarks>
         /// <param name="hud"></param>
-        /// <param name="shouldDisplay"></param>
-        public static void Init(HUD hud, ref bool _)
+        /// <param name="_"></param>
+        public static void Instantiate(HUD hud, ref bool _)
         {
             if (DamageLogUI.hud != null) return;
 
-            Plugin.Logger.LogDebug($"Adding to HUD.");
+            Plugin.Logger.LogDebug("Adding to HUD.");
             hud.gameObject.AddComponent<DamageLogUI>();
             DamageLogUI.hud = hud;
         }
@@ -92,7 +94,7 @@ namespace DamageLog
             CreateCanvas(parent);
             CreateText();
             if (!Plugin.Config.SimpleTextMode) CreateLayout();
-            Plugin.Logger.LogDebug($"Created canvas.");
+            Plugin.Logger.LogDebug("Created canvas.");
         }
 
         private void CreateCanvas(GameObject parent)

@@ -31,7 +31,7 @@ namespace DamageLog
             new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll();
             ReloadConfig = base.Config.Reload;
 
-            Logger.LogMessage($"~awake.");
+            Logger.LogMessage("~awake.");
         }
 
         private void OnEnable()
@@ -39,10 +39,10 @@ namespace DamageLog
             Run.onRunStartGlobal += OnRunStartOrDestroy;
             Run.onRunDestroyGlobal += OnRunStartOrDestroy;
             CharacterBody.onBodyStartGlobal += TrackUser;
-            HUD.shouldHudDisplay += DamageLogUI.Init;
+            HUD.shouldHudDisplay += DamageLogUI.Instantiate;
             Stage.onStageStartGlobal += OnStageStart;
 
-            Logger.LogMessage($"~enabled.");
+            Logger.LogMessage("~enabled.");
         }
 
         private void OnDisable()
@@ -50,10 +50,10 @@ namespace DamageLog
             Run.onRunStartGlobal -= OnRunStartOrDestroy;
             Run.onRunDestroyGlobal -= OnRunStartOrDestroy;
             CharacterBody.onBodyStartGlobal -= TrackUser;
-            HUD.shouldHudDisplay -= DamageLogUI.Init;
+            HUD.shouldHudDisplay -= DamageLogUI.Instantiate;
             Stage.onStageStartGlobal -= OnStageStart;
 
-            Logger.LogMessage($"~disabled.");
+            Logger.LogMessage("~disabled.");
         }
 
         private static void OnRunStartOrDestroy(Run _) => Data.ClearAll();
