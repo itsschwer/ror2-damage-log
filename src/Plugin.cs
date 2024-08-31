@@ -12,7 +12,7 @@ namespace DamageLog
         public const string Name = "DamageLog";
         public const string Version = "1.1.5";
 
-        internal new static BepInEx.Logging.ManualLogSource Logger;
+        internal new static BepInEx.Logging.ManualLogSource Logger { get; private set; }
 
         internal static new Config Config { get; private set; }
         internal static void RequestConfigReload() => ReloadConfig?.Invoke();
