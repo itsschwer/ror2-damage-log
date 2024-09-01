@@ -22,6 +22,10 @@ namespace DamageLog
 
     internal sealed class Config
     {
+        private readonly ConfigFile file;
+        internal void Reload() { Plugin.Logger.LogDebug($"Reloading {file.ConfigFilePath.Substring(file.ConfigFilePath.LastIndexOf(System.IO.Path.DirectorySeparatorChar)+1)}"); file.Reload(); }
+
+
         // Bosses
         private readonly ConfigEntry<bool> trackBosses;
         public bool TrackBosses => trackBosses.Value;
@@ -53,6 +57,8 @@ namespace DamageLog
 
         public Config(ConfigFile config)
         {
+            file = config;
+
             trackBosses = config.Bind<bool>("Bosses", nameof(trackBosses), false,
                 "Generate Damage Logs for bosses. Use " + nameof(cycleBossKey) + " to display these in the UI.");
 

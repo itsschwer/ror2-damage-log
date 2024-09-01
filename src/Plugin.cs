@@ -15,8 +15,6 @@ namespace DamageLog
         internal new static BepInEx.Logging.ManualLogSource Logger { get; private set; }
 
         internal static new Config Config { get; private set; }
-        internal static void RequestConfigReload() => ReloadConfig?.Invoke();
-        private static System.Action ReloadConfig;
 
         internal static Data Data { get; private set; }
 
@@ -29,7 +27,6 @@ namespace DamageLog
             Config = new Config(base.Config);
             Data = new Data();
             new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll();
-            ReloadConfig = base.Config.Reload;
 
             Logger.LogMessage("~awake.");
         }

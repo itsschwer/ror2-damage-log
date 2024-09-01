@@ -88,7 +88,7 @@ namespace DamageLog
 
         private void CreateUI(GameObject parent)
         {
-            Plugin.RequestConfigReload();
+            Plugin.Config.Reload();
             user = hud?.localUserViewer?.currentNetworkUser;
             if (user == null) Plugin.Logger.LogWarning("Failed to get HUD user (null).");
             CreateCanvas(parent);
