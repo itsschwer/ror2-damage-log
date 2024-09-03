@@ -1,3 +1,7 @@
+- Start assembly versioning
+- Update icon to be less blurry *(but more pixelated)*
+- Refactor config reloading
+
 ### 1.1.5
 - Restore custom attacker portrait for Artifact Reliquary
 - Code refactoring
