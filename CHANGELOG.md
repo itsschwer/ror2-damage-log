@@ -1,3 +1,4 @@
+### 1.1.6
 - Start assembly versioning
 - Update icon to be less blurry *(but more pixelated)*
 - Refactor config reloading
