@@ -26,6 +26,9 @@ namespace DamageLog
 
             Config = new Config(base.Config);
             Data = new Data();
+
+            if (Compatibility.DamageInfoChanged()) { DestroyImmediate(this); return; }
+
             new HarmonyLib.Harmony(Info.Metadata.GUID).PatchAll();
 
             Logger.LogMessage("~awake.");
