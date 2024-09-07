@@ -12,8 +12,8 @@ namespace DamageLog
         internal void AddUserLog(RoR2.NetworkUser user, DamageLog log)
             => Add(userLogs, user, log);
 
-        internal void AddBossLog(uint netId, DamageLog log)
-            => Add(bossLogs, netId, log);
+        internal void AddBossLog(BossDamageLog log)
+            => Add(bossLogs, log.targetNetId, log);
 
         internal bool TryGetUserLog(RoR2.NetworkUser user, out DamageLog log)
             => userLogs.TryGetValue(user, out log);

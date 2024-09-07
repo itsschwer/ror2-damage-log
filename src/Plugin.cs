@@ -63,8 +63,11 @@ namespace DamageLog
         private static void TrackUser(CharacterBody body)
         {
             if (!body.isPlayerControlled) return;
+            NetworkUser user = Util.LookUpBodyNetworkUser(body);
+            if (user == null) return;
 
-            new DamageLog(Util.LookUpBodyNetworkUser(body), body);
+            DamageLog log = new PlayerDamageLog(user, body);
+            Data.AddUserLog(user, log);
         }
 
         internal static void TrackBoss(BossGroup boss, CharacterMaster member)
@@ -78,8 +81,10 @@ namespace DamageLog
              */
             CharacterBody body = member.GetBody();
             if (body != null) {
+                if (BossDamageLog.IsIgnoredBossSubtitle(body.subtitleNameToken)) return;
+
                 Logger.LogDebug($"{nameof(TrackBoss)}> Discovered and found {member.name} | {body.name} | {boss.name}");
-                new DamageLog(body);
+                Data.AddBossLog(new BossDamageLog(body));
             }
             // Fallback for clients...
             else {
@@ -90,11 +95,13 @@ namespace DamageLog
 
         private static void TrackBoss(CharacterBody body)
         {
+            if (BossDamageLog.IsIgnoredBossSubtitle(body.subtitleNameToken)) return;
+
             // Fallback for clients...
             body.master.onBodyStart -= TrackBoss;
             Logger.LogDebug($"{nameof(TrackBoss)}> Found {body.master.name} | {body.name}");
 
-            new DamageLog(body);
+            Data.AddBossLog(new BossDamageLog(body));
         }
     }
 }

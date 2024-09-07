@@ -5,64 +5,45 @@ using System.Linq;
 
 namespace DamageLog
 {
-    public sealed class DamageLog
+    public abstract class DamageLog
     {
         private readonly CharacterBody targetBody;
-        public readonly string targetName;
-        public readonly bool isBoss = false;
-        public readonly uint targetNetId = 0;
-#pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
-        public string targetNetIdHex => targetNetId.ToString("x8");
-        private string targetLogName => (targetNetId == 0) ? targetName : $"{targetName} <{targetNetIdHex}>";
-#pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
+        private readonly string targetName;
 
         private readonly Dictionary<string, DamageSource> entries = [];
         private float timeOfDeath = -1;
+        public float Time => (timeOfDeath > 0) ? timeOfDeath : UnityEngine.Time.time;
+
 #pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
-        public float time => (timeOfDeath > 0) ? timeOfDeath : Time.time;
+        public virtual string displayName => targetName;
+        public virtual string loggingName => targetName;
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
-        public DamageLog(NetworkUser user, CharacterBody body)
+        protected DamageLog(CharacterBody targetBody, string targetName)
         {
-            if (user == null || body == null) return;
+            this.targetBody = targetBody;
+            this.targetName = targetName;
 
-            targetBody = body;
-            targetName = user.userName;
-
-            Plugin.Data.AddUserLog(user, Track(body));
-        }
-
-        public DamageLog(CharacterBody body)
-        {
-            if (body == null) return;
-            if (IsIgnoredBossSubtitle(body.subtitleNameToken)) return;
-
-            targetBody = body;
-            targetName = Util.GetBestBodyName(body.gameObject);
-            isBoss = true;
-            targetNetId = targetBody.netId.Value;
-
-            uint key = body.netId.Value;
-            Plugin.Data.AddBossLog(key, Track(body));
+            Track(targetBody);
         }
 
         private DamageLog Track(CharacterBody body)
         {
             GlobalEventManager.onClientDamageNotified += Record;
             body.master.onBodyDestroyed += Cease;
-            Plugin.Logger.LogDebug($"Tracking {targetLogName}.");
+            Plugin.Logger.LogDebug($"Tracking {loggingName}.");
             return this;
         }
 
         internal void Cease(CharacterBody _ = null)
         {
-            if (timeOfDeath <= 0) timeOfDeath = Time.time;
+            if (timeOfDeath <= 0) timeOfDeath = UnityEngine.Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (targetBody?.master != null) targetBody.master.onBodyDestroyed -= Cease;
-            else Plugin.Logger.LogWarning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {targetLogName}.");
+            else Plugin.Logger.LogWarning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {loggingName}.");
 
             var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
-            Plugin.Logger.LogDebug($"Untracking {targetLogName}. | {caller.DeclaringType}::{caller.Name}");
+            Plugin.Logger.LogDebug($"Untracking {loggingName}. | {caller.DeclaringType}::{caller.Name}");
         }
 
         private void Record(DamageDealtMessage e)
@@ -70,7 +51,7 @@ namespace DamageLog
             if (targetBody == null || e.victim != targetBody.gameObject) return;
 
             string key = e.GenerateIdentifier();
-            if (entries.TryGetValue(key, out DamageSource latest) && !IsExpired(time - latest.time)) {
+            if (entries.TryGetValue(key, out DamageSource latest) && !IsExpired(Time - latest.time)) {
                 latest.Add(e);
             }
             else {
@@ -79,20 +60,20 @@ namespace DamageLog
                 entries.Add(key, latest);
             }
 
-            if (latest.remainingHpPercent <= 0f) timeOfDeath = Time.time;
+            if (latest.remainingHpPercent <= 0f) timeOfDeath = UnityEngine.Time.time;
 
-            if (entries.Count > Plugin.Config.EntryMaxCount && !isBoss) Prune();
+            if (entries.Count > Plugin.Config.EntryMaxCount) Prune();
         }
 
-        private void Prune()
+        protected virtual void Prune()
         {
             Decay();
             Displace();
         }
 
-        private void Decay()
+        protected void Decay()
         {
-            float now = time;
+            float now = Time;
             foreach (DamageSource src in GetEntries()) {
                 if (IsExpired(now - src.time)) {
                     entries.Remove(src.identifier);
@@ -100,7 +81,7 @@ namespace DamageLog
             }
         }
 
-        private void Displace()
+        protected void Displace()
         {
             List<DamageSource> orderedEntries = GetEntries();
             for (int i = Plugin.Config.EntryMaxCount; i < orderedEntries.Count; i++) {
@@ -108,8 +89,8 @@ namespace DamageLog
             }
         }
 
-        public bool IsExpired(float elapsedTime)
-            => (!isBoss && elapsedTime > Plugin.Config.EntryMaxRetainTime);
+        public virtual bool IsExpired(float elapsedTime)
+            => (elapsedTime > Plugin.Config.EntryMaxRetainTime);
 
         /// <returns>
         /// The <see cref="DamageSource"/>s contained in the <see cref="DamageLog"/>,
@@ -121,23 +102,6 @@ namespace DamageLog
             if (list.Count > 1)
                 list.Sort((a, b) => System.Math.Sign(b.time - a.time)); // Newest first
             return list;
-        }
-
-
-
-
-        public static bool IsIgnoredBossSubtitle(string subtitleNameToken)
-        {
-            if (string.IsNullOrEmpty(subtitleNameToken)) return true;
-
-            switch (subtitleNameToken) {
-                default: return false;
-                case "NULL_SUBTITLE":               // "Horde of Many"
-                case "LUNARWISP_BODY_SUBTITLE":     // "Zenith Designs"
-                case "LUNARGOLEM_BODY_SUBTITLE":    // "Zenith Designs"
-                case "LUNAREXPLODER_BODY_SUBTITLE": // "Zenith Designs"
-                    return true;
-            }
         }
     }
 }
