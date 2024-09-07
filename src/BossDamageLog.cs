@@ -5,12 +5,9 @@ namespace DamageLog
     internal sealed class BossDamageLog(CharacterBody body) : DamageLog(body, Util.GetBestBodyName(body.gameObject))
     {
         public readonly uint targetNetId = body.netId.Value;
-#pragma warning disable IDE1006 // Naming rule violation: must begin with upper case character
-        private string targetNetIdHex => targetNetId.ToString("x8");
-#pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
 
-        public override string displayName => $"<style=cStack>{targetNetIdHex}</style> <style=cIsHealth>{base.displayName}</style>";
-        public override string loggingName => $"{base.loggingName} <{targetNetIdHex}>";
+        public override string displayName => $"<style=cStack>{targetNetId:x8}</style> <style=cIsHealth>{base.displayName}</style>";
+        public override string loggingName => $"{base.loggingName} <{targetNetId:x8}>";
 
         public override bool IsExpired(float elapsedTime) => false;
 

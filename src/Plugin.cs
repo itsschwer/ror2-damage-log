@@ -79,28 +79,17 @@ namespace DamageLog
              * but when testing as host, other clients seemed fine?
              * ∴ May be affected by host connection/performance/other mods?
              */
-            CharacterBody body = member.GetBody();
-            if (body != null) {
-                if (BossDamageLog.IsIgnoredBossSubtitle(body.subtitleNameToken)) return;
 
-                Logger.LogDebug($"{nameof(TrackBoss)}> Discovered and found {member.name} | {body.name} | {boss.name}");
-                Data.AddBossLog(new BossDamageLog(body));
-            }
-            // Fallback for clients...
-            else {
-                Logger.LogDebug($"{nameof(TrackBoss)}> Discovered {member.name} | {boss.name}");
-                member.onBodyStart += TrackBoss;
-            }
+            Logger.LogDebug($"{nameof(TrackBoss)}> Discovered {member.name} <{member.netId.Value:x8}> | {boss.name}");
+            member.onBodyStart += TrackBoss;
         }
 
         private static void TrackBoss(CharacterBody body)
         {
+            body.master.onBodyStart -= TrackBoss;
             if (BossDamageLog.IsIgnoredBossSubtitle(body.subtitleNameToken)) return;
 
-            // Fallback for clients...
-            body.master.onBodyStart -= TrackBoss;
-            Logger.LogDebug($"{nameof(TrackBoss)}> Found {body.master.name} | {body.name}");
-
+            Logger.LogDebug($"{nameof(TrackBoss)}> Found {body.master.name} <{body.master.netId.Value:x8}> | {body.name} <{body.netId.Value:x8}>");
             Data.AddBossLog(new BossDamageLog(body));
         }
     }
