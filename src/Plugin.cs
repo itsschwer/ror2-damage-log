@@ -36,10 +36,10 @@ namespace DamageLog
 
         private void OnEnable()
         {
+            HUD.shouldHudDisplay += DamageLogUI.Instantiate;
+            CharacterBody.onBodyStartGlobal += TrackUser;
             Run.onRunStartGlobal += OnRunStartOrDestroy;
             Run.onRunDestroyGlobal += OnRunStartOrDestroy;
-            CharacterBody.onBodyStartGlobal += TrackUser;
-            HUD.shouldHudDisplay += DamageLogUI.Instantiate;
             Stage.onStageStartGlobal += OnStageStart;
 
             Logger.LogMessage("~enabled.");
@@ -47,10 +47,10 @@ namespace DamageLog
 
         private void OnDisable()
         {
+            HUD.shouldHudDisplay -= DamageLogUI.Instantiate;
+            CharacterBody.onBodyStartGlobal -= TrackUser;
             Run.onRunStartGlobal -= OnRunStartOrDestroy;
             Run.onRunDestroyGlobal -= OnRunStartOrDestroy;
-            CharacterBody.onBodyStartGlobal -= TrackUser;
-            HUD.shouldHudDisplay -= DamageLogUI.Instantiate;
             Stage.onStageStartGlobal -= OnStageStart;
 
             Logger.LogMessage("~disabled.");
