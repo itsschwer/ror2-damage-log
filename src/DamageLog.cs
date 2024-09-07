@@ -63,13 +63,7 @@ namespace DamageLog
 
             if (latest.remainingHpPercent <= 0f) timeOfDeath = UnityEngine.Time.time;
 
-            if (entries.Count > Plugin.Config.EntryMaxCount) Prune();
-        }
-
-        protected virtual void Prune()
-        {
             Decay();
-            Displace();
         }
 
         protected void Decay()
@@ -79,14 +73,6 @@ namespace DamageLog
                 if (IsExpired(now - src.time)) {
                     entries.Remove(src.identifier);
                 }
-            }
-        }
-
-        protected void Displace()
-        {
-            List<DamageSource> orderedEntries = GetEntries();
-            for (int i = Plugin.Config.EntryMaxCount; i < orderedEntries.Count; i++) {
-                entries.Remove(orderedEntries[i].identifier);
             }
         }
 

@@ -12,7 +12,6 @@ namespace DamageLog
         public override string displayName => $"<style=cStack>{targetNetIdHex}</style> <style=cIsHealth>{base.displayName}</style>";
         public override string loggingName => $"{base.loggingName} <{targetNetIdHex}>";
 
-        protected override void Prune() {}
         public override bool IsExpired(float elapsedTime) => false;
 
         public static bool IsIgnoredBossSubtitle(string subtitleNameToken)

@@ -34,12 +34,12 @@ namespace DamageLog
         private readonly ConfigEntry<float> entryMaxRetainTime;
         public float EntryMaxRetainTime => entryMaxRetainTime.Value < 1 ? 1 : entryMaxRetainTime.Value;
 
-        private readonly ConfigEntry<int> entryMaxCount;
-        public int EntryMaxCount => entryMaxCount.Value > 0 ? entryMaxCount.Value : 1;
-
         // Display
         private readonly ConfigEntry<bool> onlyShowWithScoreboard;
         public bool OnlyShowWithScoreboard => onlyShowWithScoreboard.Value;
+
+        private readonly ConfigEntry<int> maximumPortraitCount;
+        public int MaximumPortraitCount => maximumPortraitCount.Value > 0 ? maximumPortraitCount.Value : 1;
 
         private readonly ConfigEntry<bool> showDamageIdentifier;
         public bool ShowIdentifier => showDamageIdentifier.Value;
@@ -66,14 +66,14 @@ namespace DamageLog
             const string Constraints = "Constraints";
             entryMaxRetainTime = config.Bind<float>(Constraints, nameof(entryMaxRetainTime), 10f,
                 "The maximum length of time (seconds) a Damage Log entry will be retained for.\nMinimum is 1.");
-            
-            entryMaxCount = config.Bind<int>(Constraints, nameof(entryMaxCount), 16,
-                "The maximum number of Damage Log entries to retain at a time.\nMinimum is 1.");
 
 
             const string Display = "Display";
             onlyShowWithScoreboard = config.Bind<bool>(Display, nameof(onlyShowWithScoreboard), false,
                 "Only show the Damage Log when the scoreboard is open.");
+
+            maximumPortraitCount = config.Bind<int>(Display, nameof(maximumPortraitCount), 12,
+                "The maximum number of Damage Log entry portraits to show at a time.\nMinimum is 1.");
 
             showDamageIdentifier = config.Bind<bool>(Display, nameof(showDamageIdentifier), false,
                 "Show damage identifier in tooltip.");
