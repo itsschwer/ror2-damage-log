@@ -1,11 +1,10 @@
 ﻿using RoR2;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DamageLog
 {
-    public abstract class DamageLog
+    public class DamageLog
     {
         private readonly CharacterBody targetBody;
         private readonly string targetName;
@@ -18,6 +17,8 @@ namespace DamageLog
         public virtual string displayName => targetName;
         public virtual string loggingName => targetName;
 #pragma warning restore IDE1006 // Naming rule violation: must begin with upper case character
+
+        public DamageLog(NetworkUser user, CharacterBody body) : this(body, user.userName) {}
 
         protected DamageLog(CharacterBody targetBody, string targetName)
         {

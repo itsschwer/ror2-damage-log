@@ -66,7 +66,7 @@ namespace DamageLog
             NetworkUser user = Util.LookUpBodyNetworkUser(body);
             if (user == null) return;
 
-            DamageLog log = new PlayerDamageLog(user, body);
+            DamageLog log = new DamageLog(user, body);
             Data.AddUserLog(user, log);
         }
 
