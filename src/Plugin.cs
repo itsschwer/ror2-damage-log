@@ -96,33 +96,5 @@ namespace DamageLog
 
             new DamageLog(body);
         }
-
-
-#if DEBUG
-        private float cd;
-        private void Update()
-        {
-            if (!UnityEngine.Networking.NetworkServer.active || !Run.instance) return;
-
-            cd -= UnityEngine.Time.deltaTime;
-            if (UnityEngine.Input.GetKeyDown(Plugin.Config.ChangeStageKey)) {
-                NetworkUser user = FindObjectOfType<DamageLogUI>()?.user ?? LocalUserManager.GetFirstLocalUser().currentNetworkUser;
-                bool ctrlKey = UnityEngine.Input.GetKey("left ctrl") || UnityEngine.Input.GetKey("right ctrl");
-                bool shiftKey = UnityEngine.Input.GetKey("left shift") || UnityEngine.Input.GetKey("right shift");
-                if (ctrlKey && shiftKey) GiveItems(user);
-                else if (ctrlKey) Debug.GiveItem(user, RoR2Content.Items.ExtraLife);
-                else if (shiftKey) Debug.SpawnInteractable(user);
-                else if (cd < 0) { cd = 4; Debug.ChangeStage(); }
-            }
-        }
-
-        private static void GiveItems(NetworkUser user)
-        {
-            Debug.GiveItem(user, RoR2Content.Items.Medkit, 20);
-            Debug.GiveItem(user, RoR2Content.Items.FallBoots, 100);
-            Debug.GiveItem(user, RoR2Content.Items.AlienHead, 10);
-            Debug.GiveItem(user, RoR2Content.Items.SprintBonus, 10);
-        }
-#endif
     }
 }
