@@ -44,7 +44,7 @@ Portraits mode | Simple text mode
     - *why do Sulfur Pods (Sulfur Pools) not have the same issue?*
 - *\[ experimental \]* boss damage logs:
     - bosses don't always have a damage log generated when playing as client?
-    - name doesn't capture elite prefix when playing as host?
+    - ~~name doesn't capture elite prefix when playing as host?~~ fixed?
     - occasionally has significant discrepencies between host and client(s?)?
     - sometimes doesn't capture the killing instance of damage?
     - damage log timers continue counting after a boss is killed with Trophy Hunter's Tricorn?

@@ -66,7 +66,7 @@ namespace DamageLog
             Decay();
         }
 
-        protected void Decay()
+        private void Decay()
         {
             float now = Time;
             foreach (DamageSource src in GetEntries()) {

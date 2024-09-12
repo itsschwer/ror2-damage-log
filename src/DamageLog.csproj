@@ -17,11 +17,18 @@
 
     <PropertyGroup>
         <RootDir>../</RootDir>
-        <ProductDir>$(RootDir)Thunderstore/</ProductDir>
+        <ProductDir>$(RootDir)Release/</ProductDir>
         <PluginDir>$(ProductDir)plugins/$(MSBuildProjectName)/</PluginDir>
         <PluginSrcPath>$(RootDir)src/Plugin.cs</PluginSrcPath>
         <PluginVersionPattern>const\s+string\s+Version\s*=\s*"([.\d\w-+]+)"</PluginVersionPattern>
     </PropertyGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="$(RootDir)README.md" />
+        <AdditionalFiles Include="$(RootDir)CHANGELOG.md" />
+        <AdditionalFiles Include="$(RootDir)Thunderstore/manifest.json" />
+        <AdditionalFiles Include="$(RootDir)Thunderstore/icon.png" Visible="false" />
+    </ItemGroup>
 
     <Target Name="SetAssemblyVersion" BeforeTargets="BeforeCompile">
         <Message Importance="Low" Text="Version property (before): $(VersionPrefix) | $(Version)" />
@@ -43,7 +50,7 @@
 
     <Target Name="PackageProduct" AfterTargets="Build">
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginDir)" />
-        <Copy SourceFiles="$(RootDir)README.md;$(RootDir)CHANGELOG.md;" DestinationFolder="$(ProductDir)" ContinueOnError="true" />
+        <Copy SourceFiles="@(AdditionalFiles)" DestinationFolder="$(ProductDir)" ContinueOnError="true" />
 
         <ConvertToAbsolutePath Paths="$(ProductDir)">
             <Output TaskParameter="AbsolutePaths" PropertyName="AbsoluteProductDir" />
