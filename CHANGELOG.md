@@ -1,3 +1,10 @@
+### 1.1.7
+- Fix boss damage logs on host not having elite prefixes in the name *(tentative)*
+- Rework damage log pruning to only be time-based
+    - *i.e. damage sources will only be pruned/forgotten once they are older than `entryMaxRetainTime`*
+- Rename configuration option `entryMaxCount` (Constraints) to `maximumPortraitCount` (Display)
+- Code refactoring
+
 ### 1.1.6
 - Start assembly versioning
 - Update icon to be less blurry *(but more pixelated)*
