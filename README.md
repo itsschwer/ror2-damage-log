@@ -20,12 +20,14 @@ sometimes it can be hard to tell what you are taking damage from.
 
 ## configurable
 
-> The configuration file is automatically reloaded when the UI is created *(at the start of each stage)*
+> The configuration file is automatically reloaded when the damage log UI is created *(at the start of each stage)*
 
-- how long entries are logged for can be adjusted
-- how many entries are logged can be adjusted
 - the log only being visible in the scoreboard can be enabled
+- how long entries are logged for can be adjusted
+- the keys to cycle between player (and boss) damage logs can be adjusted
 - the log being presented in simple text mode can be enabled
+- *\[ portraits mode \]*
+    - the maximum number of portraits to display at a time can be adjusted
 - *\[ **bonus** :: experimental \]* generating damage logs for bosses can be enabled
 
 Portraits mode | Simple text mode
@@ -42,6 +44,7 @@ Portraits mode | Simple text mode
 - damage from Pots *(Abandoned Aqueduct)* and Fusion Cells *(Rallypoint Delta)* are attributed to *The Planet*
     - *sometimes attributed correctly on non-hosts?*
     - *why do Sulfur Pods (Sulfur Pools) not have the same issue?*
+<!-- -->
 - *\[ experimental \]* boss damage logs:
     - bosses don't always have a damage log generated when playing as client?
     - ~~name doesn't capture elite prefix when playing as host?~~ — fixed?
