@@ -221,9 +221,9 @@ namespace DamageLog
                 else sb.Append($"<style={style}>{src.attackerName}</style>");
 
                 bool singleHit = (src.hits == 1);
-                if (!singleHit) sb.Append($"<style=cStack>×{src.hits}</style>");
-                sb.Append($" · <style=cIsDamage>-{src.totalDamagePercent:0.0%}</style>");
-                if (singleHit) sb.Append($" <style=cEvent>({src.remainingHpPercent:0.0%})</style>");
+                if (!singleHit) sb.Append($"<style=cStack><nobr>×{src.hits}</nobr></style>");
+                sb.Append($" · <style=cIsDamage><nobr>-{src.totalDamagePercent:0.0%}</nobr></style>");
+                if (singleHit) sb.Append($" <style=cEvent><nobr>({src.remainingHpPercent:0.0%})</nobr></style>");
 
                 if (!Plugin.Config.HideDamageTimer) sb.AppendLine($" · <style=cSub>{elapsedTime:0.00s}</style>");
                 else sb.AppendLine();
