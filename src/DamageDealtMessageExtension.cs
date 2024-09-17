@@ -42,7 +42,7 @@ namespace DamageLog
 
             if (e.IsFallDamage()) identifier = "fall_damage";
             if (e.IsVoidFogDamage()) identifier = "void_fog_damage"; // Could use e.position (or probably just the instance id) to differentiate void fog instances?
-            if (e.attacker != null) identifier = $"{e.attacker.GetInstanceID()}·{e.GetAttackerName()}"; // Include name to differentiate when an attacker becomes elite (e.g. Voidtouched)
+            if (e.attacker != null) identifier = $"{e.attacker.GetInstanceID()} | {e.GetAttackerName()}"; // Include name to differentiate when an attacker becomes elite (e.g. Voidtouched)
             // ^ Is it worth adding a GetComponent (CharacterBody?) call (+ checks?) to replace InstanceId with NetworkInstanceId?
 
             return identifier;
