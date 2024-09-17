@@ -55,6 +55,9 @@ namespace DamageLog
         private readonly ConfigEntry<bool> hideDamageTimer;
         public bool HideDamageTimer => hideDamageTimer.Value;
 
+        private readonly ConfigEntry<bool> showRawDamageInsteadOfPercentage;
+        public bool ShowRawDamageInsteadOfPercentage => showRawDamageInsteadOfPercentage.Value;
+
         // Controls
         private readonly ConfigEntry<string> cycleUserKey;
         public string CycleUserKey => cycleUserKey.Value;
@@ -94,9 +97,11 @@ namespace DamageLog
 
             const string SimpleTextMode = "Display: Simple Text Mode";
             compactLines = config.Bind<bool>(SimpleTextMode, nameof(compactLines), false,
-                "Remove empty lines between Damage Log entries.");
+                "Remove empty lines used as separators between Damage Log entries.");
             hideDamageTimer = config.Bind<bool>(SimpleTextMode, nameof(hideDamageTimer), false,
                 "Hide the timer portion of each Damage Log entry showing how long it has been since the damage was inflicted.");
+            showRawDamageInsteadOfPercentage = config.Bind<bool>(SimpleTextMode, nameof(showRawDamageInsteadOfPercentage), false,
+                "Show the raw damage value instead of the percentage of full combined health.");
 
 
             const string Controls = "Controls";

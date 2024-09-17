@@ -222,7 +222,8 @@ namespace DamageLog
 
                 bool singleHit = (src.hits == 1);
                 if (!singleHit) sb.Append($"<style=cStack><nobr>×{src.hits}</nobr></style>");
-                sb.Append($" · <style=cIsDamage><nobr>-{src.totalDamagePercent:0.0%}</nobr></style>");
+                if (Plugin.Config.ShowRawDamageInsteadOfPercentage) sb.Append($" · <style=cIsHealth><nobr>{-1*src.totalDamage:0.0}</nobr></style>");
+                else sb.Append($" · <style=cIsDamage><nobr>{-1*src.totalDamagePercent:0.0%}</nobr></style>");
                 if (singleHit) sb.Append($" <style=cEvent><nobr>({src.remainingHpPercent:0.0%})</nobr></style>");
 
                 if (!Plugin.Config.HideDamageTimer) sb.AppendLine($" · <style=cSub>{elapsedTime:0.00s}</style>");
