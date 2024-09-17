@@ -91,7 +91,7 @@ namespace DamageLog
                 elite.enabled = false;
             }
 
-            damage.SetText($"<style=cIsDamage>-{src.totalDamagePercent:0.0%}</style>");
+            damage.SetText($"<style=cIsDamage>{-1*src.totalDamagePercent:0.0%}</style>");
 
             bool singleHit = (src.hits == 1);
             if (singleHit) hits.SetText("");
