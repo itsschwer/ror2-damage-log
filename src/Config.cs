@@ -48,6 +48,13 @@ namespace DamageLog
         private readonly ConfigEntry<bool> showDamageIdentifier;
         public bool ShowIdentifier => showDamageIdentifier.Value;
 
+        // Display: Simple Text Mode
+        private readonly ConfigEntry<bool> compactLines;
+        public bool CompactLines => compactLines.Value;
+
+        private readonly ConfigEntry<bool> hideDamageTimer;
+        public bool HideDamageTimer => hideDamageTimer.Value;
+
         // Controls
         private readonly ConfigEntry<string> cycleUserKey;
         public string CycleUserKey => cycleUserKey.Value;
@@ -86,6 +93,10 @@ namespace DamageLog
 
 
             const string SimpleTextMode = "Display: Simple Text Mode";
+            compactLines = config.Bind<bool>(SimpleTextMode, nameof(compactLines), false,
+                "Remove empty lines between Damage Log entries.");
+            hideDamageTimer = config.Bind<bool>(SimpleTextMode, nameof(hideDamageTimer), false,
+                "Hide the timer portion of each Damage Log entry showing how long it has been since the damage was inflicted.");
 
 
             const string Controls = "Controls";

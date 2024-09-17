@@ -214,6 +214,8 @@ namespace DamageLog
                 float elapsedTime = now - src.time;
                 if (log.IsExpired(elapsedTime)) continue;
 
+                if (!Plugin.Config.CompactLines) sb.AppendLine();
+
                 string style = src.isPlayerDamage ? "cDeath" : src.isFallDamage ? "cHumanObjective" : src.isVoidFogDamage ? "cIsVoid" : "";
                 if (string.IsNullOrEmpty(style)) sb.Append(src.attackerName);
                 else sb.Append($"<style={style}>{src.attackerName}</style>");
@@ -223,7 +225,8 @@ namespace DamageLog
                 sb.Append($" · <style=cIsDamage>-{src.totalDamagePercent:0.0%}</style>");
                 if (singleHit) sb.Append($" <style=cEvent>({src.remainingHpPercent:0.0%})</style>");
 
-                sb.AppendLine($" · <style=cSub>{elapsedTime:0.00s}</style>");
+                if (!Plugin.Config.HideDamageTimer) sb.AppendLine($" · <style=cSub>{elapsedTime:0.00s}</style>");
+                else sb.AppendLine();
             }
 
             return sb.ToString();
