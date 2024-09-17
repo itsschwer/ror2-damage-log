@@ -38,14 +38,15 @@ namespace DamageLog
         private readonly ConfigEntry<bool> onlyShowWithScoreboard;
         public bool OnlyShowWithScoreboard => onlyShowWithScoreboard.Value;
 
+        private readonly ConfigEntry<bool> useSimpleTextMode;
+        public bool SimpleTextMode => useSimpleTextMode.Value;
+
+        // Display: Portraits Mode
         private readonly ConfigEntry<int> maximumPortraitCount;
         public int MaximumPortraitCount => maximumPortraitCount.Value > 0 ? maximumPortraitCount.Value : 1;
 
         private readonly ConfigEntry<bool> showDamageIdentifier;
         public bool ShowIdentifier => showDamageIdentifier.Value;
-
-        private readonly ConfigEntry<bool> useSimpleTextMode;
-        public bool SimpleTextMode => useSimpleTextMode.Value;
 
         // Controls
         private readonly ConfigEntry<string> cycleUserKey;
@@ -72,14 +73,19 @@ namespace DamageLog
             onlyShowWithScoreboard = config.Bind<bool>(Display, nameof(onlyShowWithScoreboard), false,
                 "Only show the Damage Log when the scoreboard is open.");
 
-            maximumPortraitCount = config.Bind<int>(Display, nameof(maximumPortraitCount), 12,
-                "The maximum number of Damage Log entry portraits to show at a time.\nMinimum is 1.");
-
-            showDamageIdentifier = config.Bind<bool>(Display, nameof(showDamageIdentifier), false,
-                "Show damage identifier in tooltip.");
-
             useSimpleTextMode = config.Bind<bool>(Display, nameof(useSimpleTextMode), false,
                 "Display Damage Log entries as text instead of portraits with tooltips.");
+
+
+            const string PortraitsMode = "Display: Portraits Mode";
+            maximumPortraitCount = config.Bind<int>(PortraitsMode, nameof(maximumPortraitCount), 12,
+                "The maximum number of Damage Log entry portraits to show at a time.\nMinimum is 1.");
+
+            showDamageIdentifier = config.Bind<bool>(PortraitsMode, nameof(showDamageIdentifier), false,
+                "Show the damage identifier in the portrait tooltip. Can show additional information about damage attributed to The Planet.");
+
+
+            const string SimpleTextMode = "Display: Simple Text Mode";
 
 
             const string Controls = "Controls";
