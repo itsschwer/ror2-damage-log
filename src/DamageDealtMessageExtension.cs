@@ -38,19 +38,12 @@ namespace DamageLog
 
         public static string GenerateIdentifier(this DamageDealtMessage e)
         {
-            string identifier = "??";
+            string identifier = $"?? | {e.damageType} | {e.damageColorIndex} | {e.damage}";
 
-            if (e.attacker != null) identifier = e.attacker.GetInstanceID().ToString(); // Replace with NetworkInstanceId?
             if (e.IsFallDamage()) identifier = "fall_damage";
-            if (e.IsVoidFogDamage()) identifier = "void_fog_damage";
-
-            // Include name to differentiate when an attacker becomes elite (e.g. Voidtouched)
-            if (e.attacker != null)
-            {
-                identifier += '·' + e.GetAttackerName();
-            }
-
-            // Could use e.position to differentiate void fog instances?
+            if (e.IsVoidFogDamage()) identifier = "void_fog_damage"; // Could use e.position (or probably just the instance id) to differentiate void fog instances?
+            if (e.attacker != null) identifier = $"{e.attacker.GetInstanceID()}·{e.GetAttackerName()}"; // Include name to differentiate when an attacker becomes elite (e.g. Voidtouched)
+            // ^ Is it worth adding a GetComponent (CharacterBody?) call (+ checks?) to replace InstanceId with NetworkInstanceId?
 
             return identifier;
         }

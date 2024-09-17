@@ -47,8 +47,6 @@ namespace DamageLog
             GetAttackerPortrait(e, out attackerPortrait, out attackerPortraitColor);
             GetEliteIcon(body, out eliteIcon, out eliteIconColor);
 
-            if (identifier == "??") identifier += $" | {e.damageType} | {e.damageColorIndex} | {e.damage}";
-
             timeStart = Time.time;
             time = timeStart;
             hits = 1;
