@@ -1,3 +1,14 @@
+- Add no break tags to numbers in simple text mode
+    - Prevent numbers from being split on to a separate line without its negative sign
+- Add new configuration options for simple text mode
+    - `compactLines` *(default: `false`, new behaviour)*
+    - `hideDamageTimer` *(default: `false`, same behaviour as before)*
+    - `showRawDamageInsteadOfPercentage` *(default: `false`, same behaviour as before)*
+- Reorganise configuration options
+    - Add two new sections: *Display: Portraits Mode* and *Display: Simple Text Mode*
+- Refactor damage source identifier generation
+- Adjust how damage values are presented *(negate instead of prepend `-`)*
+
 ### 1.1.7
 - Fix boss damage logs on host not having elite prefixes in the name *(tentative)*
 - Rework damage log pruning to only be time-based

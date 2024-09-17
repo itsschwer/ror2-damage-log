@@ -28,6 +28,10 @@ sometimes it can be hard to tell what you are taking damage from.
 - the log being presented in simple text mode can be enabled
 - *\[ portraits mode \]*
     - the maximum number of portraits to display at a time can be adjusted
+- *\[ simple text mode \]*
+    - compacting (removing) empty line separators can be enabled
+    - hiding the damage timer can be enabled
+    - showing raw damage taken instead of percentage can be enabled
 - *\[ **bonus** :: experimental \]* generating damage logs for bosses can be enabled
 
 Portraits mode | Simple text mode
