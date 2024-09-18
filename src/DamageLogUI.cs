@@ -147,6 +147,16 @@ namespace DamageLog
 
 
 
+        private void ListenForRebuild()
+        {
+            if (Input.GetKey(KeyCode.Home) && Input.GetKey(KeyCode.End) && Input.GetKey(KeyCode.PageUp) && Input.GetKey(KeyCode.PageDown)) {
+                Plugin.Logger.LogWarning("Rebuild input triggered, destroying DamageLogUI.");
+                Destroy(this.gameObject);
+                Destroy(this);
+                DamageLogUI.hud = null;
+            }
+        }
+
         /// <remarks>
         /// This component is disabled on game end.
         /// Call <see cref="UpdateText"/> and <see cref="UpdatePortraits"/>
@@ -158,6 +168,8 @@ namespace DamageLog
             bool visible = !Plugin.Config.OnlyShowWithScoreboard || (hud.localUserViewer?.inputPlayer != null && hud.localUserViewer.inputPlayer.GetButton("info"));
             canvas.enabled = visible;
             if (!visible) return;
+
+            ListenForRebuild();
 
             bool shiftKey = Input.GetKey("left shift") || Input.GetKey("right shift");
             bool cycleUser = Input.GetKeyDown(Plugin.Config.CycleUserKey);
