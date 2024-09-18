@@ -149,7 +149,7 @@ namespace DamageLog
 
         private void ListenForRebuild()
         {
-            if (Input.GetKey(KeyCode.Home) && Input.GetKey(KeyCode.End) && Input.GetKey(KeyCode.PageUp) && Input.GetKey(KeyCode.PageDown)) {
+            if (Input.GetKey(KeyCode.Home) && Input.GetKeyDown(KeyCode.End)) {
                 Plugin.Logger.LogWarning("Rebuild input triggered, destroying DamageLogUI.");
                 Destroy(this.gameObject);
                 Destroy(this);
