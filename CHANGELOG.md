@@ -4,10 +4,20 @@
     - `compactLines` *(default: `false`, new behaviour)*
     - `hideDamageTimer` *(default: `false`, same behaviour as before)*
     - `showRawDamageInsteadOfPercentage` *(default: `false`, same behaviour as before)*
+- Convert hardcoded UI layout values into new configuration options (under the "m_Debug" section)
+    - `canvasWidth`
+    - `canvasOffsetRight`
+        - *Try a value of `1820` (for 1920\*1080 displays) to position the damage log on the left of the HUD*
+    - `canvasOffsetTop`
+    - *Note: the "m_Debug" section is still primarily a development tool and is not very user-friendly*
 - Reorganise configuration options
     - Add two new sections: *Display: Portraits Mode* and *Display: Simple Text Mode*
 - Refactor damage source identifier generation
 - Adjust how damage values are presented *(negate instead of prepend `-`)*
+- Adjust default UI layout values
+    - `textSize`: `12` → `14`
+    - `portraitSpacing`: `6` → `8`
+    - `canvasOffsetRight`: `8` → `12`
 
 ### 1.1.7
 - Fix boss damage logs on host not having elite prefixes in the name *(tentative)*
