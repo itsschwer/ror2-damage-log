@@ -21,7 +21,7 @@
 - Adjust default UI layout values
     - `textSize`: `12` → `14`
     - `portraitSpacing`: `6` → `8`
-    - `canvasOffsetRight`: `8` → `12`
+    - `canvasOffsetRight`: `4` → `8`
 
 ### 1.1.7
 - Fix boss damage logs on host not having elite prefixes in the name *(tentative)*
