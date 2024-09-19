@@ -1,3 +1,7 @@
+### 1.2.1
+- Build [1.2.0](#120) changes for Seekers of the Storm
+
+# 1.2.0
 - Add no break tags to numbers in simple text mode
     - Prevent numbers from being split on to a separate line without its negative sign
 - Add new configuration options for simple text mode
