@@ -118,8 +118,8 @@ namespace DamageLog
 
             AnchorStretchRight(rect);
             rect.pivot = Vector2.one;
-            rect.localPosition -= (Vector3)Plugin.Config.OffsetTopRight;
-            rect.sizeDelta = (Vector2.right * Plugin.Config.CanvasWidth) - (Vector2.up * Plugin.Config.OffsetTopRight); ;
+            rect.localPosition -= (Vector3)Plugin.Config.CanvasOffsetTopRight;
+            rect.sizeDelta = (Vector2.right * Plugin.Config.CanvasWidth) - (Vector2.up * Plugin.Config.CanvasOffsetTopRight); ;
         }
 
         private void CreatePortraits()
@@ -129,7 +129,7 @@ namespace DamageLog
             layout.childControlHeight = false;
             layout.childForceExpandWidth = false;
             layout.childControlWidth = false;
-            layout.spacing = Plugin.Config.Spacing;
+            layout.spacing = Plugin.Config.PortraitSpacing;
 
             for (int i = 0; i < Plugin.Config.MaximumPortraitCount; i++) {
                 uiEntries.Add(DamageSourceUI.Instantiate((RectTransform)canvas.transform).Hide());

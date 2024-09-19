@@ -114,10 +114,11 @@ namespace DamageLog
 
 
             const string Debug = "m_Debug";
-            offsetTopRight = config.Bind<UnityEngine.Vector2>(Debug, nameof(offsetTopRight), new UnityEngine.Vector2(4, 12));
+            canvasOffsetRight= config.Bind<float>(Debug, nameof(canvasOffsetRight), 8);
+            canvasOffsetTop = config.Bind<float>(Debug, nameof(canvasOffsetTop), 12);
             canvasWidth = config.Bind<float>(Debug, nameof(canvasWidth), 88);
-            textSize = config.Bind<float>(Debug, nameof(textSize), 12);
-            portraitSpacing = config.Bind<float>(Debug, nameof(portraitSpacing), 6);
+            textSize = config.Bind<float>(Debug, nameof(textSize), 14);
+            portraitSpacing = config.Bind<float>(Debug, nameof(portraitSpacing), 8);
             portraitSize = config.Bind<float>(Debug, nameof(portraitSize), 78);
             eliteIconSize = config.Bind<float>(Debug, nameof(eliteIconSize), 24);
             portraitTextSize = config.Bind<float>(Debug, nameof(portraitTextSize), 18);
@@ -125,8 +126,9 @@ namespace DamageLog
         }
 
 
-        private readonly ConfigEntry<UnityEngine.Vector2> offsetTopRight;
-        public UnityEngine.Vector2 OffsetTopRight => offsetTopRight.Value;
+        private readonly ConfigEntry<float> canvasOffsetRight;
+        private readonly ConfigEntry<float> canvasOffsetTop;
+        public UnityEngine.Vector2 CanvasOffsetTopRight => new UnityEngine.Vector2(canvasOffsetRight.Value, canvasOffsetTop.Value);
 
         private readonly ConfigEntry<float> canvasWidth;
         public float CanvasWidth => canvasWidth.Value;
@@ -135,7 +137,7 @@ namespace DamageLog
         public float TextSize => textSize.Value;
 
         private readonly ConfigEntry<float> portraitSpacing;
-        public float Spacing => portraitSpacing.Value;
+        public float PortraitSpacing => portraitSpacing.Value;
 
         private readonly ConfigEntry<float> portraitSize;
         public float PortraitSize => portraitSize.Value;
