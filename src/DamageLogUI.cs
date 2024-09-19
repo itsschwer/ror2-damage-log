@@ -39,9 +39,9 @@ namespace DamageLog
                 return;
             }
 
-            ui.gameObject.transform.SetParent(panel.transform);
-            ui.enabled = false;
+            ui.canvas.transform.SetParent(panel.transform);
             ui.canvas.enabled = true;
+            ui.enabled = false;
             Plugin.Logger.LogDebug("Moved canvas.");
         }
 
@@ -76,7 +76,9 @@ namespace DamageLog
         private int bossIndex = 0;
         private bool showingBoss = false;
 
-        private new GameObject gameObject;
+        /// <remarks>
+        /// <see cref="DamageLogUI"/> exists on the <see cref="HUD"/> game object, whereas <see cref="canvas"/> exists on a new child game object.
+        /// </remarks>
         private Canvas canvas;
         private HGTextMeshProUGUI text;
         private readonly List<DamageSourceUI> uiEntries = [];
@@ -93,14 +95,14 @@ namespace DamageLog
             if (user == null) Plugin.Logger.LogWarning("Failed to get HUD user (null).");
             CreateCanvas(parent);
             CreateText();
-            if (!Plugin.Config.SimpleTextMode) CreateLayout();
+            if (!Plugin.Config.SimpleTextMode) CreatePortraits();
             Plugin.Logger.LogDebug("Created canvas.");
         }
 
         private void CreateCanvas(GameObject parent)
         {
-            gameObject = new GameObject("DamageLogUI", typeof(Canvas), typeof(GraphicRaycaster));
-            RectTransform rect = gameObject.GetComponent<RectTransform>();
+            canvas = new GameObject("DamageLogUI", typeof(Canvas), typeof(GraphicRaycaster)).GetComponent<Canvas>();
+            RectTransform rect = canvas.GetComponent<RectTransform>();
             rect.SetParent(parent.transform);
             ResetRectTransform(rect);
 
@@ -110,13 +112,11 @@ namespace DamageLog
             Vector2 offsetTopRight = new Vector2(4, 12);
             rect.localPosition -= (Vector3)offsetTopRight;
             rect.sizeDelta = new Vector2(92, 0) - offsetTopRight;
-
-            canvas = gameObject.GetComponent<Canvas>();
         }
 
-        private void CreateLayout()
+        private void CreatePortraits()
         {
-            VerticalLayoutGroup layout = gameObject.AddComponent<VerticalLayoutGroup>();
+            VerticalLayoutGroup layout = canvas.gameObject.AddComponent<VerticalLayoutGroup>();
             layout.childForceExpandHeight = false;
             layout.childControlHeight = false;
             layout.childForceExpandWidth = false;
@@ -124,22 +124,21 @@ namespace DamageLog
             layout.spacing = Plugin.Config.Spacing;
 
             for (int i = 0; i < Plugin.Config.MaximumPortraitCount; i++) {
-                uiEntries.Add(DamageSourceUI.Create((RectTransform)gameObject.transform).Hide());
+                uiEntries.Add(DamageSourceUI.Create((RectTransform)canvas.transform).Hide());
             }
         }
 
         private void CreateText()
         {
-            GameObject obj = new GameObject("DamageLogText", typeof(RectTransform));
-            RectTransform rect = obj.GetComponent<RectTransform>();
-            rect.SetParent(gameObject.transform);
+            RectTransform rect = new GameObject("DamageLogText", typeof(RectTransform)).GetComponent<RectTransform>();
+            rect.SetParent(canvas.transform);
             ResetRectTransform(rect);
 
             AnchorTopStretch(rect);
             rect.pivot = Vector2.one;
-            rect.sizeDelta = Plugin.Config.SimpleTextMode ? Vector2.zero : new Vector2(((RectTransform)gameObject.transform).sizeDelta.x, 0);
+            rect.sizeDelta = Plugin.Config.SimpleTextMode ? Vector2.zero : new Vector2(((RectTransform)canvas.transform).sizeDelta.x, 0);
 
-            text = obj.AddComponent<HGTextMeshProUGUI>();
+            text = rect.gameObject.AddComponent<HGTextMeshProUGUI>();
             text.fontSize = Plugin.Config.TextSize;
             text.SetText("<style=cDeath>Damage Log <null></style>");
         }
@@ -151,7 +150,7 @@ namespace DamageLog
         {
             if (Input.GetKey(KeyCode.Home) && Input.GetKeyDown(KeyCode.End)) {
                 Plugin.Logger.LogWarning("Rebuild input triggered, destroying DamageLogUI.");
-                Destroy(this.gameObject);
+                Destroy(this.canvas.gameObject);
                 Destroy(this);
                 DamageLogUI.hud = null;
             }
