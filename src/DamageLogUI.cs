@@ -118,10 +118,8 @@ namespace DamageLog
 
             AnchorStretchRight(rect);
             rect.pivot = Vector2.one;
-
-            Vector2 offsetTopRight = new Vector2(4, 12);
-            rect.localPosition -= (Vector3)offsetTopRight;
-            rect.sizeDelta = new Vector2(92, 0) - offsetTopRight;
+            rect.localPosition -= (Vector3)Plugin.Config.OffsetTopRight;
+            rect.sizeDelta = (Vector2.right * Plugin.Config.CanvasWidth) - (Vector2.up * Plugin.Config.OffsetTopRight); ;
         }
 
         private void CreatePortraits()

@@ -114,6 +114,8 @@ namespace DamageLog
 
 
             const string Debug = "m_Debug";
+            offsetTopRight = config.Bind<UnityEngine.Vector2>(Debug, nameof(offsetTopRight), new UnityEngine.Vector2(4, 12));
+            canvasWidth = config.Bind<float>(Debug, nameof(canvasWidth), 88);
             textSize = config.Bind<float>(Debug, nameof(textSize), 12);
             portraitSpacing = config.Bind<float>(Debug, nameof(portraitSpacing), 6);
             portraitSize = config.Bind<float>(Debug, nameof(portraitSize), 78);
@@ -122,6 +124,12 @@ namespace DamageLog
             damageTextSize = config.Bind<float>(Debug, nameof(damageTextSize), 20);
         }
 
+
+        private readonly ConfigEntry<UnityEngine.Vector2> offsetTopRight;
+        public UnityEngine.Vector2 OffsetTopRight => offsetTopRight.Value;
+
+        private readonly ConfigEntry<float> canvasWidth;
+        public float CanvasWidth => canvasWidth.Value;
 
         private readonly ConfigEntry<float> textSize;
         public float TextSize => textSize.Value;
