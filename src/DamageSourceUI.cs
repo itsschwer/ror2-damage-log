@@ -33,12 +33,10 @@ namespace DamageLog
 
             elite = AddChild<Image>(obj, "elite");
             AnchorTopLeft(elite.rectTransform);
-            elite.raycastTarget = false;
             elite.rectTransform.sizeDelta = Vector2.one * Plugin.Config.EliteIconSize;
 
             damage = AddChild<HGTextMeshProUGUI>(obj, "damage");
             AnchorTopRight(damage.rectTransform);
-            damage.raycastTarget = false;
             damage.enableWordWrapping = false;
             damage.alignment = TextAlignmentOptions.TopRight;
             damage.rectTransform.sizeDelta = Vector2.one * (width - Plugin.Config.EliteIconSize);
@@ -46,7 +44,6 @@ namespace DamageLog
 
             hits = AddChild<HGTextMeshProUGUI>(obj, "hits");
             AnchorBottomLeft(hits.rectTransform);
-            hits.raycastTarget = false;
             hits.enableWordWrapping = false;
             hits.alignment = TextAlignmentOptions.BottomLeft;
             hits.rectTransform.sizeDelta = Vector2.one * (width / 2);
@@ -54,7 +51,6 @@ namespace DamageLog
 
             time = AddChild<HGTextMeshProUGUI>(obj, "time");
             AnchorBottomRight(time.rectTransform);
-            time.raycastTarget = false;
             time.enableWordWrapping = false;
             time.alignment = TextAlignmentOptions.BottomRight;
             time.rectTransform.sizeDelta = Vector2.one * (width / 2);
@@ -63,12 +59,14 @@ namespace DamageLog
             return this;
         }
 
-        private static T AddChild<T>(RectTransform parent, string name) where T : Component
+        private static T AddChild<T>(RectTransform parent, string name) where T : Graphic
         {
             GameObject obj = new GameObject(name, typeof(T));
             obj.transform.SetParent(parent);
             DamageLogUI.ResetRectTransform((RectTransform)obj.transform);
-            return obj.GetComponent<T>();
+            T child = obj.GetComponent<T>();
+            child.raycastTarget = false;
+            return child;
         }
 
 
