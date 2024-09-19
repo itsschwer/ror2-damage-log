@@ -132,7 +132,7 @@ namespace DamageLog
             layout.spacing = Plugin.Config.Spacing;
 
             for (int i = 0; i < Plugin.Config.MaximumPortraitCount; i++) {
-                uiEntries.Add(DamageSourceUI.Create((RectTransform)canvas.transform).Hide());
+                uiEntries.Add(DamageSourceUI.Instantiate((RectTransform)canvas.transform).Hide());
             }
         }
 

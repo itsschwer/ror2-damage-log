@@ -15,41 +15,40 @@ namespace DamageLog
         private HGTextMeshProUGUI time;
         private TooltipProvider tooltip;
 
-        public static DamageSourceUI Create(RectTransform parent)
+        public static DamageSourceUI Instantiate(RectTransform parent)
         {
-            GameObject obj = new GameObject("DamageEntry", typeof(DamageSourceUI), typeof(RawImage));
-            obj.transform.SetParent(parent, false);
-            ((RectTransform)obj.transform).sizeDelta = Vector2.one * ((Plugin.Config.PortraitSize > 0) ? Plugin.Config.PortraitSize : parent.sizeDelta.x);
-            return obj.GetComponent<DamageSourceUI>().Create(obj);
+            RectTransform child = (RectTransform)new GameObject("DamageEntry", typeof(DamageSourceUI), typeof(RawImage)).transform;
+            child.SetParent(parent, false);
+            child.sizeDelta = Vector2.one * ((Plugin.Config.PortraitSize > 0) ? Plugin.Config.PortraitSize : parent.sizeDelta.x);
+            return child.GetComponent<DamageSourceUI>().Build(child);
         }
 
-        private DamageSourceUI Create(GameObject root)
+        private DamageSourceUI Build(RectTransform root)
         {
-            RectTransform obj = (RectTransform)root.transform;
-            float width = ((RectTransform)obj.parent).sizeDelta.x;
+            float width = root.sizeDelta.x;
 
-            tooltip = root.AddComponent<TooltipProvider>();
+            tooltip = root.gameObject.AddComponent<TooltipProvider>();
             portrait = root.GetComponent<RawImage>();
 
-            elite = AddChild<Image>(obj, "elite");
+            elite = AddChild<Image>(root, "elite");
             AnchorTopLeft(elite.rectTransform);
             elite.rectTransform.sizeDelta = Vector2.one * Plugin.Config.EliteIconSize;
 
-            damage = AddChild<HGTextMeshProUGUI>(obj, "damage");
+            damage = AddChild<HGTextMeshProUGUI>(root, "damage");
             AnchorTopRight(damage.rectTransform);
             damage.enableWordWrapping = false;
             damage.alignment = TextAlignmentOptions.TopRight;
             damage.rectTransform.sizeDelta = Vector2.one * (width - Plugin.Config.EliteIconSize);
             damage.fontSize = Plugin.Config.DamageTextSize;
 
-            hits = AddChild<HGTextMeshProUGUI>(obj, "hits");
+            hits = AddChild<HGTextMeshProUGUI>(root, "hits");
             AnchorBottomLeft(hits.rectTransform);
             hits.enableWordWrapping = false;
             hits.alignment = TextAlignmentOptions.BottomLeft;
             hits.rectTransform.sizeDelta = Vector2.one * (width / 2);
             hits.fontSize = Plugin.Config.PortraitTextSize;
 
-            time = AddChild<HGTextMeshProUGUI>(obj, "time");
+            time = AddChild<HGTextMeshProUGUI>(root, "time");
             AnchorBottomRight(time.rectTransform);
             time.enableWordWrapping = false;
             time.alignment = TextAlignmentOptions.BottomRight;
