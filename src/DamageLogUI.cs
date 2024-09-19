@@ -6,6 +6,16 @@ using System.Collections.Generic;
 
 namespace DamageLog
 {
+    /// <summary>
+    /// 
+    /// <code>
+    /// HUDSimple(Clone)
+    ///  │ HUD
+    ///  │ DamageLogUI [component]
+    ///  └─ MainContainer
+    ///      └─ DamageLogUI [game object]
+    /// </code>
+    /// </summary>
     internal sealed class DamageLogUI : MonoBehaviour
     {
         private static HUD hud;
@@ -77,7 +87,7 @@ namespace DamageLog
         private bool showingBoss = false;
 
         /// <remarks>
-        /// <see cref="DamageLogUI"/> exists on the <see cref="HUD"/> game object, whereas <see cref="canvas"/> exists on a new child game object.
+        /// <see cref="DamageLogUI"/> exists on the <see cref="HUD"/> game object, whereas <see cref="canvas"/> exists on a new nested child game object.
         /// </remarks>
         private Canvas canvas;
         private HGTextMeshProUGUI text;
