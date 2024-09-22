@@ -1,3 +1,4 @@
+### 1.2.2
 - Change `hideDamageTimer` to affect portraits mode too
 - Add suggestion to use ***6thmoon-OptionsGenerator*** and ***Rune580-Risk_Of_Options***
 
