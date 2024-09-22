@@ -54,6 +54,7 @@ namespace DamageLog
             time.alignment = TextAlignmentOptions.BottomRight;
             time.rectTransform.sizeDelta = Vector2.one * (width / 2);
             time.fontSize = Plugin.Config.PortraitTextSize;
+            if (Plugin.Config.HideDamageTimer) time.gameObject.SetActive(false);
 
             return this;
         }

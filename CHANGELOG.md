@@ -1,3 +1,6 @@
+- Change `hideDamageTimer` to affect portraits mode too
+- Add suggestion to use ***6thmoon-OptionsGenerator*** and ***Rune580-Risk_Of_Options***
+
 ### 1.2.1
 - Build [1.2.0](#120) changes for Seekers of the Storm
 

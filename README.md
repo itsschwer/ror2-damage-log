@@ -21,16 +21,18 @@ sometimes it can be hard to tell what you are taking damage from.
 ## configurable
 
 > The configuration file is automatically reloaded when the damage log UI is created *(at the start of each stage)*
+>
+> *[***OptionGenerator***](https://thunderstore.io/package/6thmoon/OptionGenerator/) *(+[***Risk Of Options***](https://thunderstore.io/package/Rune580/Risk_Of_Options/))* can be used to change the configuration in-game, rather than editing the file or using **r2modman**. If using ***OptionGenerator***, the UI may need to be rebuilt using the hotkey `home`+`end` while the UI is open.*
 
 - the log only being visible in the scoreboard can be enabled
 - how long entries are logged for can be adjusted
 - the keys to cycle between player (and boss) damage logs can be adjusted
 - the log being presented in simple text mode can be enabled
+- hiding the damage timer can be enabled
 - *\[ portraits mode \]*
     - the maximum number of portraits to display at a time can be adjusted
 - *\[ simple text mode \]*
     - compacting (removing) empty line separators can be enabled
-    - hiding the damage timer can be enabled
     - showing raw damage taken instead of percentage can be enabled
 - *\[ **bonus** :: experimental \]* generating damage logs for bosses can be enabled
 

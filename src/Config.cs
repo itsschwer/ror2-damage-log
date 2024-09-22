@@ -41,6 +41,9 @@ namespace DamageLog
         private readonly ConfigEntry<bool> useSimpleTextMode;
         public bool SimpleTextMode => useSimpleTextMode.Value;
 
+        private readonly ConfigEntry<bool> hideDamageTimer;
+        public bool HideDamageTimer => hideDamageTimer.Value;
+
         // Display: Portraits Mode
         private readonly ConfigEntry<int> maximumPortraitCount;
         public int MaximumPortraitCount => maximumPortraitCount.Value > 0 ? maximumPortraitCount.Value : 1;
@@ -51,9 +54,6 @@ namespace DamageLog
         // Display: Simple Text Mode
         private readonly ConfigEntry<bool> compactLines;
         public bool CompactLines => compactLines.Value;
-
-        private readonly ConfigEntry<bool> hideDamageTimer;
-        public bool HideDamageTimer => hideDamageTimer.Value;
 
         private readonly ConfigEntry<bool> showRawDamageInsteadOfPercentage;
         public bool ShowRawDamageInsteadOfPercentage => showRawDamageInsteadOfPercentage.Value;
@@ -86,6 +86,9 @@ namespace DamageLog
             useSimpleTextMode = config.Bind<bool>(Display, nameof(useSimpleTextMode), false,
                 "Display Damage Log entries as text instead of portraits with tooltips.");
 
+            hideDamageTimer = config.Bind<bool>(Display, nameof(hideDamageTimer), false,
+                "Hide the timer portion of each Damage Log entry showing how long it has been since the damage was inflicted.");
+
 
             const string PortraitsMode = "Display: Portraits Mode";
             maximumPortraitCount = config.Bind<int>(PortraitsMode, nameof(maximumPortraitCount), 12,
@@ -98,8 +101,7 @@ namespace DamageLog
             const string SimpleTextMode = "Display: Simple Text Mode";
             compactLines = config.Bind<bool>(SimpleTextMode, nameof(compactLines), false,
                 "Remove empty lines used as separators between Damage Log entries.");
-            hideDamageTimer = config.Bind<bool>(SimpleTextMode, nameof(hideDamageTimer), false,
-                "Hide the timer portion of each Damage Log entry showing how long it has been since the damage was inflicted.");
+
             showRawDamageInsteadOfPercentage = config.Bind<bool>(SimpleTextMode, nameof(showRawDamageInsteadOfPercentage), false,
                 "Show the raw damage value instead of the percentage of full combined health.");
 
