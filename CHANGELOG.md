@@ -1,3 +1,7 @@
+### 1.2.3
+- Fix compatibility with viewing Run History entries mid-run *(Seekers of the Storm)*
+    - *The UI will no longer become invisible after viewing a Run History from the Logbook from the pause menu mid-run*
+
 ### 1.2.2
 - Change `hideDamageTimer` to affect portraits mode too
 - Add suggestion to use ***6thmoon-OptionsGenerator*** and ***Rune580-Risk_Of_Options***
