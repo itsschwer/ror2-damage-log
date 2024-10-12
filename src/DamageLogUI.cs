@@ -49,6 +49,31 @@ namespace DamageLog
                 return;
             }
 
+#if NETSTANDARD2_1
+            {
+#if DEBUG
+                System.Text.StringBuilder sb = new("Target Transform Hierarchy\n");
+                int level = 0;
+                Transform logTransform = panel.transform;
+                while (logTransform != null) {
+                    sb.AppendLine($"{new string(' ', level * 4)}└─ {logTransform.name}");
+                    logTransform = logTransform.parent;
+                    level++;
+                }
+
+                Plugin.Logger.LogMessage(sb.ToString());
+#endif
+                Transform t = panel.transform;
+                while (t != null) {
+                    if (t.name.Contains("Logbook") || t.name.Contains("Pause")) {
+                        Plugin.Logger.LogWarning("Blocked attempt to move canvas. This can safely be ignored if triggered by viewing Game End Report from Run History mid-run.");
+                        return;
+                    };
+                    t = t.parent;
+                }
+            }
+#endif
+
             ui.canvas.transform.SetParent(panel.transform);
             ui.canvas.enabled = true;
             ui.enabled = false;
@@ -65,6 +90,11 @@ namespace DamageLog
             DamageLogUI ui = hud.gameObject.GetComponent<DamageLogUI>();
             if (ui == null) {
                 Plugin.Logger.LogWarning("Failed to update canvas (missing).");
+                return;
+            }
+
+            if (user == null) {
+                Plugin.Logger.LogWarning("Failed to display player damage log (null).");
                 return;
             }
 
