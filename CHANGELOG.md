@@ -1,3 +1,8 @@
+### 1.2.4
+- Count Prime Meridian lightning strikes as a single damage source
+    - *Avoid filling up the damage log with entries attributed to The Planet*
+- Add custom portrait for Prime Meridian lightning strikes
+
 ### 1.2.3
 - Fix compatibility with viewing Run History entries mid-run *(Seekers of the Storm)*
     - *The UI will no longer become invisible after viewing a Run History from the Logbook from the pause menu mid-run*
