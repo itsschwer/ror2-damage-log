@@ -21,7 +21,7 @@ namespace DamageLog
         public static bool IsMeridianLightningDamage(this DamageDealtMessage e)
         {
             // Extracted using damage identifier
-            return (e.damageType.damageType == (DamageType.NonLethal | DamageType.AOE | DamageType.LunarRuin) && e.damageType.damageTypeExtended == (DamageTypeExtended.DamagePercentOfMaxHealth | DamageTypeExtended.ApplyBuffPermanently));
+            return (e.damageType == (DamageTypeCombo.Generic | DamageType.NonLethal | DamageType.AOE | DamageType.LunarRuin | DamageTypeExtended.DamagePercentOfMaxHealth | DamageTypeExtended.ApplyBuffPermanently));
         }
 #endif
 
