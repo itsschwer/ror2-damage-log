@@ -100,6 +100,11 @@ namespace DamageLog
                 portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
                 color = DamageColor.FindColor(DamageColorIndex.Void);
             }
+#if NETSTANDARD2_1
+            else if (e.IsMeridianLightningDamage()) {
+                portrait = DLC2Content.Buffs.lunarruin.iconSprite.texture;
+            }
+#endif
         }
 
         private static Texture GetAlternativeAttackerPortrait(GameObject attacker, string attackerName, ref Color color)
