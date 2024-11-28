@@ -66,7 +66,7 @@ namespace DamageLog
         public string CycleBossKey => cycleBossKey.Value;
 
 
-        public Config(ConfigFile config)
+        internal Config(ConfigFile config)
         {
             file = config;
 
