@@ -74,9 +74,9 @@ namespace DamageLog
             }
 #endif
 
+            ui.enabled = false;
             ui.canvas.transform.SetParent(panel.transform);
             ui.canvas.enabled = true;
-            ui.enabled = false;
             Plugin.Logger.LogDebug("Moved canvas.");
         }
 
