@@ -36,15 +36,18 @@ namespace DamageLog
             return this;
         }
 
-        internal void Cease(CharacterBody _ = null)
+        internal void Untrack()
         {
             if (timeOfDeath <= 0) timeOfDeath = UnityEngine.Time.time;
             GlobalEventManager.onClientDamageNotified -= Record;
             if (targetBody?.master != null) targetBody.master.onBodyDestroyed -= Cease;
             else Plugin.Logger.LogWarning($"Could not unsubscribe {nameof(RoR2)}.{nameof(CharacterMaster)}::{nameof(CharacterMaster.onBodyDestroyed)} for {loggingName}.");
+        }
 
-            var caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
-            Plugin.Logger.LogDebug($"Untracking {loggingName}. | {caller.DeclaringType}::{caller.Name}");
+        private void Cease(CharacterBody _)
+        {
+            Untrack();
+            Plugin.Logger.LogDebug($"Untracking {loggingName} (body destroyed).");
         }
 
         private void Record(DamageDealtMessage e)

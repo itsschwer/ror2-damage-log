@@ -23,13 +23,15 @@ namespace DamageLog
 
         internal void ClearUserLogs()
         {
-            Plugin.Logger.LogDebug("Clearing user damage logs.");
+            Plugin.Logger.LogDebug($"Clearing user damage logs ({userLogs.Count}).");
             Clear(userLogs);
         }
 
         internal void ClearBossLogs()
         {
-            Plugin.Logger.LogDebug("Clearing boss damage logs.");
+            if (bossLogs.Count <= 0) return;
+
+            Plugin.Logger.LogDebug($"Clearing boss damage logs ({bossLogs.Count}).");
             Clear(bossLogs);
         }
 
@@ -75,15 +77,18 @@ namespace DamageLog
         public static void Add<TKey>(Dictionary<TKey, DamageLog> logs, TKey key, DamageLog newLog)
         {
             if (logs.TryGetValue(key, out DamageLog log)) {
-                log.Cease();
-                Plugin.Logger.LogDebug("Replacing existing damage log.");
+                log.Untrack();
+                Plugin.Logger.LogDebug($"Untracking {log.loggingName} (replacing).");
             }
             logs[key] = newLog;
         }
 
         public static void Clear<TKey>(Dictionary<TKey, DamageLog> logs)
         {
-            foreach (DamageLog log in logs.Values) log.Cease();
+            foreach (DamageLog log in logs.Values) {
+                log.Untrack();
+                Plugin.Logger.LogDebug($"Untracking {log.loggingName} (clearing).");
+            }
             logs.Clear();
         }
 
