@@ -1,3 +1,6 @@
+### 1.2.7
+- Fix incompatibility with **Moffein-AutoSkipCredits**
+
 ### 1.2.6
 - Avoid breaking the Game End Report screen if an error occurs when trying to move the damage log canvas
     - Fixes the Continue button potentially not appearing on the Game End Report screen due to mod incompatibility
