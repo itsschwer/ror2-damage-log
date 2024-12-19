@@ -79,6 +79,12 @@ namespace DamageLog
 #endif
 
             ui.enabled = false;
+
+            if (ui.canvas == null) {
+                Plugin.Logger.LogWarning($"Attempting to move canvas but it has not been created. Attempting to create.");
+                ui.CreateUI(hud.mainContainer); // Need to create on hud.mainContainer rather than directly on panel.gameObject (via if-else) for correct positioning/layout
+            }
+
             ui.canvas.transform.SetParent(panel.transform);
             ui.canvas.enabled = true;
             Plugin.Logger.LogDebug("Moved canvas.");
