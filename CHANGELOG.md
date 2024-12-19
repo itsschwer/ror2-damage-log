@@ -1,3 +1,9 @@
+### 1.2.6
+- Avoid breaking the Game End Report screen if an error occurs when trying to move the damage log canvas
+    - Fixes the Continue button potentially not appearing on the Game End Report screen due to mod incompatibility
+        - *Current only known incompatibility is with **Moffein-AutoSkipCredits** — the damage log will fail to appear on the Game End Report screen*
+- Adjust debug logging messages
+
 ### 1.2.5
 - Fix incorrect check for Prime Meridian lightning
 

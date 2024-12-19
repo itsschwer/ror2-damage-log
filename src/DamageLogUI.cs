@@ -74,6 +74,10 @@ namespace DamageLog
             }
 #endif
 
+#if DEBUG
+            Plugin.Logger.LogWarning(StackTraceUtility.ExtractStringFromException(new System.NullReferenceException())); // For similar stack trace output to Unity Log NRE
+#endif
+
             ui.enabled = false;
             ui.canvas.transform.SetParent(panel.transform);
             ui.canvas.enabled = true;
