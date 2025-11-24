@@ -211,8 +211,7 @@ namespace DamageLog
         /// </remarks>
         private void Update()
         {
-            // Scoreboard visibility logic from RoR2.UI.HUD.Update()
-            bool visible = !Plugin.Config.OnlyShowWithScoreboard || (hud.localUserViewer?.inputPlayer != null && hud.localUserViewer.inputPlayer.GetButton("info"));
+            bool visible = !Plugin.Config.OnlyShowWithScoreboard || hud.scoreboardPanel.activeSelf;
             canvas.enabled = visible;
             if (!visible) return;
 

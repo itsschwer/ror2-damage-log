@@ -1,3 +1,6 @@
+### 1.2.8
+- Fix `onlyShowWithScoreboard ` configuration option to respect the *Toggle Inventory* gameplay setting
+
 ### 1.2.7
 - Fix incompatibility with **Moffein-AutoSkipCredits**
 
