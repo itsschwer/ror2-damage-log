@@ -1,5 +1,8 @@
+### 1.2.9
+- Workaround to show Collective elite icons
+
 ### 1.2.8
-- Fix `onlyShowWithScoreboard ` configuration option to respect the *Toggle Inventory* gameplay setting
+- Fix `onlyShowWithScoreboard` configuration option to respect the *Toggle Inventory* gameplay setting
 
 ### 1.2.7
 - Fix incompatibility with **Moffein-AutoSkipCredits**
