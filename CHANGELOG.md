@@ -1,5 +1,6 @@
 ### 1.2.9
 - Workaround to show Collective elite icons
+    - *For some reason Collective elites don't actually have an icon set for their buff (i.e. you have to identify them purely from the elite item display, rather than also seeing an icon above their health bar); the icon you would assume is for Collective elites is actually for showing the cooldown reduction buff given to the elite's allies within the bubble*
 
 ### 1.2.8
 - Fix `onlyShowWithScoreboard` configuration option to respect the *Toggle Inventory* gameplay setting
