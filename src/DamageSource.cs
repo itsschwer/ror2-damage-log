@@ -11,19 +11,9 @@ namespace DamageLog
         private static Texture _SotVPortrait;
         private static Texture SotVPortrait => _SotVPortrait ??= UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/UI/texVoidExpansionIcon.png").WaitForCompletion();
 
-        private static Sprite _CollectIcon;
-        private static Sprite _CollectiveSharedIcon;
-        private static Sprite _CollectiveIcon;
-        private static Sprite CollectIcon => _CollectIcon ??= UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Sprite>("RoR2/DLC3/Collective/texAffixCollectIcon.png").WaitForCompletion();
-        private static Sprite CollectiveSharedIcon => _CollectiveSharedIcon ??= UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Sprite>("RoR2/DLC3/Collective/texEliteCollectiveSharedIcon").WaitForCompletion();
-        private static Sprite CollectiveIcon => _CollectiveIcon ??= UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Sprite>("RoR2/DLC3/Collective/texEliteCollectiveIcon").WaitForCompletion();
-        private static Sprite COLLECTIVE {
-            get {
-                if (Plugin.Config.ShowRawDamageInsteadOfPercentage) return CollectiveIcon;
-                if (Plugin.Config.TrackBosses) return CollectiveSharedIcon;
-                return CollectIcon;
-            }
-        }
+        // texEliteCollectiveSharedIcon.png appears to be the ally cooldown reduction icon, which is a slightly darker blue?
+        private static Sprite _CollectiveEliteIcon;
+        private static Sprite CollectiveEliteIcon => _CollectiveEliteIcon ??= UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Sprite>("RoR2/DLC3/Collective/texEliteCollectiveIcon.png").WaitForCompletion();
 
 
 
@@ -141,16 +131,12 @@ namespace DamageLog
             BuffDef buff = GetEliteBuffDef(body);
             icon = buff?.iconSprite;
             color = buff?.buffColor ?? Color.white;
-#if DEBUG || true
-            if (body && Util.GetBestBodyName(body.gameObject).Contains("Collective")) {
-                // "bdEliteCollective" has no icon?? asset paths dump shows there is also a "bdCollectiveShareBuff"
-                Plugin.Logger.LogWarning($"elite: {buff.name} | {icon} | {color}");
-            } else if (buff) Plugin.Logger.LogDebug($"elite: {buff.name} | {icon} | {color}");
-#endif
+
             // it appears that the elite buff itself does not have an icon,
             // but the cooldown reduction buff given to allies does;
             // a little bit unintuitive compared to pre-existing elites
-            if (icon == null && buff?.eliteDef?.modifierToken == "ELITE_MODIFIER_COLLECTIVE") icon = COLLECTIVE;
+            if (icon == null && buff?.eliteDef?.modifierToken == "ELITE_MODIFIER_COLLECTIVE") icon = CollectiveEliteIcon;
+            else if (buff?.eliteDef?.modifierToken == "ELITE_MODIFIER_COLLECTIVE") Plugin.Logger.LogWarning($"collective elite buff has been assigned an icon! '{icon}'");
         }
 
         private static BuffDef GetEliteBuffDef(CharacterBody body)
@@ -163,10 +149,6 @@ namespace DamageLog
             foreach (BuffIndex buffIndex in eliteBuffIndices) {
                 if (body.HasBuff(buffIndex)) {
                     def = BuffCatalog.GetBuffDef(buffIndex);
-#if DEBUG || true
-                    BuffDef check = BuffCatalog.GetBuffDef(buffIndex);
-                    Plugin.Logger.LogWarning($"buff: {check} | {check.iconSprite} | {check.iconPath}");
-#endif
                 }
             }
 
