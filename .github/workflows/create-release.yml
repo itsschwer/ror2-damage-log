@@ -7,11 +7,87 @@ on:
         description: 'Only create debug artifact'
         required: false
         type: boolean
+  workflow_call:
+    inputs:
+      debug:
+        description: 'Only create debug artifact'
+        required: false
+        type: boolean
 
 jobs:
+  create-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read Thunderstore/manifest.json
+        id: manifest
+        shell: pwsh
+        run: |
+          $manifest = Get-Content -Raw -path Thunderstore/manifest.json
+          if (!( $manifest -match '"name":\s*"([\w\d]+)"' )) { Write-Error -ErrorAction Stop -Message "Could not find name." }
+          echo "NAME=$($matches[1])" >> $env:GITHUB_OUTPUT
+          if (!( $manifest -match '"version_number":\s*"([.\d\w-+]+)"' )) { Write-Error -ErrorAction Stop -Message "Could not find version number." }
+          echo "VERSION=$($matches[1])" >> $env:GITHUB_OUTPUT
+
+      - name: Read src/Plugin.cs
+        env:
+          NAME: ${{ steps.manifest.outputs.NAME }}
+          VERSION: ${{ steps.manifest.outputs.VERSION }}
+        shell: pwsh
+        run: |
+          $plugin = Get-Content -Raw -path src/Plugin.cs
+          if (!( $plugin -match 'const\s+string\s+Name\s*=\s*"([\w\d]+)"' )) { Write-Error -ErrorAction Stop -Message "Could not find name." }
+          $name = $matches[1]
+          if (!( $plugin -match 'const\s+string\s+Version\s*=\s*"([.\d\w-+]+)"' )) { Write-Error -ErrorAction Stop -Message "Could not find version number." }
+          $version = $matches[1]
+          echo "$name--$version | $env:NAME--$env:VERSION"
+          if ( ( $name -ne $env:NAME ) -or ( $version -ne $env:VERSION ) ) { Write-Error -ErrorAction Stop -Message "Inconsistency between manifest.json and Plugin.cs" }
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+      - name: Build project
+        id: build
+        env:
+          DEBUG: ${{ inputs.debug }}
+        shell: pwsh
+        run: |
+          cd src
+          $config = "Release"
+          if ( $env:DEBUG -eq $true ) { $config = "Debug" }
+          $output = dotnet build --configuration $config
+          echo $output
+          "$($output)" -match "Package prepared \s*'([^'\n\r\t]+)'"
+          echo "PATH=$($matches[1])" >> $env:GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        with:
+          path: ${{ steps.build.outputs.PATH }}
+          name: ${{ steps.manifest.outputs.NAME }}--${{ steps.manifest.outputs.VERSION }}
+    outputs:
+      name: ${{ steps.manifest.outputs.NAME }}--${{ steps.manifest.outputs.VERSION }}
+      version: ${{ steps.manifest.outputs.VERSION }}
+
   create-release:
+    needs: create-artifact
+    if: ${{ inputs.debug != true }}
     permissions:
       contents: write
-    uses: itsschwer/pressure-drop/.github/workflows/create-release.yml@main
-    with:
-      debug: ${{ inputs.debug }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.create-artifact.outputs.name }}
+          # [feat req] Keep artifact in ZIP format instead of extracting
+          # https://github.com/actions/download-artifact/issues/143
+
+      - name: zip
+        run: zip -r ${{ needs.create-artifact.outputs.name }}.zip .
+
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: ${{ needs.create-artifact.outputs.name }}.zip
+          tag: ${{ needs.create-artifact.outputs.version }}
+          updateOnlyUnreleased: true
+          generateReleaseNotes: true
