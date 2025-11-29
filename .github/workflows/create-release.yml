@@ -20,33 +20,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read Thunderstore/manifest.json
-        id: manifest
+      - name: Check src/Plugin.cs and Thunderstore/manifest.json
+        id: check
         shell: pwsh
         run: |
-          $manifest = Get-Content -Raw -path Thunderstore/manifest.json
-          if (!( $manifest -match '"name":\s*"([\w\d]+)"' )) { Write-Error -ErrorAction Stop -Message "Could not find name." }
-          echo "NAME=$($matches[1])" >> $env:GITHUB_OUTPUT
-          if (!( $manifest -match '"version_number":\s*"([.\d\w-+]+)"' )) { Write-Error -ErrorAction Stop -Message "Could not find version number." }
-          echo "VERSION=$($matches[1])" >> $env:GITHUB_OUTPUT
+          $pluginPath = "src/Plugin.cs"
+          $manifestPath = "Thunderstore/manifest.json"
 
-      - name: Read src/Plugin.cs
-        env:
-          NAME: ${{ steps.manifest.outputs.NAME }}
-          VERSION: ${{ steps.manifest.outputs.VERSION }}
-        shell: pwsh
-        run: |
-          $plugin = Get-Content -Raw -path src/Plugin.cs
-          if (!( $plugin -match 'const\s+string\s+Name\s*=\s*"([\w\d]+)"' )) { Write-Error -ErrorAction Stop -Message "Could not find name." }
-          $name = $matches[1]
-          if (!( $plugin -match 'const\s+string\s+Version\s*=\s*"([.\d\w-+]+)"' )) { Write-Error -ErrorAction Stop -Message "Could not find version number." }
-          $version = $matches[1]
-          echo "$name--$version | $env:NAME--$env:VERSION"
-          if ( ( $name -ne $env:NAME ) -or ( $version -ne $env:VERSION ) ) { Write-Error -ErrorAction Stop -Message "Inconsistency between manifest.json and Plugin.cs" }
+          $pluginName = Select-String -Path $pluginPath -Pattern 'const\s+string\s+Name\s*=\s*"([\w\d]+)"'
+          if (!$pluginName) { Write-Error -ErrorAction Stop -Message 'Could not find plugin name.' }
+          $pluginName = $pluginName.Matches.Groups[1].Value
+
+          $pluginVersion = Select-String -Path $pluginPath -Pattern 'const\s+string\s+Version\s*=\s*"([.\d\w-+]+)"'
+          if (!$pluginVersion) { Write-Error -ErrorAction Stop -Message 'Could not find plugin version number.' }
+          $pluginVersion = $pluginVersion.Matches.Groups[1].Value
+
+          $manifestName = Select-String -Path $manifestPath -Pattern '"name"\s*:\s*"([\w\d]+)"'
+          if (!$manifestName) { Write-Error -ErrorAction Stop -Message 'Could not find manifest name.' }
+          $manifestName = $manifestName.Matches.Groups[1].Value
+
+          $manifestVersion = Select-String -Path $manifestPath -Pattern '"version_number"\s*:\s*"([.\d\w-+]+)"'
+          if (!$manifestVersion) { Write-Error -ErrorAction Stop -Message 'Could not find manifest version.' }
+          $manifestVersion = $manifestVersion.Matches.Groups[1].Value
+
+          if (($pluginName -ne $manifestName)) { Write-Error -ErrorAction Stop -Message "Name mismatch between manifest.json and Plugin.cs" }
+          echo "Producing $pluginName--$pluginVersion"
+          (Get-Content $manifestPath) -creplace '"version_number"\s*:\s*"([.\d\w-+]+)"', """version_number"": ""$pluginVersion""" | Set-Content $manifestPath
+
+          echo "NAME=$($pluginName)" >> $env:GITHUB_OUTPUT
+          echo "VERSION=$($pluginVersion)" >> $env:GITHUB_OUTPUT
 
       - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
+
       - name: Build project
         id: build
         env:
@@ -64,10 +71,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           path: ${{ steps.build.outputs.PATH }}
-          name: ${{ steps.manifest.outputs.NAME }}--${{ steps.manifest.outputs.VERSION }}
+          name: ${{ steps.check.outputs.NAME }}--${{ steps.check.outputs.VERSION }}
     outputs:
-      name: ${{ steps.manifest.outputs.NAME }}--${{ steps.manifest.outputs.VERSION }}
-      version: ${{ steps.manifest.outputs.VERSION }}
+      name: ${{ steps.check.outputs.NAME }}--${{ steps.check.outputs.VERSION }}
+      version: ${{ steps.check.outputs.VERSION }}
 
   create-release:
     needs: create-artifact
