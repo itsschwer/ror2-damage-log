@@ -106,7 +106,13 @@ namespace DamageLog
                 "Show the raw damage value instead of the percentage of full combined health.");
 
 
-            const string Controls = "Controls";
+            const string Controls = "Controls"; // Could use BepInEx.Configuration.KeyboardShortcut,
+                                                // but that prevents ability to press while moving and
+                                                // requires separate binds to allow for holding shift to cycle in reverse.
+                                                // KeyCode appears buggy, with Risk of Options showing the wrong option for some reason?
+                                                //     (e.g. RoO "Backquote" becomes "Minus" in game and in text)
+                                                //     (e.g. text and game "Backquote" becomes "RightArrow" in RoO)
+                                                // Changing Unity package reference didn't seem to help.
             cycleUserKey = config.BindInputKey(Controls, nameof(cycleUserKey), "left alt",
                 "The key to use to cycle which user's Damage Log should be shown.");
 

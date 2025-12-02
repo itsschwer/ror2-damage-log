@@ -10,7 +10,7 @@ sometimes it can be hard to tell what you are taking damage from.
 
 ## controls
 
-`cycleUserKey` *(default: `left alt`)* can be used to cycle between player damage logs in multiplayer.
+`cycleUserKey` *(default: `left alt`)* can be used to cycle between player damage logs in multiplayer *(hold shift to cycle in reverse)*.
 
 ## versions
 > *Check the **changelog** to see version differences!*
