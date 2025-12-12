@@ -1,3 +1,7 @@
+### 1.2.10
+- Remove workaround to show Collective elite icons
+    - *Addressed in [**game patch 1.4.1**](https://store.steampowered.com/news/app/632360/view/497214077375874959)*
+
 ### 1.2.9
 - Workaround to show Collective elite icons
     - *For some reason Collective elites don't actually have an icon set for their buff (i.e. you have to identify them purely from the elite item display, rather than also seeing an icon above their health bar); the icon you would assume is for Collective elites is actually for showing the cooldown reduction buff given to the elite's allies within the bubble*

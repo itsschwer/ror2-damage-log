@@ -11,12 +11,6 @@ namespace DamageLog
         private static Texture _SotVPortrait;
         private static Texture SotVPortrait => _SotVPortrait ??= UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/UI/texVoidExpansionIcon.png").WaitForCompletion();
 
-#if ALLOYED_COLLECTIVE
-        // texEliteCollectiveSharedIcon.png appears to be the ally cooldown reduction icon, which is a slightly darker blue?
-        private static Sprite _CollectiveEliteIcon;
-        private static Sprite CollectiveEliteIcon => _CollectiveEliteIcon ??= UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<Sprite>("RoR2/DLC3/Collective/texEliteCollectiveIcon.png").WaitForCompletion();
-#endif
-
 
 
 
@@ -133,13 +127,6 @@ namespace DamageLog
             BuffDef buff = GetEliteBuffDef(body);
             icon = buff?.iconSprite;
             color = buff?.buffColor ?? Color.white;
-#if ALLOYED_COLLECTIVE
-            // it appears that the elite buff itself does not have an icon,
-            // but the cooldown reduction buff given to allies does;
-            // a little bit unintuitive compared to pre-existing elites
-            if (icon == null && buff?.eliteDef?.modifierToken == "ELITE_MODIFIER_COLLECTIVE") icon = CollectiveEliteIcon;
-            else if (buff?.eliteDef?.modifierToken == "ELITE_MODIFIER_COLLECTIVE") Plugin.Logger.LogWarning($"collective elite buff has been assigned an icon! '{icon}'");
-#endif
         }
 
         private static BuffDef GetEliteBuffDef(CharacterBody body)
