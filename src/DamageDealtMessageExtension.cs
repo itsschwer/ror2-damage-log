@@ -23,6 +23,11 @@ namespace DamageLog
             // Extracted using damage identifier
             return (e.damageType == (DamageTypeCombo.Generic | DamageType.AOE | DamageType.LunarRuin | DamageTypeExtended.DamagePercentOfMaxHealth | DamageTypeExtended.ApplyBuffPermanently));
         }
+
+        public static bool IsWarpedEchoDamage(this DamageDealtMessage e)
+        {
+            return e.damageColorIndex == DamageColorIndex.DelayedDamage;
+        }
 #endif
 
         public static string GetAttackerName(this DamageDealtMessage e)
@@ -40,6 +45,11 @@ namespace DamageLog
             else if (e.IsVoidFogDamage()) {
                 name = "Void Fog";
             }
+#if NETSTANDARD2_1
+            else if (e.IsWarpedEchoDamage()) {
+                name = Language.GetString(DLC2Content.Items.DelayedDamage.nameToken);
+            }
+#endif
 
             return name;
         }

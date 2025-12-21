@@ -104,6 +104,17 @@ namespace DamageLog
             else if (e.IsMeridianLightningDamage()) {
                 portrait = DLC2Content.Buffs.lunarruin.iconSprite.texture;
             }
+            else if (e.IsWarpedEchoDamage()) {
+                portrait = DLC2Content.Buffs.DelayedDamageDebuff.iconSprite.texture;
+            }
+#endif
+#if ALLOYED_COLLECTIVE
+            /* Would want to identify NetworkedSuffering but hard to isolate and DamageColorIndex can be overriden by DeathMark
+             * (mostly to make boss damage logs easier to read)
+             * DamageType: BypassArmor, DamageTypeExtended: Generic, Source: NoneSpecified | Electrocution
+             * 
+             * If DamageDealtMessage had access to procChainMask, could check for ProcType.SharedSuffering
+             */
 #endif
         }
 
