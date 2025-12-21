@@ -45,6 +45,9 @@ namespace DamageLog
             else if (e.IsVoidFogDamage()) {
                 name = "Void Fog";
             }
+            else if (e.IsMeridianLightningDamage()) {
+                name = "Meridian Lightning"; // Language.GetString("MAP_MERIDIAN_TITLE");
+            }
 #if NETSTANDARD2_1
             else if (e.IsWarpedEchoDamage()) {
                 name = Language.GetString(DLC2Content.Items.DelayedDamage.nameToken);
