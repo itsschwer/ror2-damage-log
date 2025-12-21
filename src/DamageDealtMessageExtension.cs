@@ -26,6 +26,7 @@ namespace DamageLog
 
         public static bool IsWarpedEchoDamage(this DamageDealtMessage e)
         {
+            // Meridian Lightning overrides Warped Echo's DamageColorIndex.Void...
             return e.damageColorIndex == DamageColorIndex.DelayedDamage;
         }
 #endif

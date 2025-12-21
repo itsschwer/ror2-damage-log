@@ -1,6 +1,10 @@
 ### 1.2.10
 - Remove workaround to show Collective elite icons
     - *Addressed in [**game patch 1.4.1**](https://store.steampowered.com/news/app/632360/view/497214077375874959)*
+- Add custom portrait for Warped Echo's delayed damage
+    - *Not always effective (e.g. delayed damage from Prime Meridian lightning strikes will still show as The Planet)*
+- Add custom name for Prime Meridian lightning strikes
+    - *So that it is distinguishable from The Planet in simple text mode*
 
 ### 1.2.9
 - Workaround to show Collective elite icons
