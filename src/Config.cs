@@ -69,6 +69,8 @@ namespace DamageLog
         internal Config(ConfigFile config)
         {
             file = config;
+            config.SaveOnConfigSet = false;
+
 
             trackBosses = config.Bind<bool>("Bosses", nameof(trackBosses), false,
                 "Generate Damage Logs for bosses. Use " + nameof(cycleBossKey) + " to display these in the UI.");
@@ -131,6 +133,10 @@ namespace DamageLog
             eliteIconSize = config.Bind<float>(Debug, nameof(eliteIconSize), 24);
             portraitTextSize = config.Bind<float>(Debug, nameof(portraitTextSize), 18);
             damageTextSize = config.Bind<float>(Debug, nameof(damageTextSize), 20);
+
+
+            config.SaveOnConfigSet = true;
+            config.Save();
         }
 
 
