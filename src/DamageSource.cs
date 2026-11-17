@@ -134,7 +134,7 @@ namespace DamageLog
             }
             if (attackerName == Language.GetString("ARTIFACTSHELL_BODY_NAME"))
 #if HALLOWED_CONCEPTS
-                return null; // TODO
+                return RoR2Content.Items.ArtifactKey.pickupIconTexture; // TODO
 #else
                 return RoR2Content.Items.ArtifactKey.pickupIconSprite.texture;
 #endif
