@@ -58,9 +58,14 @@ namespace DamageLog
             return name;
         }
 
+        public static string GenerateIdentifierRaw(this DamageDealtMessage e)
+        {
+            return $"?? | {e.damageType} | {e.damageColorIndex} | {e.damage}";
+        }
+
         public static string GenerateIdentifier(this DamageDealtMessage e)
         {
-            string identifier = $"?? | {e.damageType} | {e.damageColorIndex} | {e.damage}";
+            string identifier = e.GenerateIdentifierRaw();
 
             if (e.IsFallDamage()) identifier = "fall_damage";
             if (e.IsVoidFogDamage()) identifier = "void_fog_damage"; // Could use e.position (or probably just the instance id) to differentiate void fog instances?

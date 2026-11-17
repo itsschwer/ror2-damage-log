@@ -44,6 +44,9 @@ namespace DamageLog
         private readonly ConfigEntry<bool> hideDamageTimer;
         public bool HideDamageTimer => hideDamageTimer.Value;
 
+        private readonly ConfigEntry<bool> logCustomDamageIdentifiers;
+        public bool LogCustomDamageIdentifiers => logCustomDamageIdentifiers.Value;
+
         // Display: Portraits Mode
         private readonly ConfigEntry<int> maximumPortraitCount;
         public int MaximumPortraitCount => maximumPortraitCount.Value > 0 ? maximumPortraitCount.Value : 1;
@@ -90,6 +93,9 @@ namespace DamageLog
 
             hideDamageTimer = config.Bind<bool>(Display, nameof(hideDamageTimer), false,
                 "Hide the timer portion of each Damage Log entry showing how long it has been since the damage was inflicted.");
+
+            logCustomDamageIdentifiers = config.Bind<bool>(Display, nameof(logCustomDamageIdentifiers), false,
+                "Log the raw damage identifier when a new damage source is created with a custom damage identifier");
 
 
             const string PortraitsMode = "Display: Portraits Mode";

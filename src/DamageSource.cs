@@ -43,6 +43,11 @@ namespace DamageLog
             isVoidFogDamage = e.IsVoidFogDamage();
 
             identifier = e.GenerateIdentifier();
+            if (Plugin.Config.LogCustomDamageIdentifiers) {
+                string raw = e.GenerateIdentifierRaw();
+                if (e.attacker == null && identifier != raw) Plugin.Logger.LogDebug($"Using custom identifier {identifier} for {raw}.");
+            }
+
             attackerName = e.GetAttackerName();
             GetAttackerPortrait(e, out attackerPortrait, out attackerPortraitColor);
             GetEliteIcon(body, out eliteIcon, out eliteIconColor);
