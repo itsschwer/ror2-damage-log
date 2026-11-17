@@ -99,7 +99,14 @@ namespace DamageLog
                 if (attackerPortrait != null) portrait = attackerPortrait;
             }
             else if (e.IsFallDamage()) {
+#if HALLOWED_CONCEPTS
+                // TODO: inconsistent?
+                // var l = RoR2Content.Artifacts.weakAssKneesArtifactDef.smallIconSelectedReference.LoadAssetAsync().WaitForCompletion();
+                // Plugin.Logger.LogWarning(l == null);
+                // portrait = l.texture;
+#else
                 portrait = RoR2Content.Artifacts.weakAssKneesArtifactDef.smallIconSelectedSprite.texture;
+#endif
             }
             else if (e.IsVoidFogDamage()) {
                 portrait = RoR2Content.Buffs.VoidFogMild.iconSprite.texture;
@@ -112,14 +119,6 @@ namespace DamageLog
             else if (e.IsWarpedEchoDamage()) {
                 portrait = DLC2Content.Buffs.DelayedDamageDebuff.iconSprite.texture;
             }
-#endif
-#if ALLOYED_COLLECTIVE
-            /* Would want to identify NetworkedSuffering but hard to isolate and DamageColorIndex can be overriden by DeathMark
-             * (mostly to make boss damage logs easier to read)
-             * DamageType: BypassArmor, DamageTypeExtended: Generic, Source: NoneSpecified | Electrocution
-             * 
-             * If DamageDealtMessage had access to procChainMask, could check for ProcType.SharedSuffering
-             */
 #endif
         }
 
@@ -134,8 +133,12 @@ namespace DamageLog
                 return SotVPortrait;
             }
             if (attackerName == Language.GetString("ARTIFACTSHELL_BODY_NAME"))
+#if HALLOWED_CONCEPTS
+                return null; // TODO
+#else
                 return RoR2Content.Items.ArtifactKey.pickupIconSprite.texture;
-            return null;
+#endif
+                return null;
         }
 
         private static void GetEliteIcon(CharacterBody body, out Sprite icon, out Color color)
