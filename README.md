@@ -15,8 +15,9 @@ sometimes it can be hard to tell what you are taking damage from.
 ## versions
 > *Check the **changelog** to see version differences!*
 
-- If playing on the *Seekers of the Storm* patch, use the latest version available of this mod
 - If playing on a game version ***before*** the *Seekers of the Storm* patch, please use version `1.2.0` of this mod
+- If playing on a game version ***before*** the *Hallowed Concepts* patch, please use version `1.2.10` of this mod
+- Otherwise, use the latest available version of this mod
 
 ## configurable
 

@@ -1,3 +1,8 @@
+### 1.2.11
+- Temporarily remove custom attacker portraits for fall damage and Artifact Reliquary
+    - *Workaround for Hallowed Concepts seemingly changing artifact selected icons and item pickup icons to asset references rather than direct sprites*
+- Add new `logCustomDamageIdentifiers` configuration option
+
 ### 1.2.10
 - Remove workaround to show Collective elite icons
     - *Addressed in [**game patch 1.4.1**](https://store.steampowered.com/news/app/632360/view/497214077375874959)*
