@@ -50,21 +50,24 @@ namespace DamageLog
             Plugin.Logger.LogDebug($"Untracking {loggingName} (body destroyed).");
         }
 
-        private void Record(DamageDealtMessage e)
+        private void Record(DamageDealtMessage damage)
         {
-            if (targetBody == null || e.victim != targetBody.gameObject) return;
+            if (targetBody == null || damage.victim != targetBody.gameObject) return;
 
-            string key = e.GenerateIdentifier();
-            if (entries.TryGetValue(key, out DamageSource latest) && !IsExpired(Time - latest.time)) {
-                latest.Add(e);
-            }
-            else {
-                entries.Remove(key);
-                latest = new DamageSource(e);
-                entries.Add(key, latest);
-            }
+            try {
+                string key = damage.GenerateIdentifier();
+                if (entries.TryGetValue(key, out DamageSource latest) && !IsExpired(Time - latest.time)) {
+                    latest.Add(damage);
+                }
+                else {
+                    entries.Remove(key);
+                    latest = new DamageSource(damage);
+                    entries.Add(key, latest);
+                }
 
-            if (latest.remainingHpPercent <= 0f) timeOfDeath = UnityEngine.Time.time;
+                if (latest.remainingHpPercent <= 0f) timeOfDeath = UnityEngine.Time.time;
+            }
+            catch (System.Exception e) { Plugin.Logger.LogError(e); }
 
             Decay();
         }
